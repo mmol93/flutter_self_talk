@@ -1,6 +1,6 @@
 import 'package:flutter/material.dart';
 import 'package:google_fonts/google_fonts.dart';
-import 'package:self_talk/widgets/home/bar_indicator.dart';
+import 'package:smooth_page_indicator/smooth_page_indicator.dart';
 import '../../colors/default.dart';
 
 const pageList = ["친구", "채팅", "설정"];
@@ -41,17 +41,14 @@ class MyHomePage extends StatefulWidget {
 
 class _MyHomePageState extends State<MyHomePage> {
   final PageController _pageController = PageController();
-  int _selectedIndex = 0;
 
   void _updateBarIndicator(index) {
     setState(() {
-      _selectedIndex = index;
-      _pageController.animateToPage(index,
-          duration: const Duration(milliseconds: 300), curve: Curves.easeInOut);
+      _pageController.animateToPage(index, duration: const Duration(milliseconds: 300), curve: Curves.easeInOut);
     });
   }
 
-  Widget _viewPagerTitleWidget(String viewPagerTitle, int buttonIndex) {
+  Widget _viewPagerTitleWidget(String viewPagerTitle, int tabButtonIndex) {
     return Expanded(
       child: TextButton(
         style: ButtonStyle(
@@ -59,7 +56,7 @@ class _MyHomePageState extends State<MyHomePage> {
         ),
         child: Text(viewPagerTitle),
         onPressed: () {
-          _updateBarIndicator(buttonIndex);
+          _updateBarIndicator(tabButtonIndex);
         },
       ),
     );
@@ -67,6 +64,9 @@ class _MyHomePageState extends State<MyHomePage> {
 
   @override
   Widget build(BuildContext context) {
+    double screenWidth = MediaQuery.of(context).size.width;
+    double totalWidth = screenWidth;
+    double barWidth = totalWidth / pageList.length;
     return Scaffold(
       appBar: AppBar(
         backgroundColor: defaultAppbarColor,
@@ -83,8 +83,17 @@ class _MyHomePageState extends State<MyHomePage> {
                 .values
                 .toList(),
           ),
-          BarIndicator(
-              pageCount: pageList.length, currentIndex: _selectedIndex),
+          SmoothPageIndicator(
+            controller: _pageController,
+            count: pageList.length,
+            effect: WormEffect(
+                dotWidth: barWidth,
+                dotHeight:  3.0,
+                spacing: 0,
+                dotColor:  defaultGrayBackground,
+                activeDotColor:  Colors.grey
+            ),
+          ),
           Expanded(
             child: PageView(
               controller: _pageController,
