@@ -1,6 +1,8 @@
 import 'package:flutter/material.dart';
 import 'package:google_fonts/google_fonts.dart';
 import 'package:self_talk/assets/strings.dart';
+import 'package:self_talk/screens/chat/chat_list_screen.dart';
+import 'package:self_talk/screens/home/friend_screen.dart';
 import 'package:smooth_page_indicator/smooth_page_indicator.dart';
 import '../../colors/default.dart';
 import '../../widgets/common/dialog.dart';
