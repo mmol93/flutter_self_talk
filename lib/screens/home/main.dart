@@ -4,8 +4,8 @@ import 'package:self_talk/screens/chat/chat_list_screen.dart';
 import 'package:self_talk/screens/home/friend_screen.dart';
 import 'package:smooth_page_indicator/smooth_page_indicator.dart';
 import '../../assets/strings.dart';
-import '../../colors/default.dart';
-import '../../widgets/common/dialog.dart';
+import '../../colors/default_color.dart';
+import '../../widgets/common/common_dialog.dart';
 
 const pageList = ["친구", "채팅", "설정"];
 
@@ -73,7 +73,7 @@ class _MyHomePageState extends State<MyHomePage> {
         ),
         child: Text(
           viewPagerTitle,
-          style: const TextStyle(fontSize: 18, color: Colors.black),
+          style: const TextStyle(fontSize: 18, color: Colors.black, fontWeight: FontWeight.w600),
         ),
         onPressed: () {
           _updateBarIndicator(tabButtonIndex);

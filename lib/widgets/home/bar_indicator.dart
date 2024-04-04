@@ -1,5 +1,5 @@
 import 'package:flutter/material.dart';
-import 'package:self_talk/colors/default.dart';
+import 'package:self_talk/colors/default_color.dart';
 
 class BarIndicator extends StatelessWidget {
   final int pageCount;
