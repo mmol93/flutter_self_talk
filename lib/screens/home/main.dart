@@ -1,9 +1,9 @@
 import 'package:flutter/material.dart';
 import 'package:google_fonts/google_fonts.dart';
-import 'package:self_talk/assets/strings.dart';
 import 'package:self_talk/screens/chat/chat_list_screen.dart';
 import 'package:self_talk/screens/home/friend_screen.dart';
 import 'package:smooth_page_indicator/smooth_page_indicator.dart';
+import '../../assets/strings.dart';
 import '../../colors/default.dart';
 import '../../widgets/common/dialog.dart';
 
@@ -71,7 +71,10 @@ class _MyHomePageState extends State<MyHomePage> {
         style: ButtonStyle(
           overlayColor: MaterialStateProperty.all(Colors.transparent),
         ),
-        child: Text(viewPagerTitle),
+        child: Text(
+          viewPagerTitle,
+          style: const TextStyle(fontSize: 18, color: Colors.black),
+        ),
         onPressed: () {
           _updateBarIndicator(tabButtonIndex);
         },
@@ -112,16 +115,17 @@ class _MyHomePageState extends State<MyHomePage> {
           Expanded(
             child: PageView(
               controller: _pageController,
-              children: pageList.map((page) {
-                return Column(
-                  children: [
-                    Text(
-                      page,
-                      style: TextStyle(fontSize: 20),
-                    )
-                  ],
-                );
-              }).toList(),
+              children: const [
+                Expanded(
+                  child: FriendScreen(),
+                ),
+                Expanded(
+                  child: ChatListScreen(),
+                ),
+                Expanded(
+                  child: Text("sdfafd"),
+                ),
+              ],
             ),
           ),
         ],
