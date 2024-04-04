@@ -1,7 +1,9 @@
 import 'package:flutter/material.dart';
 import 'package:google_fonts/google_fonts.dart';
+import 'package:self_talk/assets/strings.dart';
 import 'package:smooth_page_indicator/smooth_page_indicator.dart';
 import '../../colors/default.dart';
+import '../../widgets/common/dialog.dart';
 
 const pageList = ["친구", "채팅", "설정"];
 
@@ -42,6 +44,19 @@ class MyHomePage extends StatefulWidget {
 class _MyHomePageState extends State<MyHomePage> {
   final PageController _pageController = PageController();
 
+  @override
+  void initState() {
+    super.initState();
+    WidgetsBinding.instance.addPostFrameCallback((timeStamp) {
+      showCommonDialog(
+        context: context,
+        title: Strings.startCautionTitle,
+        content: Strings.startCautionContent,
+        okText: Strings.okPolite,
+      );
+    });
+  }
+
   void _updateBarIndicator(index) {
     setState(() {
       _pageController.animateToPage(index, duration: const Duration(milliseconds: 300), curve: Curves.easeInOut);
@@ -78,8 +93,7 @@ class _MyHomePageState extends State<MyHomePage> {
             mainAxisAlignment: MainAxisAlignment.spaceAround,
             children: pageList
                 .asMap()
-                .map((index, pageTitle) =>
-                    MapEntry(index, _viewPagerTitleWidget(pageTitle, index)))
+                .map((index, pageTitle) => MapEntry(index, _viewPagerTitleWidget(pageTitle, index)))
                 .values
                 .toList(),
           ),
@@ -88,11 +102,10 @@ class _MyHomePageState extends State<MyHomePage> {
             count: pageList.length,
             effect: WormEffect(
                 dotWidth: barWidth,
-                dotHeight:  3.0,
+                dotHeight: 3.0,
                 spacing: 0,
-                dotColor:  defaultGrayBackground,
-                activeDotColor:  Colors.grey
-            ),
+                dotColor: defaultGrayBackground,
+                activeDotColor: Colors.grey),
           ),
           Expanded(
             child: PageView(
