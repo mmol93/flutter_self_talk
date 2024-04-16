@@ -1,0 +1,41 @@
+import 'package:flutter/material.dart';
+import 'package:self_talk/models/friends.dart';
+import '../common/profile_picture.dart';
+
+class FriendItem extends StatelessWidget {
+  const FriendItem({
+    super.key,
+    required this.friends,
+  });
+
+  final Friends friends;
+
+  @override
+  Widget build(BuildContext context) {
+    return Container(
+      padding: const EdgeInsets.symmetric(horizontal: 10),
+      child: Row(
+        children: [
+          ProfilePicture(),
+          Container(
+            padding: const EdgeInsets.symmetric(horizontal: 12),
+            child: Column(
+              crossAxisAlignment: CrossAxisAlignment.start,
+              children: [
+                Text(
+                  friends.name,
+                  style: TextStyle(fontSize: 16),
+                ),
+                if (friends.message != null)
+                  Text(
+                    friends.message!,
+                    style: const TextStyle(fontSize: 12, color: Colors.black45),
+                  )
+              ],
+            ),
+          )
+        ],
+      ),
+    );
+  }
+}
