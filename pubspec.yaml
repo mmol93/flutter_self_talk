@@ -45,6 +45,12 @@ dependencies:
   # flutter_svg - https://pub.dev/packages/flutter_svg/install
   flutter_svg: ^2.0.10+1
 
+  # sqflite - https://pub.dev/packages/sqflite/install
+  sqflite: ^2.3.3
+
+  # uuid - https://pub.dev/packages/uuid/install
+  uuid: ^4.4.0
+
 dev_dependencies:
   flutter_test:
     sdk: flutter

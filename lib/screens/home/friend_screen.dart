@@ -1,5 +1,5 @@
 import 'package:flutter/material.dart';
-import 'package:self_talk/models/friends.dart';
+import 'package:self_talk/models/user.dart';
 
 import '../../widgets/home/item_friend.dart';
 
@@ -30,15 +30,15 @@ class _FriendScreenState extends State<FriendScreen> {
             ),
             Container(
               height: 0.5,
-              margin: EdgeInsets.symmetric(vertical: 5),
+              margin: const EdgeInsets.symmetric(vertical: 5),
             ),
             ListView.separated(
               shrinkWrap: true,
               itemBuilder: (context, index) {
                 return Container(
-                  padding: EdgeInsets.symmetric(vertical: 10, horizontal: 4),
+                  padding: const EdgeInsets.symmetric(vertical: 10, horizontal: 4),
                   child: FriendItem(
-                    friends: Friends(name: "name1", message: "messsage1"),
+                    friends: User(name: "name1", message: "messsage1"),
                   ),
                 );
               },
@@ -50,7 +50,7 @@ class _FriendScreenState extends State<FriendScreen> {
             ),
             Container(
               height: 0.5,
-              margin: EdgeInsets.symmetric(vertical: 10),
+              margin: const EdgeInsets.symmetric(vertical: 10),
               color: Colors.grey.withOpacity(0.5),
             )
           ],

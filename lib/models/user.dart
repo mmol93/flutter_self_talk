@@ -1,11 +1,11 @@
-class Friends {
+class User {
   final String name;
   final String? message;
-  final String? profileImg;
+  final String? profileImgPath;
 
-  Friends({
+  User({
     required this.name,
     this.message,
-    this.profileImg
+    this.profileImgPath
   });
 }
