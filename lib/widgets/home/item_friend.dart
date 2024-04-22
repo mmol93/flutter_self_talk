@@ -1,5 +1,5 @@
 import 'package:flutter/material.dart';
-import 'package:self_talk/models/user.dart';
+import 'package:self_talk/models/friend.dart';
 import '../common/profile_picture.dart';
 
 class FriendItem extends StatelessWidget {
@@ -8,7 +8,7 @@ class FriendItem extends StatelessWidget {
     required this.friends,
   });
 
-  final User friends;
+  final Friend friends;
 
   @override
   Widget build(BuildContext context) {
@@ -16,7 +16,7 @@ class FriendItem extends StatelessWidget {
       padding: const EdgeInsets.symmetric(horizontal: 10),
       child: Row(
         children: [
-          if (friends.profileImgPath != null) ProfilePicture(picturePath: friends.profileImgPath!,) else const ProfilePicture(),
+          ProfilePicture(picturePath: friends.profileImgPath),
           Container(
             padding: const EdgeInsets.symmetric(horizontal: 12),
             child: Column(
@@ -26,11 +26,10 @@ class FriendItem extends StatelessWidget {
                   friends.name,
                   style: const TextStyle(fontSize: 16),
                 ),
-                if (friends.message != null)
-                  Text(
-                    friends.message!,
-                    style: const TextStyle(fontSize: 12, color: Colors.black45),
-                  )
+                Text(
+                  friends.message,
+                  style: const TextStyle(fontSize: 12, color: Colors.black45),
+                )
               ],
             ),
           )

@@ -1,8 +1,10 @@
 import 'package:flutter/material.dart';
+import 'package:flutter_riverpod/flutter_riverpod.dart';
 import 'package:google_fonts/google_fonts.dart';
 import 'package:self_talk/screens/chat/chat_list_screen.dart';
 import 'package:self_talk/screens/home/friend_screen.dart';
 import 'package:smooth_page_indicator/smooth_page_indicator.dart';
+
 import '../../assets/strings.dart';
 import '../../colors/default_color.dart';
 import '../../widgets/common/common_dialog.dart';
@@ -10,7 +12,9 @@ import '../../widgets/common/common_dialog.dart';
 const pageList = ["친구", "채팅", "설정"];
 
 void main() {
-  runApp(const MyApp());
+  runApp(const ProviderScope(
+    child: MyApp(),
+  ));
 }
 
 class MyApp extends StatefulWidget {
@@ -29,21 +33,21 @@ class _MyAppState extends State<MyApp> {
         colorScheme: ColorScheme.fromSeed(seedColor: Colors.deepPurple),
         useMaterial3: true,
       ),
-      home: const MyHomePage(title: '셀프톡썰'),
+      home: const HomePage(title: '셀프톡썰'),
     );
   }
 }
 
-class MyHomePage extends StatefulWidget {
-  const MyHomePage({super.key, required this.title});
+class HomePage extends StatefulWidget {
+  const HomePage({super.key, required this.title});
 
   final String title;
 
   @override
-  State<MyHomePage> createState() => _MyHomePageState();
+  State<HomePage> createState() => _HomePageState();
 }
 
-class _MyHomePageState extends State<MyHomePage> {
+class _HomePageState extends State<HomePage> {
   final PageController _pageController = PageController();
 
   @override
@@ -61,7 +65,8 @@ class _MyHomePageState extends State<MyHomePage> {
 
   void _updateBarIndicator(index) {
     setState(() {
-      _pageController.animateToPage(index, duration: const Duration(milliseconds: 300), curve: Curves.easeInOut);
+      _pageController.animateToPage(index,
+          duration: const Duration(milliseconds: 300), curve: Curves.easeInOut);
     });
   }
 
@@ -73,7 +78,8 @@ class _MyHomePageState extends State<MyHomePage> {
         ),
         child: Text(
           viewPagerTitle,
-          style: const TextStyle(fontSize: 18, color: Colors.black, fontWeight: FontWeight.w600),
+          style: const TextStyle(
+              fontSize: 18, color: Colors.black, fontWeight: FontWeight.w600),
         ),
         onPressed: () {
           _updateBarIndicator(tabButtonIndex);
@@ -98,7 +104,8 @@ class _MyHomePageState extends State<MyHomePage> {
             mainAxisAlignment: MainAxisAlignment.spaceAround,
             children: pageList
                 .asMap()
-                .map((index, pageTitle) => MapEntry(index, _viewPagerTitleWidget(pageTitle, index)))
+                .map((index, pageTitle) =>
+                    MapEntry(index, _viewPagerTitleWidget(pageTitle, index)))
                 .values
                 .toList(),
           ),
