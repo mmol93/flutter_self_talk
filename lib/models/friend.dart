@@ -8,7 +8,7 @@ class Friend {
     required this.id,
     required this.name,
     this.message = "",
-    this.profileImgPath = ""
+    this.profileImgPath = "assets/images/profile_pic.png"
   });
 
   Map<String, dynamic> toMap() {

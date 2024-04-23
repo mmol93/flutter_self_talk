@@ -58,6 +58,9 @@ dependencies:
   flutter_riverpod: ^2.5.1
   riverpod_annotation: ^2.3.5
 
+  # logger - https://pub.dev/packages/logger/install
+  logger: ^2.2.0
+
 dev_dependencies:
   flutter_test:
     sdk: flutter
