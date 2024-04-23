@@ -72,7 +72,7 @@ class _FriendScreen extends ConsumerState<FriendScreen> {
         margin: const EdgeInsets.only(bottom: 50, right: 35),
         child: FloatingActionButton(
           child: const Icon(Icons.person),
-          onPressed: () async {
+          onPressed: () {
             viewModel.insertFriend(Friend(
                 id: uuid.v4(), name: "name", message: "abcd"));
           },

@@ -16,7 +16,8 @@ class FriendViewModel extends StateNotifier<List<Friend>> {
   }
 
   void insertFriend(Friend friend) {
-    _friendRepository.insertFriend(friend);
-    state = [...state, friend];
+    _friendRepository.insertFriend(friend).then((value) {
+      state = [...state, friend];
+    });
   }
 }
