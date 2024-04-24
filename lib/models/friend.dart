@@ -1,3 +1,5 @@
+import 'package:self_talk/assets/strings.dart';
+
 class Friend {
   final String id;
   final String name;
@@ -8,7 +10,7 @@ class Friend {
     required this.id,
     required this.name,
     this.message = "",
-    this.profileImgPath = "assets/images/profile_pic.png"
+    this.profileImgPath = Strings.defaultProfileImgPath
   });
 
   Map<String, dynamic> toMap() {

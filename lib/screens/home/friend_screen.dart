@@ -1,8 +1,10 @@
+import 'package:flutter/cupertino.dart';
 import 'package:flutter/material.dart';
 import 'package:flutter_riverpod/flutter_riverpod.dart';
 import 'package:self_talk/models/friend.dart';
+import 'package:self_talk/navigator/slide_navigator.dart';
+import 'package:self_talk/screens/home/add_friend_screen.dart';
 import 'package:self_talk/viewModel/friend_viewModel.dart';
-import 'package:uuid/uuid.dart';
 import '../../widgets/home/item_friend.dart';
 
 class FriendScreen extends ConsumerStatefulWidget {
@@ -13,8 +15,6 @@ class FriendScreen extends ConsumerStatefulWidget {
 }
 
 class _FriendScreen extends ConsumerState<FriendScreen> {
-  var uuid = const Uuid();
-
   @override
   Widget build(BuildContext context) {
     final viewModel = ref.watch(friendViewModelProvider.notifier);
@@ -37,29 +37,29 @@ class _FriendScreen extends ConsumerState<FriendScreen> {
           ),
           Container(
             height: 0.5,
-            margin: const EdgeInsets.symmetric(vertical: 5),
+            margin: const EdgeInsets.symmetric(vertical: 2),
           ),
-          ListView.separated(
-            shrinkWrap: true,
-            itemBuilder: (context, index) {
-              return Container(
-                padding:
-                    const EdgeInsets.symmetric(vertical: 10, horizontal: 4),
-                child: FriendItem(
-                  friends: Friend(
-                    id: friends[index].id,
-                    name: friends[index].name,
-                    message: friends[index].message,
-                    profileImgPath: friends[index].profileImgPath
+          Expanded(
+            child: ListView.separated(
+              shrinkWrap: true,
+              itemBuilder: (context, index) {
+                return Container(
+                  padding: const EdgeInsets.symmetric(vertical: 2, horizontal: 4),
+                  child: FriendItem(
+                    friends: Friend(
+                        id: friends[index].id,
+                        name: friends[index].name,
+                        message: friends[index].message,
+                        profileImgPath: friends[index].profileImgPath),
                   ),
-                ),
-              );
-            },
-            separatorBuilder: (context, index) => Divider(
-              color: Colors.grey.withOpacity(0.5),
-              thickness: 0.5,
+                );
+              },
+              separatorBuilder: (context, index) => Divider(
+                color: Colors.grey.withOpacity(0.5),
+                thickness: 0.5,
+              ),
+              itemCount: friends.length,
             ),
-            itemCount: friends.length,
           ),
           Container(
             height: 0.5,
@@ -73,8 +73,11 @@ class _FriendScreen extends ConsumerState<FriendScreen> {
         child: FloatingActionButton(
           child: const Icon(Icons.person),
           onPressed: () {
-            viewModel.insertFriend(Friend(
-                id: uuid.v4(), name: "name", message: "abcd"));
+            slideNavigateStateful(context, AddFriendScreen(
+              friend: (createdFriend) {
+                viewModel.insertFriend(createdFriend);
+              },
+            ));
           },
         ),
       ),
