@@ -20,4 +20,16 @@ class FriendViewModel extends StateNotifier<List<Friend>> {
       state = [...state, friend];
     });
   }
+
+  void updateFriend(Friend friend) {
+    _friendRepository.updateFriend(friend).then((value) {
+      getFriend();
+    });
+  }
+
+  void deleteFriend(String id) {
+    _friendRepository.deleteFriend(id).then((value) {
+      getFriend();
+    });
+  }
 }
