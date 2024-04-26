@@ -19,4 +19,8 @@ class FriendRepository {
   Future<void> deleteFriend(String id) async {
     return _friendDb.deleteFriend(id);
   }
+
+  Future<void> updateMyProfile() async {
+    return _friendDb.updateMyProfile();
+  }
 }

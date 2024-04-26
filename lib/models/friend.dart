@@ -5,12 +5,14 @@ class Friend {
   final String name;
   String message;
   String profileImgPath;
+  int me;
 
   Friend({
     required this.id,
     required this.name,
     this.message = "",
-    this.profileImgPath = Strings.defaultProfileImgPath
+    this.profileImgPath = Strings.defaultProfileImgPath,
+    this.me = 0
   });
 
   Map<String, dynamic> toMap() {
@@ -19,6 +21,7 @@ class Friend {
       'name': name,
       'message': message,
       'profileImgPath': profileImgPath,
+      'me': me
     };
   }
 
@@ -28,6 +31,11 @@ class Friend {
       name: map['name'],
       message: map['message'],
       profileImgPath: map['profileImgPath'],
+      me: map['me']
     );
+  }
+  @override
+  String toString() {
+    return "Friend(id: $id, name: $name, message: $message, profileImgPath: $profileImgPath, me: $me)";
   }
 }

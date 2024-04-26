@@ -1,4 +1,3 @@
-import 'package:flutter/cupertino.dart';
 import 'package:flutter/material.dart';
 import 'package:flutter_riverpod/flutter_riverpod.dart';
 import 'package:self_talk/models/friend.dart';
@@ -18,8 +17,8 @@ class _FriendScreen extends ConsumerState<FriendScreen> {
   @override
   Widget build(BuildContext context) {
     final viewModel = ref.watch(friendViewModelProvider.notifier);
-    final friends = ref.watch(friendViewModelProvider);
-
+    final friends = ref.watch(friendViewModelProvider).where((friend) => friend.me == 0).toList();
+    final myProfile = ref.watch(friendViewModelProvider).where((friend) => friend.me == 1).toList();
     return Scaffold(
       body: Expanded(
           child: Column(
@@ -31,7 +30,31 @@ class _FriendScreen extends ConsumerState<FriendScreen> {
             width: double.infinity,
             padding: const EdgeInsets.symmetric(horizontal: 12, vertical: 6),
             child: const Text(
-              "친구 (하단의 친구 아이콘을 눌러서 추가하세요.)",
+              "내 프로필",
+              style: TextStyle(fontSize: 10, color: Colors.blueGrey),
+            ),
+          ),
+          if (myProfile.isNotEmpty)
+            Container(
+              padding: const EdgeInsets.symmetric(vertical: 6, horizontal: 4),
+              child: FriendItem(
+                friend: Friend(
+                  // 내 프로필은 반드시 1개만 존재하기 때문에
+                  id: myProfile.first.id,
+                  name: myProfile.first.name,
+                  message: myProfile.first.message,
+                  profileImgPath: myProfile.first.profileImgPath,
+                ),
+              ),
+            ),
+          Container(
+            decoration: BoxDecoration(
+                shape: BoxShape.rectangle,
+                border: Border.all(color: Colors.grey.shade300, width: 0.5)),
+            width: double.infinity,
+            padding: const EdgeInsets.symmetric(horizontal: 12, vertical: 6),
+            child: const Text(
+              "친구",
               style: TextStyle(fontSize: 10, color: Colors.blueGrey),
             ),
           ),
@@ -39,28 +62,31 @@ class _FriendScreen extends ConsumerState<FriendScreen> {
             height: 0.5,
             margin: const EdgeInsets.symmetric(vertical: 2),
           ),
-          Expanded(
-            child: ListView.separated(
-              shrinkWrap: true,
-              itemBuilder: (context, index) {
-                return Container(
-                  padding: const EdgeInsets.symmetric(vertical: 2, horizontal: 4),
-                  child: FriendItem(
-                    friends: Friend(
+          if (friends.isNotEmpty)
+            Expanded(
+              child: ListView.separated(
+                shrinkWrap: true,
+                itemBuilder: (context, index) {
+                  return Container(
+                    padding:
+                        const EdgeInsets.symmetric(vertical: 2, horizontal: 4),
+                    child: FriendItem(
+                      friend: Friend(
                         id: friends[index].id,
                         name: friends[index].name,
                         message: friends[index].message,
-                        profileImgPath: friends[index].profileImgPath),
-                  ),
-                );
-              },
-              separatorBuilder: (context, index) => Divider(
-                color: Colors.grey.withOpacity(0.5),
-                thickness: 0.5,
+                        profileImgPath: friends[index].profileImgPath,
+                      ),
+                    ),
+                  );
+                },
+                separatorBuilder: (context, index) => Divider(
+                  color: Colors.grey.withOpacity(0.5),
+                  thickness: 0.5,
+                ),
+                itemCount: friends.length,
               ),
-              itemCount: friends.length,
             ),
-          ),
           Container(
             height: 0.5,
             margin: const EdgeInsets.symmetric(vertical: 10),
@@ -75,6 +101,10 @@ class _FriendScreen extends ConsumerState<FriendScreen> {
           onPressed: () {
             slideNavigateStateful(context, AddFriendScreen(
               friend: (createdFriend) {
+                if (createdFriend.me == 1) {
+                  // 내 프로필로 설정했다면 기존 '내 프로필'을 친구로 바꿔야한다.
+                  viewModel.updateMyProfile();
+                }
                 viewModel.insertFriend(createdFriend);
               },
             ));

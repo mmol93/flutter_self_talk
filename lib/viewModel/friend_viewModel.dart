@@ -32,4 +32,10 @@ class FriendViewModel extends StateNotifier<List<Friend>> {
       getFriend();
     });
   }
+
+  void updateMyProfile() {
+    _friendRepository.updateMyProfile().then((value) {
+      getFriend();
+    });
+  }
 }

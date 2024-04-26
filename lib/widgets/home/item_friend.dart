@@ -5,10 +5,10 @@ import '../common/profile_picture.dart';
 class FriendItem extends StatelessWidget {
   const FriendItem({
     super.key,
-    required this.friends,
+    required this.friend,
   });
 
-  final Friend friends;
+  final Friend friend;
 
   @override
   Widget build(BuildContext context) {
@@ -16,18 +16,18 @@ class FriendItem extends StatelessWidget {
       padding: const EdgeInsets.symmetric(horizontal: 10),
       child: Row(
         children: [
-          ProfilePicture(picturePath: friends.profileImgPath),
+          ProfilePicture(picturePath: friend.profileImgPath),
           Container(
             padding: const EdgeInsets.symmetric(horizontal: 12),
             child: Column(
               crossAxisAlignment: CrossAxisAlignment.start,
               children: [
                 Text(
-                  friends.name,
+                  friend.name,
                   style: const TextStyle(fontSize: 16),
                 ),
                 Text(
-                  friends.message,
+                  friend.message,
                   style: const TextStyle(fontSize: 12, color: Colors.black45),
                 )
               ],
@@ -36,5 +36,5 @@ class FriendItem extends StatelessWidget {
         ],
       ),
     );
-  }
+    }
 }

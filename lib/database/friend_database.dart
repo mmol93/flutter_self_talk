@@ -27,7 +27,8 @@ class FriendDatabase {
         id TEXT PRIMARY KEY,
         name TEXT,
         message TEXT,
-        profileImgPath TEXT
+        profileImgPath TEXT,
+        me INTEGER
       )
     ''');
   }
@@ -46,12 +47,27 @@ class FriendDatabase {
   Future updateFriend(Friend friend) async {
     Database db = await database;
     // 해당하는 id를 찾아서 update 한다.
-    await db.update('friend_db', friend.toMap(),
-        where: 'id = ?', whereArgs: [friend.id]);
+    await db.update(
+      'friend_db',
+      friend.toMap(),
+      where: 'id = ?',
+      whereArgs: [friend.id],
+    );
   }
 
   Future deleteFriend(String id) async {
     Database db = await database;
     await db.delete('friend_db', where: 'id = ?', whereArgs: [id]);
+  }
+
+  Future updateMyProfile() async {
+    // myProfile이 true인 데이터를 찾아서 false로 바꾼다.
+    Database db = await database;
+    await db.update(
+      'friend_db',
+      {'me': 0},
+      where: 'me = ?',
+      whereArgs: [1],
+    );
   }
 }

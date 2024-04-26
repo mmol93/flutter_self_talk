@@ -21,6 +21,8 @@ class _AddFriendScreenState extends State<AddFriendScreen> {
   final _nameController = TextEditingController();
   final _messageController = TextEditingController();
   final _uuid = const Uuid();
+  var _myProfileCheck = false;
+  var _myProfile = 0;
 
   void _pickImage() async {
     final pickedImage = await ImagePicker().pickImage(
@@ -52,7 +54,8 @@ class _AddFriendScreenState extends State<AddFriendScreen> {
               id: _uuid.v4(),
               name: _nameController.text,
               message: _messageController.text,
-              profileImgPath: _createdFriend!.profileImgPath),
+              profileImgPath: _createdFriend!.profileImgPath,
+              me: _myProfile),
         );
       } else {
         widget.friend(
@@ -60,11 +63,24 @@ class _AddFriendScreenState extends State<AddFriendScreen> {
               id: _uuid.v4(),
               name: _nameController.text,
               message: _messageController.text,
-              profileImgPath: Strings.defaultProfileImgPath),
+              profileImgPath: Strings.defaultProfileImgPath,
+              me: _myProfile),
         );
       }
       Navigator.pop(context);
     }
+  }
+
+  void _setMyProfile(bool? isChecked) {
+    setState(() {
+      if (isChecked == true) {
+        _myProfileCheck = true;
+        _myProfile = 1;
+      } else {
+        _myProfileCheck = false;
+        _myProfile = 0;
+      }
+    });
   }
 
   @override
@@ -143,6 +159,15 @@ class _AddFriendScreenState extends State<AddFriendScreen> {
                       controller: _messageController,
                       decoration: const InputDecoration(hintText: "프로필 메시지"),
                     ),
+                  ),
+                  Row(
+                    children: [
+                      Checkbox(
+                        value: _myProfileCheck,
+                        onChanged: _setMyProfile,
+                      ),
+                      const Text("내 '프로필'로 설정하기 ")
+                    ],
                   ),
                   Container(
                     margin: const EdgeInsets.all(15),
