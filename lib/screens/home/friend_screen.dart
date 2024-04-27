@@ -17,8 +17,14 @@ class _FriendScreen extends ConsumerState<FriendScreen> {
   @override
   Widget build(BuildContext context) {
     final viewModel = ref.watch(friendViewModelProvider.notifier);
-    final friends = ref.watch(friendViewModelProvider).where((friend) => friend.me == 0).toList();
-    final myProfile = ref.watch(friendViewModelProvider).where((friend) => friend.me == 1).toList();
+    final friends = ref
+        .watch(friendViewModelProvider)
+        .where((friend) => friend.me == 0)
+        .toList();
+    final myProfile = ref
+        .watch(friendViewModelProvider)
+        .where((friend) => friend.me == 1)
+        .toList();
     return Scaffold(
       body: Expanded(
           child: Column(
@@ -63,7 +69,7 @@ class _FriendScreen extends ConsumerState<FriendScreen> {
             margin: const EdgeInsets.symmetric(vertical: 2),
           ),
           if (friends.isNotEmpty)
-            Expanded(
+            Flexible(
               child: ListView.separated(
                 shrinkWrap: true,
                 itemBuilder: (context, index) {
@@ -91,7 +97,7 @@ class _FriendScreen extends ConsumerState<FriendScreen> {
             height: 0.5,
             margin: const EdgeInsets.symmetric(vertical: 10),
             color: Colors.grey.withOpacity(0.5),
-          )
+          ),
         ],
       )),
       floatingActionButton: Container(
