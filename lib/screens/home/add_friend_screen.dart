@@ -1,5 +1,6 @@
 import 'dart:io';
 
+import 'package:flutter/cupertino.dart';
 import 'package:flutter/material.dart';
 import 'package:image_picker/image_picker.dart';
 import 'package:self_talk/assets/strings.dart';
@@ -160,14 +161,20 @@ class _AddFriendScreenState extends State<AddFriendScreen> {
                       decoration: const InputDecoration(hintText: "프로필 메시지"),
                     ),
                   ),
-                  Row(
-                    children: [
-                      Checkbox(
-                        value: _myProfileCheck,
-                        onChanged: _setMyProfile,
-                      ),
-                      const Text("내 '프로필'로 설정하기 ")
-                    ],
+                  GestureDetector(
+                    onTap: () {
+                      _myProfileCheck = !_myProfileCheck;
+                      _setMyProfile(_myProfileCheck);
+                    },
+                    child: Row(
+                      children: [
+                        Checkbox(
+                          value: _myProfileCheck,
+                          onChanged: _setMyProfile,
+                        ),
+                        const Text("내 '프로필'로 설정하기 ")
+                      ],
+                    ),
                   ),
                   Container(
                     margin: const EdgeInsets.all(15),
