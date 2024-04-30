@@ -60,7 +60,7 @@ class FriendDatabase {
     await db.delete('friend_db', where: 'id = ?', whereArgs: [id]);
   }
 
-  Future updateMyProfile() async {
+  Future changeMeToFriend() async {
     // myProfile이 true인 데이터를 찾아서 false로 바꾼다.
     Database db = await database;
     await db.update(

@@ -5,9 +5,3 @@ enum FriendControl {
   deleteItself,
   chatMulti;
 }
-
-class FriendControlResult {
-  final FriendControl friendControl;
-
-  FriendControlResult({required this.friendControl});
-}

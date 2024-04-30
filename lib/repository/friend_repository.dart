@@ -12,7 +12,7 @@ class FriendRepository {
     return _friendDb.insertFriend(friend);
   }
 
-  Future<void> updateFriend(Friend friend) async{
+  Future<void> updateFriend(Friend friend) async {
     return _friendDb.updateFriend(friend);
   }
 
@@ -20,7 +20,7 @@ class FriendRepository {
     return _friendDb.deleteFriend(id);
   }
 
-  Future<void> updateMyProfile() async {
-    return _friendDb.updateMyProfile();
+  Future<void> changeMeToFriend() async {
+    return _friendDb.changeMeToFriend();
   }
 }

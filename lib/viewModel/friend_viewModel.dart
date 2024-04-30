@@ -2,7 +2,9 @@ import 'package:flutter_riverpod/flutter_riverpod.dart';
 import 'package:self_talk/models/friend.dart';
 import 'package:self_talk/repository/friend_repository.dart';
 
-final friendViewModelProvider = StateNotifierProvider<FriendViewModel, List<Friend>>((ref) => FriendViewModel(FriendRepository()));
+final friendViewModelProvider =
+    StateNotifierProvider<FriendViewModel, List<Friend>>(
+        (ref) => FriendViewModel(FriendRepository()));
 
 class FriendViewModel extends StateNotifier<List<Friend>> {
   final FriendRepository _friendRepository;
@@ -33,9 +35,14 @@ class FriendViewModel extends StateNotifier<List<Friend>> {
     });
   }
 
-  void updateMyProfile() {
-    _friendRepository.updateMyProfile().then((value) {
+  void changeMeToFriend() {
+    _friendRepository.changeMeToFriend().then((value) {
       getFriend();
     });
+  }
+
+  void updateAsMe(Friend friend) {
+    friend.me = 1; // '나'로 변경
+    _friendRepository.changeMeToFriend().then((value) => updateFriend(friend));
   }
 }

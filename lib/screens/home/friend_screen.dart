@@ -1,8 +1,10 @@
 import 'package:flutter/material.dart';
 import 'package:flutter_riverpod/flutter_riverpod.dart';
 import 'package:self_talk/models/friend.dart';
+import 'package:self_talk/models/friend_control.dart';
 import 'package:self_talk/navigator/slide_navigator.dart';
 import 'package:self_talk/screens/home/add_friend_screen.dart';
+import 'package:self_talk/utils/MyLogger.dart';
 import 'package:self_talk/viewModel/friend_viewModel.dart';
 import '../../widgets/home/item_friend.dart';
 
@@ -45,13 +47,13 @@ class _FriendScreen extends ConsumerState<FriendScreen> {
               padding: const EdgeInsets.symmetric(vertical: 8, horizontal: 4),
               child: FriendItem(
                 friend: Friend(
-                  // 내 프로필은 반드시 1개만 존재하기 때문에
-                  id: myProfile.first.id,
-                  name: myProfile.first.name,
-                  message: myProfile.first.message,
-                  profileImgPath: myProfile.first.profileImgPath,
-                  me: myProfile.first.me
-                ),
+                    // 내 프로필은 반드시 1개만 존재하기 때문에
+                    id: myProfile.first.id,
+                    name: myProfile.first.name,
+                    message: myProfile.first.message,
+                    profileImgPath: myProfile.first.profileImgPath,
+                    me: myProfile.first.me),
+                clickedFriendControl: (clickedFriend) {},
               ),
             ),
           Container(
@@ -74,17 +76,31 @@ class _FriendScreen extends ConsumerState<FriendScreen> {
               child: ListView.separated(
                 shrinkWrap: true,
                 itemBuilder: (context, index) {
+                  Friend friend = friends[index];
                   return Container(
                     padding:
                         const EdgeInsets.symmetric(vertical: 2, horizontal: 4),
                     child: FriendItem(
                       friend: Friend(
-                        id: friends[index].id,
-                        name: friends[index].name,
-                        message: friends[index].message,
-                        profileImgPath: friends[index].profileImgPath,
-                        me: friends[index].me
-                      ),
+                          id: friend.id,
+                          name: friend.name,
+                          message: friend.message,
+                          profileImgPath: friend.profileImgPath,
+                          me: friend.me),
+                      clickedFriendControl: (clickedFriendControl) {
+                        switch (clickedFriendControl) {
+                          case FriendControl.setAsMe:
+                            viewModel.updateAsMe(friend);
+                          case FriendControl.chat1on1:
+                            MyLogger.log("chat1on1: $friend");
+                          case FriendControl.modifyProfile:
+                            MyLogger.log("modifyProfile: $friend");
+                          case FriendControl.deleteItself:
+                            viewModel.deleteFriend(friend.id);
+                          case FriendControl.chatMulti:
+                            MyLogger.log("chatMulti: $friend");
+                        }
+                      },
                     ),
                   );
                 },
@@ -111,7 +127,7 @@ class _FriendScreen extends ConsumerState<FriendScreen> {
               friend: (createdFriend) {
                 if (createdFriend.me == 1) {
                   // 내 프로필로 설정했다면 기존 '내 프로필'을 친구로 바꿔야한다.
-                  viewModel.updateMyProfile();
+                  viewModel.changeMeToFriend();
                 }
                 viewModel.insertFriend(createdFriend);
               },

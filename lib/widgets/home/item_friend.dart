@@ -1,19 +1,18 @@
 import 'package:flutter/material.dart';
 import 'package:self_talk/models/friend.dart';
 import 'package:self_talk/models/friend_control.dart';
-import 'package:self_talk/utils/MyLogger.dart';
 import '../common/profile_picture.dart';
 
 class FriendItem extends StatelessWidget {
-  const FriendItem({
-    super.key,
-    required this.friend,
-  });
+  const FriendItem(
+      {super.key, required this.friend, required this.clickedFriendControl});
 
   final Friend friend;
+  final void Function(FriendControl) clickedFriendControl;
 
-  Future<FriendControlResult?> _showFriendDialog(BuildContext context, Friend friend) async {
-    return showDialog<FriendControlResult>(
+  Future<FriendControl?> _showFriendDialog(
+      BuildContext context, Friend friend) async {
+    return showDialog<FriendControl>(
       context: context,
       builder: (BuildContext context) {
         return AlertDialog(
@@ -24,7 +23,7 @@ class FriendItem extends StatelessWidget {
                 TextButton(
                   style: const ButtonStyle(alignment: Alignment.centerLeft),
                   onPressed: () {
-                    Navigator.of(context).pop(FriendControlResult(friendControl: FriendControl.setAsMe));
+                    Navigator.of(context).pop(FriendControl.setAsMe);
                   },
                   child: const Text(
                     "'나'로 변경하기",
@@ -34,10 +33,9 @@ class FriendItem extends StatelessWidget {
                 TextButton(
                   style: const ButtonStyle(alignment: Alignment.centerLeft),
                   onPressed: () {
-                    Navigator.of(context).pop(FriendControlResult(friendControl: FriendControl.chat1on1));
+                    Navigator.of(context).pop(FriendControl.chat1on1);
                   },
-                  child:
-                  const Text(
+                  child: const Text(
                     "1:1 채팅하기",
                     style: TextStyle(fontSize: 16, color: Colors.black),
                   ),
@@ -45,7 +43,7 @@ class FriendItem extends StatelessWidget {
                 TextButton(
                   style: const ButtonStyle(alignment: Alignment.centerLeft),
                   onPressed: () {
-                    Navigator.of(context).pop(FriendControlResult(friendControl: FriendControl.chatMulti));
+                    Navigator.of(context).pop(FriendControl.chatMulti);
                   },
                   child: const Text(
                     "단체 채팅하기",
@@ -55,7 +53,7 @@ class FriendItem extends StatelessWidget {
                 TextButton(
                   style: const ButtonStyle(alignment: Alignment.centerLeft),
                   onPressed: () {
-                    Navigator.of(context).pop(FriendControlResult(friendControl: FriendControl.modifyProfile));
+                    Navigator.of(context).pop(FriendControl.modifyProfile);
                   },
                   child: const Text(
                     "프로필 수정하기",
@@ -65,7 +63,7 @@ class FriendItem extends StatelessWidget {
                 TextButton(
                   style: const ButtonStyle(alignment: Alignment.centerLeft),
                   onPressed: () {
-                    Navigator.of(context).pop(FriendControlResult(friendControl: FriendControl.deleteItself));
+                    Navigator.of(context).pop(FriendControl.deleteItself);
                   },
                   child: const Text(
                     "삭제하기",
@@ -88,18 +86,20 @@ class FriendItem extends StatelessWidget {
       child: GestureDetector(
         behavior: HitTestBehavior.opaque,
         onTap: () async {
-          FriendControlResult? friendControlResult = await _showFriendDialog(context, friend);
-          switch (friendControlResult?.friendControl) {
-            case FriendControl.setAsMe :
-              MyLogger.log("setAsMe: $friend}");
+          FriendControl? friendControlResult =
+              await _showFriendDialog(context, friend);
+          switch (friendControlResult) {
+            case FriendControl.setAsMe:
+              clickedFriendControl(FriendControl.setAsMe);
             case FriendControl.chat1on1:
-              MyLogger.log("chat1on1: $friend");
+              clickedFriendControl(FriendControl.chat1on1);
             case FriendControl.modifyProfile:
-              MyLogger.log("modifyProfile: $friend");
+              clickedFriendControl(FriendControl.modifyProfile);
             case FriendControl.deleteItself:
-              MyLogger.log("deleteItself: $friend");
-            default:
-              MyLogger.log("chatMulti: $friend");
+              clickedFriendControl(FriendControl.deleteItself);
+            case FriendControl.chatMulti:
+              clickedFriendControl(FriendControl.chatMulti);
+            case null:
           }
         },
         child: Row(
