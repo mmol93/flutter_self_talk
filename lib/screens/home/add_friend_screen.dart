@@ -1,11 +1,10 @@
 import 'dart:io';
-
-import 'package:flutter/cupertino.dart';
 import 'package:flutter/material.dart';
 import 'package:image_picker/image_picker.dart';
 import 'package:self_talk/assets/strings.dart';
 import 'package:self_talk/colors/default_color.dart';
 import 'package:self_talk/models/friend.dart';
+import 'package:self_talk/widgets/common/utils.dart';
 import 'package:uuid/uuid.dart';
 
 class AddFriendScreen extends StatefulWidget {
@@ -21,9 +20,9 @@ class _AddFriendScreenState extends State<AddFriendScreen> {
   Friend? _createdFriend;
   final _nameController = TextEditingController();
   final _messageController = TextEditingController();
-  final _uuid = const Uuid();
-  var _myProfileCheck = false;
-  var _myProfile = 0;
+  final _uuid = const Uuid().v4();
+  var _myProfileCheck = false; // '내 프로필'로 설정했는지
+  var _myProfile = 0; // '내 프로필' 설정 유무를 Sqlite에 저장하기 위한 변수
 
   void _pickImage() async {
     final pickedImage = await ImagePicker().pickImage(
@@ -38,7 +37,7 @@ class _AddFriendScreenState extends State<AddFriendScreen> {
 
     setState(() {
       _createdFriend = Friend(
-        id: _uuid.v4(),
+        id: _uuid,
         name: _nameController.text,
         message: _messageController.text,
         profileImgPath: pickedImage.path,
@@ -52,7 +51,7 @@ class _AddFriendScreenState extends State<AddFriendScreen> {
         // 그림 파일을 셋팅한 경우
         widget.friend(
           Friend(
-              id: _uuid.v4(),
+              id: _uuid,
               name: _nameController.text,
               message: _messageController.text,
               profileImgPath: _createdFriend!.profileImgPath,
@@ -61,7 +60,7 @@ class _AddFriendScreenState extends State<AddFriendScreen> {
       } else {
         widget.friend(
           Friend(
-              id: _uuid.v4(),
+              id: _uuid,
               name: _nameController.text,
               message: _messageController.text,
               profileImgPath: Strings.defaultProfileImgPath,
@@ -69,6 +68,8 @@ class _AddFriendScreenState extends State<AddFriendScreen> {
         );
       }
       Navigator.pop(context);
+    } else {
+      showToast("이름을 지정 해야 합니다.");
     }
   }
 
