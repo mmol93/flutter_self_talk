@@ -5,7 +5,6 @@ import 'package:self_talk/models/friend_control.dart';
 import 'package:self_talk/navigator/slide_navigator.dart';
 import 'package:self_talk/screens/friend/add_friend_screen.dart';
 import 'package:self_talk/screens/friend/update_friend_screen.dart';
-import 'package:self_talk/utils/MyLogger.dart';
 import 'package:self_talk/viewModel/friend_viewModel.dart';
 import '../../widgets/home/item_friend.dart';
 
@@ -34,8 +33,9 @@ class _FriendListScreen extends ConsumerState<FriendListScreen> {
         children: [
           Container(
             decoration: BoxDecoration(
-                shape: BoxShape.rectangle,
-                border: Border.all(color: Colors.grey.shade300, width: 0.5)),
+              shape: BoxShape.rectangle,
+              border: Border.all(color: Colors.grey.shade300, width: 0.5),
+            ),
             width: double.infinity,
             padding: const EdgeInsets.symmetric(horizontal: 12, vertical: 6),
             child: const Text(
@@ -56,7 +56,21 @@ class _FriendListScreen extends ConsumerState<FriendListScreen> {
                   me: myProfile.first.me,
                 ),
                 clickedFriendControl: (clickedFriend) {
-                  // TODO: '내 프로필'에도 컨트롤 기능 넣어줘야함
+                  switch (clickedFriend) {
+                    case FriendControl.modifyProfile:
+                      slideNavigateStateful(
+                        context,
+                        UpdateFriendScreen(
+                          updateFriend: (updatedFriend) {
+                            viewModel.updateFriend(updatedFriend);
+                          },
+                          targetFriend: myProfile.first,
+                        ),
+                      );
+                    case FriendControl.deleteItself:
+                      viewModel.deleteFriend(myProfile.first.id);
+                    default:
+                  }
                 },
               ),
             ),
@@ -86,17 +100,17 @@ class _FriendListScreen extends ConsumerState<FriendListScreen> {
                         const EdgeInsets.symmetric(vertical: 2, horizontal: 4),
                     child: FriendItem(
                       friend: Friend(
-                          id: friend.id,
-                          name: friend.name,
-                          message: friend.message,
-                          profileImgPath: friend.profileImgPath,
-                          me: friend.me),
+                        id: friend.id,
+                        name: friend.name,
+                        message: friend.message,
+                        profileImgPath: friend.profileImgPath,
+                        me: friend.me,
+                      ),
                       clickedFriendControl: (clickedFriendControl) {
                         switch (clickedFriendControl) {
                           case FriendControl.setAsMe:
                             viewModel.updateAsMe(friend);
                           case FriendControl.chat1on1:
-                            MyLogger.log("chat1on1: $friend");
                           case FriendControl.modifyProfile:
                             slideNavigateStateful(
                               context,
@@ -111,13 +125,11 @@ class _FriendListScreen extends ConsumerState<FriendListScreen> {
                                 targetFriend: friend,
                               ),
                             );
-                            MyLogger.log("modifyProfile: $friend");
                           case FriendControl.deleteItself:
                             viewModel.deleteFriend(friend.id);
                           case FriendControl.chatMulti:
-                            MyLogger.log("chatMulti: $friend");
                         }
-                      },
+                      }
                     ),
                   );
                 },

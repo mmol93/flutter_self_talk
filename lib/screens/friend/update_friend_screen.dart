@@ -22,7 +22,7 @@ class _UpdateFriendScreenState extends State<UpdateFriendScreen> {
   final _nameController = TextEditingController();
   final _messageController = TextEditingController();
   var _myProfileCheck = false; // '내 프로필'로 설정했는지
-  var _myProfile = 0; // '내 프로필' 설정 유무를 Sqlite에 저장하기 위한 변수
+  var _isMyProfile = 0; // '내 프로필' 설정 유무를 Sqlite에 저장하기 위한 변수
 
   void _pickImage() async {
     final pickedImage = await ImagePicker().pickImage(
@@ -55,7 +55,7 @@ class _UpdateFriendScreenState extends State<UpdateFriendScreen> {
             name: _nameController.text,
             message: _messageController.text,
             profileImgPath: _targetFriend!.profileImgPath,
-            me: _myProfile,
+            me: _isMyProfile,
           ),
         );
       } else {
@@ -65,7 +65,7 @@ class _UpdateFriendScreenState extends State<UpdateFriendScreen> {
             name: _nameController.text,
             message: _messageController.text,
             profileImgPath: Strings.defaultProfileImgPath,
-            me: _myProfile,
+            me: _isMyProfile,
           ),
         );
       }
@@ -79,10 +79,10 @@ class _UpdateFriendScreenState extends State<UpdateFriendScreen> {
     setState(() {
       if (isChecked == true) {
         _myProfileCheck = true;
-        _myProfile = 1;
+        _isMyProfile = 1;
       } else {
         _myProfileCheck = false;
-        _myProfile = 0;
+        _isMyProfile = 0;
       }
     });
   }
@@ -96,10 +96,12 @@ class _UpdateFriendScreenState extends State<UpdateFriendScreen> {
   @override
   Widget build(BuildContext context) {
     if (_targetFriend == null) {
+      // 클릭한 친구 데이터로 값들을 초기화
       _targetFriend = widget.targetFriend;
       _nameController.text = _targetFriend!.name;
       _messageController.text = _targetFriend!.message;
       _myProfileCheck = _targetFriend!.me == 1;
+      _isMyProfile = _targetFriend!.me;
     }
     const imageSize = 68.0;
     const buttonSize = 120.0;
