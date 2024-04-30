@@ -20,6 +20,7 @@ class FriendItem extends StatelessWidget {
           content: SingleChildScrollView(
             child: ListBody(
               children: [
+                // TODO: '내 프로필'의 경우에는 "프로필 수정하기", "삭제하기" 이렇게 두 개의 항목만 보이게 하고 동작하게 해야함
                 TextButton(
                   style: const ButtonStyle(alignment: Alignment.centerLeft),
                   onPressed: () {

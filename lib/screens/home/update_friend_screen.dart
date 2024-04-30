@@ -5,24 +5,24 @@ import 'package:self_talk/assets/strings.dart';
 import 'package:self_talk/colors/default_color.dart';
 import 'package:self_talk/models/friend.dart';
 import 'package:self_talk/widgets/common/utils.dart';
-import 'package:uuid/uuid.dart';
 
-class AddFriendScreen extends StatefulWidget {
-  const AddFriendScreen({super.key, required this.createFriend});
+class UpdateFriendScreen extends StatefulWidget {
+  const UpdateFriendScreen(
+      {super.key, required this.updateFriend, required this.targetFriend});
 
-  final void Function(Friend friend) createFriend;
+  final void Function(Friend friend) updateFriend;
+  final Friend targetFriend;
 
   @override
-  State<AddFriendScreen> createState() => _AddFriendScreenState();
+  State<UpdateFriendScreen> createState() => _UpdateFriendScreenState();
 }
 
-class _AddFriendScreenState extends State<AddFriendScreen> {
-  Friend? _createdFriend;
+class _UpdateFriendScreenState extends State<UpdateFriendScreen> {
+  Friend? _targetFriend;
   final _nameController = TextEditingController();
   final _messageController = TextEditingController();
-  final _uuid = const Uuid().v4();
   var _myProfileCheck = false; // '내 프로필'로 설정했는지
-  var _myProfileBool = 0; // '내 프로필' 설정 유무를 Sqlite에 저장하기 위한 변수
+  var _myProfile = 0; // '내 프로필' 설정 유무를 Sqlite에 저장하기 위한 변수
 
   void _pickImage() async {
     final pickedImage = await ImagePicker().pickImage(
@@ -36,8 +36,8 @@ class _AddFriendScreenState extends State<AddFriendScreen> {
     }
 
     setState(() {
-      _createdFriend = Friend(
-        id: _uuid,
+      _targetFriend = Friend(
+        id: _targetFriend!.id,
         name: _nameController.text,
         message: _messageController.text,
         profileImgPath: pickedImage.path,
@@ -45,26 +45,28 @@ class _AddFriendScreenState extends State<AddFriendScreen> {
     });
   }
 
-  void _makeProfile() {
+  void _updateProfile() {
     if (_nameController.text.trim().isNotEmpty) {
-      if (_createdFriend?.profileImgPath.isNotEmpty == true) {
+      if (_targetFriend?.profileImgPath.isNotEmpty == true) {
         // 그림 파일을 셋팅한 경우
-        widget.createFriend(
+        widget.updateFriend(
           Friend(
-              id: _uuid,
-              name: _nameController.text,
-              message: _messageController.text,
-              profileImgPath: _createdFriend!.profileImgPath,
-              me: _myProfileBool),
+            id: _targetFriend!.id,
+            name: _nameController.text,
+            message: _messageController.text,
+            profileImgPath: _targetFriend!.profileImgPath,
+            me: _myProfile,
+          ),
         );
       } else {
-        widget.createFriend(
+        widget.updateFriend(
           Friend(
-              id: _uuid,
-              name: _nameController.text,
-              message: _messageController.text,
-              profileImgPath: Strings.defaultProfileImgPath,
-              me: _myProfileBool),
+            id: _targetFriend!.id,
+            name: _nameController.text,
+            message: _messageController.text,
+            profileImgPath: Strings.defaultProfileImgPath,
+            me: _myProfile,
+          ),
         );
       }
       Navigator.pop(context);
@@ -77,10 +79,10 @@ class _AddFriendScreenState extends State<AddFriendScreen> {
     setState(() {
       if (isChecked == true) {
         _myProfileCheck = true;
-        _myProfileBool = 1;
+        _myProfile = 1;
       } else {
         _myProfileCheck = false;
-        _myProfileBool = 0;
+        _myProfile = 0;
       }
     });
   }
@@ -93,6 +95,12 @@ class _AddFriendScreenState extends State<AddFriendScreen> {
 
   @override
   Widget build(BuildContext context) {
+    if (_targetFriend == null) {
+      _targetFriend = widget.targetFriend;
+      _nameController.text = _targetFriend!.name;
+      _messageController.text = _targetFriend!.message;
+      _myProfileCheck = _targetFriend!.me == 1;
+    }
     const imageSize = 68.0;
     const buttonSize = 120.0;
     return Scaffold(
@@ -113,7 +121,7 @@ class _AddFriendScreenState extends State<AddFriendScreen> {
                       textAlign: TextAlign.start,
                     ),
                   ),
-                  if (_createdFriend?.profileImgPath == null)
+                  if (_targetFriend?.profileImgPath == null)
                     IconButton(
                       onPressed: () {
                         _pickImage();
@@ -141,10 +149,32 @@ class _AddFriendScreenState extends State<AddFriendScreen> {
                         _pickImage();
                       },
                       child: Image.file(
-                        File(_createdFriend!.profileImgPath),
+                        File(_targetFriend!.profileImgPath),
                         fit: BoxFit.cover,
                         width: buttonSize,
                         height: buttonSize,
+                        errorBuilder: (BuildContext context, Object exception,
+                            StackTrace? stackTrace) {
+                          return IconButton(
+                            onPressed: null,
+                            icon: const Icon(
+                              Icons.person,
+                              size: imageSize,
+                            ),
+                            style: ButtonStyle(
+                              shape: MaterialStateProperty.all(
+                                const RoundedRectangleBorder(
+                                    borderRadius: BorderRadius.zero),
+                              ),
+                              minimumSize: MaterialStateProperty.all(
+                                  const Size(buttonSize, buttonSize)),
+                              maximumSize: MaterialStateProperty.all(
+                                  const Size(buttonSize, buttonSize)),
+                              backgroundColor: MaterialStateProperty.all(
+                                  defaultProfileBackground),
+                            ),
+                          );
+                        },
                       ),
                     ),
                   Container(
@@ -181,7 +211,7 @@ class _AddFriendScreenState extends State<AddFriendScreen> {
                     margin: const EdgeInsets.all(15),
                     child: FilledButton(
                       onPressed: () {
-                        _makeProfile();
+                        _updateProfile();
                       },
                       style: FilledButton.styleFrom(
                           shape: const RoundedRectangleBorder(
@@ -189,7 +219,7 @@ class _AddFriendScreenState extends State<AddFriendScreen> {
                           ),
                           backgroundColor: defaultYellow),
                       child: const Text(
-                        "추가하기",
+                        "수정하기",
                         style: TextStyle(color: Colors.black),
                       ),
                     ),

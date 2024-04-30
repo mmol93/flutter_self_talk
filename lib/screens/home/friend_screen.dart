@@ -4,6 +4,7 @@ import 'package:self_talk/models/friend.dart';
 import 'package:self_talk/models/friend_control.dart';
 import 'package:self_talk/navigator/slide_navigator.dart';
 import 'package:self_talk/screens/home/add_friend_screen.dart';
+import 'package:self_talk/screens/home/update_friend_screen.dart';
 import 'package:self_talk/utils/MyLogger.dart';
 import 'package:self_talk/viewModel/friend_viewModel.dart';
 import '../../widgets/home/item_friend.dart';
@@ -47,13 +48,16 @@ class _FriendScreen extends ConsumerState<FriendScreen> {
               padding: const EdgeInsets.symmetric(vertical: 8, horizontal: 4),
               child: FriendItem(
                 friend: Friend(
-                    // 내 프로필은 반드시 1개만 존재하기 때문에
-                    id: myProfile.first.id,
-                    name: myProfile.first.name,
-                    message: myProfile.first.message,
-                    profileImgPath: myProfile.first.profileImgPath,
-                    me: myProfile.first.me),
-                clickedFriendControl: (clickedFriend) {},
+                  // 내 프로필은 반드시 1개만 존재하기 때문에
+                  id: myProfile.first.id,
+                  name: myProfile.first.name,
+                  message: myProfile.first.message,
+                  profileImgPath: myProfile.first.profileImgPath,
+                  me: myProfile.first.me,
+                ),
+                clickedFriendControl: (clickedFriend) {
+                  // TODO: '내 프로필'에도 컨트롤 기능 넣어줘야함
+                },
               ),
             ),
           Container(
@@ -94,6 +98,19 @@ class _FriendScreen extends ConsumerState<FriendScreen> {
                           case FriendControl.chat1on1:
                             MyLogger.log("chat1on1: $friend");
                           case FriendControl.modifyProfile:
+                            slideNavigateStateful(
+                              context,
+                              UpdateFriendScreen(
+                                updateFriend: (updatedFriend) {
+                                  if (updatedFriend.me == 1) {
+                                    viewModel.updateAsMe(updatedFriend);
+                                  } else {
+                                    viewModel.updateFriend(updatedFriend);
+                                  }
+                                },
+                                targetFriend: friend,
+                              ),
+                            );
                             MyLogger.log("modifyProfile: $friend");
                           case FriendControl.deleteItself:
                             viewModel.deleteFriend(friend.id);
@@ -123,15 +140,18 @@ class _FriendScreen extends ConsumerState<FriendScreen> {
         child: FloatingActionButton(
           child: const Icon(Icons.person),
           onPressed: () {
-            slideNavigateStateful(context, AddFriendScreen(
-              friend: (createdFriend) {
-                if (createdFriend.me == 1) {
-                  // 내 프로필로 설정했다면 기존 '내 프로필'을 친구로 바꿔야한다.
-                  viewModel.changeMeToFriend();
-                }
-                viewModel.insertFriend(createdFriend);
-              },
-            ));
+            slideNavigateStateful(
+              context,
+              AddFriendScreen(
+                createFriend: (createdFriend) {
+                  if (createdFriend.me == 1) {
+                    // 내 프로필로 설정했다면 기존 '내 프로필'을 친구로 바꿔야한다.
+                    viewModel.changeMeToFriend();
+                  }
+                  viewModel.insertFriend(createdFriend);
+                },
+              ),
+            );
           },
         ),
       ),
