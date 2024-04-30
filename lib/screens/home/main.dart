@@ -8,7 +8,7 @@ import 'package:smooth_page_indicator/smooth_page_indicator.dart';
 
 import '../../assets/strings.dart';
 import '../../colors/default_color.dart';
-import '../../widgets/common/common_dialog.dart';
+import '../../widgets/dialog/common_dialog.dart';
 
 const pageList = ["친구", "채팅", "설정"];
 

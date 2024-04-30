@@ -50,6 +50,7 @@ class _FriendScreen extends ConsumerState<FriendScreen> {
                   name: myProfile.first.name,
                   message: myProfile.first.message,
                   profileImgPath: myProfile.first.profileImgPath,
+                  me: myProfile.first.me
                 ),
               ),
             ),
@@ -82,6 +83,7 @@ class _FriendScreen extends ConsumerState<FriendScreen> {
                         name: friends[index].name,
                         message: friends[index].message,
                         profileImgPath: friends[index].profileImgPath,
+                        me: friends[index].me
                       ),
                     ),
                   );
