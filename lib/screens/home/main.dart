@@ -2,8 +2,8 @@ import 'package:flutter/material.dart';
 import 'package:flutter_riverpod/flutter_riverpod.dart';
 import 'package:google_fonts/google_fonts.dart';
 
-import 'package:self_talk/screens/chat/chat_list_screen.dart';
-import 'package:self_talk/screens/home/friend_screen.dart';
+import 'package:self_talk/screens/home/chat_list_screen.dart';
+import 'package:self_talk/screens/home/friend_list_screen.dart';
 import 'package:smooth_page_indicator/smooth_page_indicator.dart';
 
 import '../../assets/strings.dart';
@@ -125,7 +125,7 @@ class _HomePageState extends State<HomePage> {
               controller: _pageController,
               children: const [
                 Expanded(
-                  child: FriendScreen(),
+                  child: FriendListScreen(),
                 ),
                 Expanded(
                   child: ChatListScreen(),

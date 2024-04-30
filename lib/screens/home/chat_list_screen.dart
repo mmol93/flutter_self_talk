@@ -4,10 +4,10 @@ class ChatListScreen extends StatefulWidget {
   const ChatListScreen({super.key});
 
   @override
-  State<ChatListScreen> createState() => _FriendScreenState();
+  State<ChatListScreen> createState() => _ChatListScreen();
 }
 
-class _FriendScreenState extends State<ChatListScreen> {
+class _ChatListScreen extends State<ChatListScreen> {
   @override
   Widget build(BuildContext context) {
     return Scaffold(

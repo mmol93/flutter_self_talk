@@ -3,20 +3,20 @@ import 'package:flutter_riverpod/flutter_riverpod.dart';
 import 'package:self_talk/models/friend.dart';
 import 'package:self_talk/models/friend_control.dart';
 import 'package:self_talk/navigator/slide_navigator.dart';
-import 'package:self_talk/screens/home/add_friend_screen.dart';
-import 'package:self_talk/screens/home/update_friend_screen.dart';
+import 'package:self_talk/screens/friend/add_friend_screen.dart';
+import 'package:self_talk/screens/friend/update_friend_screen.dart';
 import 'package:self_talk/utils/MyLogger.dart';
 import 'package:self_talk/viewModel/friend_viewModel.dart';
 import '../../widgets/home/item_friend.dart';
 
-class FriendScreen extends ConsumerStatefulWidget {
-  const FriendScreen({super.key});
+class FriendListScreen extends ConsumerStatefulWidget {
+  const FriendListScreen({super.key});
 
   @override
-  ConsumerState<ConsumerStatefulWidget> createState() => _FriendScreen();
+  ConsumerState<ConsumerStatefulWidget> createState() => _FriendListScreen();
 }
 
-class _FriendScreen extends ConsumerState<FriendScreen> {
+class _FriendListScreen extends ConsumerState<FriendListScreen> {
   @override
   Widget build(BuildContext context) {
     final viewModel = ref.watch(friendViewModelProvider.notifier);
