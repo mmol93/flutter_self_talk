@@ -42,7 +42,7 @@ class _FriendScreen extends ConsumerState<FriendScreen> {
           ),
           if (myProfile.isNotEmpty)
             Container(
-              padding: const EdgeInsets.symmetric(vertical: 6, horizontal: 4),
+              padding: const EdgeInsets.symmetric(vertical: 8, horizontal: 4),
               child: FriendItem(
                 friend: Friend(
                   // 내 프로필은 반드시 1개만 존재하기 때문에
