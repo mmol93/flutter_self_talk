@@ -36,6 +36,37 @@ dependencies:
   # Use with the CupertinoIcons class for iOS style icons.
   cupertino_icons: ^1.0.2
 
+  # google_font - https://pub.dev/packages/google_fonts/install
+  google_fonts: ^6.2.1
+
+  # smooth_page_indicator - https://pub.dev/packages/smooth_page_indicator/install
+  smooth_page_indicator: ^1.1.0
+
+  # flutter_svg - https://pub.dev/packages/flutter_svg/install
+  flutter_svg: ^2.0.10+1
+
+  # sqflite - https://pub.dev/packages/sqflite/install
+  sqflite: ^2.3.3
+
+  # uuid - https://pub.dev/packages/uuid/install
+  uuid: ^4.4.0
+
+  # path - https://pub.dev/packages/path/install
+  path: ^1.9.0
+
+  # flutter_riverpod - https://riverpod.dev/docs/introduction/why_riverpod
+  flutter_riverpod: ^2.5.1
+  riverpod_annotation: ^2.3.5
+
+  # logger - https://pub.dev/packages/logger/install
+  logger: ^2.2.0
+
+  # image_picker - https://pub.dev/packages/image_picker/install
+  image_picker: ^1.1.0
+
+  # fluttertoast - https://pub.dev/packages/fluttertoast/install
+  fluttertoast: ^8.2.5
+
 dev_dependencies:
   flutter_test:
     sdk: flutter
@@ -46,6 +77,10 @@ dev_dependencies:
   # package. See that file for information about deactivating specific lint
   # rules and activating additional ones.
   flutter_lints: ^2.0.0
+  riverpod_generator: ^2.4.0
+  build_runner: ^2.4.9
+  custom_lint: ^0.6.4
+  riverpod_lint: ^2.3.10
 
 # For information on the generic Dart part of this file, see the
 # following page: https://dart.dev/tools/pub/pubspec
@@ -57,6 +92,9 @@ flutter:
   # included with your application, so that you can use the icons in
   # the material Icons class.
   uses-material-design: true
+
+  assets:
+    - assets/images/
 
   # To add assets to your application, add an assets section, like this:
   # assets:
