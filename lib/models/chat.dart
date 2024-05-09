@@ -1,26 +1,68 @@
-import 'dart:ffi';
+import 'package:json_annotation/json_annotation.dart';
+import 'package:self_talk/models/friend.dart';
+part 'chat.g.dart';
 
-class Chat {
-  final String title;
-  final List<Message> messageList;
-  Noti? notification;
+@JsonSerializable()
+class ChatList {
+  final List<Chat>? chatList;
 
-  Chat({required this.title, required this.messageList});
+  ChatList({this.chatList});
+
+  factory ChatList.fromJson(Map<String, dynamic> json) => _$ChatListFromJson(json);
+  Map<String, dynamic> toJson() => _$ChatListToJson(this);
 }
 
+@JsonSerializable()
+class Chat {
+  // 채팅 타이틀
+  final String title;
+
+  // 채팅 내용
+  final List<Message> messageList;
+
+  // 채팅하고 있는 멤버
+  final List<Friend> chatMember;
+
+  // 채팅에 있는 공지 사항 내용
+  Noti? notification;
+
+  // 해당 채팅의 제일 최근 수정된 날짜 - 메시지만 카운트함
+  @JsonKey(fromJson: _fromJson, toJson: _toJson)
+  DateTime modifiedDate;
+
+  Chat(
+      {required this.title,
+      required this.messageList,
+      required this.chatMember,
+      required this.modifiedDate});
+
+  factory Chat.fromJson(Map<String, dynamic> json) => _$ChatFromJson(json);
+  Map<String, dynamic> toJson() => _$ChatToJson(this);
+
+  static DateTime _fromJson(int millisecondsSinceEpoch) =>
+      DateTime.fromMillisecondsSinceEpoch(millisecondsSinceEpoch);
+
+  static int _toJson(DateTime date) => date.millisecondsSinceEpoch;
+}
+
+@JsonSerializable()
 class Noti {
   final String id;
   final String message;
 
   Noti({required this.id, required this.message});
+
+  factory Noti.fromJson(Map<String, dynamic> json) => _$NotiFromJson(json);
+  Map<String, dynamic> toJson() => _$NotiToJson(this);
 }
 
+@JsonSerializable()
 class Message {
   final String id;
   final DateTime messageTime;
   final String message;
   final MessageType messageType;
-  final Bool isMe;
+  final bool isMe;
 
   Message({
     required this.id,
@@ -29,6 +71,9 @@ class Message {
     required this.messageType,
     required this.isMe,
   });
+
+  factory Message.fromJson(Map<String, dynamic> json) => _$MessageFromJson(json);
+  Map<String, dynamic> toJson() => _$MessageToJson(this);
 }
 
 enum MessageType { message, date, state }
