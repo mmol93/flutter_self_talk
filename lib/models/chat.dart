@@ -27,7 +27,7 @@ class Chat {
   Noti? notification;
 
   // 해당 채팅의 제일 최근 수정된 날짜 - 메시지만 카운트함
-  @JsonKey(fromJson: _fromJson, toJson: _toJson)
+  @JsonKey(fromJson: _fromDateJson, toJson: _toDateJson)
   DateTime modifiedDate;
 
   Chat(
@@ -39,10 +39,10 @@ class Chat {
   factory Chat.fromJson(Map<String, dynamic> json) => _$ChatFromJson(json);
   Map<String, dynamic> toJson() => _$ChatToJson(this);
 
-  static DateTime _fromJson(int millisecondsSinceEpoch) =>
+  static DateTime _fromDateJson(int millisecondsSinceEpoch) =>
       DateTime.fromMillisecondsSinceEpoch(millisecondsSinceEpoch);
 
-  static int _toJson(DateTime date) => date.millisecondsSinceEpoch;
+  static int _toDateJson(DateTime date) => date.millisecondsSinceEpoch;
 }
 
 @JsonSerializable()
