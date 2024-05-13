@@ -8,6 +8,7 @@ final chatViewModelProvider = StateNotifierProvider<ChatViewModel, ChatList?>(
 
 // ChatList 예시
 ChatList dummyChatList = ChatList(
+  chatId: "abcd",
   chatList: [
     Chat(
       title: '친구들과의 채팅',

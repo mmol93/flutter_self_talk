@@ -7,12 +7,14 @@ part of 'chat.dart';
 // **************************************************************************
 
 ChatList _$ChatListFromJson(Map<String, dynamic> json) => ChatList(
+      chatId: json['chatId'] as String,
       chatList: (json['chatList'] as List<dynamic>?)
           ?.map((e) => Chat.fromJson(e as Map<String, dynamic>))
           .toList(),
     );
 
 Map<String, dynamic> _$ChatListToJson(ChatList instance) => <String, dynamic>{
+      'chatId': instance.chatId,
       'chatList': instance.chatList,
     };
 

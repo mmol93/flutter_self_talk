@@ -4,9 +4,10 @@ part 'chat.g.dart';
 
 @JsonSerializable()
 class ChatList {
+  final String chatId;
   final List<Chat>? chatList;
 
-  ChatList({this.chatList});
+  ChatList({required this.chatId, this.chatList});
 
   factory ChatList.fromJson(Map<String, dynamic> json) => _$ChatListFromJson(json);
   Map<String, dynamic> toJson() => _$ChatListToJson(this);
