@@ -6,15 +6,17 @@ part of 'chat.dart';
 // JsonSerializableGenerator
 // **************************************************************************
 
-ChatList _$ChatListFromJson(Map<String, dynamic> json) => ChatList(
-      chatId: json['chatId'] as String,
-      chatList: (json['chatList'] as List<dynamic>?)
-          ?.map((e) => Chat.fromJson(e as Map<String, dynamic>))
-          .toList(),
+ChatRoom _$ChatRoomFromJson(Map<String, dynamic> json) => ChatRoom(
+      chatList: (json['chatList'] as Map<String, dynamic>?)?.map(
+        (k, e) => MapEntry(
+            k,
+            (e as List<dynamic>)
+                .map((e) => Chat.fromJson(e as Map<String, dynamic>))
+                .toList()),
+      ),
     );
 
-Map<String, dynamic> _$ChatListToJson(ChatList instance) => <String, dynamic>{
-      'chatId': instance.chatId,
+Map<String, dynamic> _$ChatRoomToJson(ChatRoom instance) => <String, dynamic>{
       'chatList': instance.chatList,
     };
 

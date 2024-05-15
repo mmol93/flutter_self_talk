@@ -3,14 +3,13 @@ import 'package:self_talk/models/friend.dart';
 part 'chat.g.dart';
 
 @JsonSerializable()
-class ChatList {
-  final String chatId;
-  final List<Chat>? chatList;
+class ChatRoom {
+  final Map<String,List<Chat>>? chatList;
 
-  ChatList({required this.chatId, this.chatList});
+  ChatRoom({this.chatList});
 
-  factory ChatList.fromJson(Map<String, dynamic> json) => _$ChatListFromJson(json);
-  Map<String, dynamic> toJson() => _$ChatListToJson(this);
+  factory ChatRoom.fromJson(Map<String, dynamic> json) => _$ChatRoomFromJson(json);
+  Map<String, dynamic> toJson() => _$ChatRoomToJson(this);
 }
 
 @JsonSerializable()

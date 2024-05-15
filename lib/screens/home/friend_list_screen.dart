@@ -3,9 +3,12 @@ import 'package:flutter_riverpod/flutter_riverpod.dart';
 import 'package:self_talk/models/friend.dart';
 import 'package:self_talk/models/friend_control.dart';
 import 'package:self_talk/navigator/slide_navigator.dart';
+import 'package:self_talk/screens/chat/chat_screen.dart';
 import 'package:self_talk/screens/friend/add_friend_screen.dart';
 import 'package:self_talk/screens/friend/update_friend_screen.dart';
+import 'package:self_talk/viewModel/chat_viewModel.dart';
 import 'package:self_talk/viewModel/friend_viewModel.dart';
+import 'package:uuid/uuid.dart';
 import '../../widgets/home/item_friend.dart';
 
 class FriendListScreen extends ConsumerStatefulWidget {
@@ -18,7 +21,8 @@ class FriendListScreen extends ConsumerStatefulWidget {
 class _FriendListScreen extends ConsumerState<FriendListScreen> {
   @override
   Widget build(BuildContext context) {
-    final viewModel = ref.watch(friendViewModelProvider.notifier);
+    final friendViewModel = ref.watch(friendViewModelProvider.notifier);
+    final chatViewModel = ref.watch(chatViewModelProvider.notifier);
     final friends = ref
         .watch(friendViewModelProvider)
         .where((friend) => friend.me == 0)
@@ -62,13 +66,13 @@ class _FriendListScreen extends ConsumerState<FriendListScreen> {
                         context,
                         UpdateFriendScreen(
                           updateFriend: (updatedFriend) {
-                            viewModel.updateFriend(updatedFriend);
+                            friendViewModel.updateFriend(updatedFriend);
                           },
                           targetFriend: myProfile.first,
                         ),
                       );
                     case FriendControl.deleteItself:
-                      viewModel.deleteFriend(myProfile.first.id);
+                      friendViewModel.deleteFriend(myProfile.first.id);
                     default:
                   }
                 },
@@ -109,24 +113,27 @@ class _FriendListScreen extends ConsumerState<FriendListScreen> {
                       clickedFriendControl: (clickedFriendControl) {
                         switch (clickedFriendControl) {
                           case FriendControl.setAsMe:
-                            viewModel.updateAsMe(friend);
+                            friendViewModel.updateAsMe(friend);
                           case FriendControl.chat1on1:
+                            final uuid = const Uuid().v4();
+                            chatViewModel.createChatList();
+                            slideNavigateStateful(context, ChatScreen());
                           case FriendControl.modifyProfile:
                             slideNavigateStateful(
                               context,
                               UpdateFriendScreen(
                                 updateFriend: (updatedFriend) {
                                   if (updatedFriend.me == 1) {
-                                    viewModel.updateAsMe(updatedFriend);
+                                    friendViewModel.updateAsMe(updatedFriend);
                                   } else {
-                                    viewModel.updateFriend(updatedFriend);
+                                    friendViewModel.updateFriend(updatedFriend);
                                   }
                                 },
                                 targetFriend: friend,
                               ),
                             );
                           case FriendControl.deleteItself:
-                            viewModel.deleteFriend(friend.id);
+                            friendViewModel.deleteFriend(friend.id);
                           case FriendControl.chatMulti:
                         }
                       }
@@ -158,9 +165,9 @@ class _FriendListScreen extends ConsumerState<FriendListScreen> {
                 createFriend: (createdFriend) {
                   if (createdFriend.me == 1) {
                     // 내 프로필로 설정했다면 기존 '내 프로필'을 친구로 바꿔야한다.
-                    viewModel.changeMeToFriend();
+                    friendViewModel.changeMeToFriend();
                   }
-                  viewModel.insertFriend(createdFriend);
+                  friendViewModel.insertFriend(createdFriend);
                 },
               ),
             );
