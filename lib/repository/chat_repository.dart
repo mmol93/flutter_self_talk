@@ -9,6 +9,16 @@ class ChatRepository {
     await prefs.setString('chatList', chatListJson);
   }
 
+  Future<void> updateChat(String chatId, int messageIndex, Message message) async {
+    final prefs = await SharedPreferences.getInstance();
+    final chatListJson = prefs.getString('chatList');
+    if (chatListJson != null) {
+      final chatData = ChatRoom.fromJson(jsonDecode(chatListJson));
+      chatData.chatList![chatId]!.messageList[messageIndex] = message;
+      await updateChatList(chatData);
+    }
+  }
+
   Future<ChatRoom?> readChatList() async {
     final prefs = await SharedPreferences.getInstance();
     final chatListJson = prefs.getString('chatList');
@@ -19,9 +29,9 @@ class ChatRepository {
     return null;
   }
 
-  Future<void> updateChatList(ChatRoom chatList) async {
+  Future<void> updateChatList(ChatRoom chatRoom) async {
     final prefs = await SharedPreferences.getInstance();
-    final chatListJson = jsonEncode(chatList.toJson());
+    final chatListJson = jsonEncode(chatRoom.toJson());
     await prefs.setString('chatList', chatListJson);
   }
 

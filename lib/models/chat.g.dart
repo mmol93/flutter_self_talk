@@ -8,11 +8,7 @@ part of 'chat.dart';
 
 ChatRoom _$ChatRoomFromJson(Map<String, dynamic> json) => ChatRoom(
       chatList: (json['chatList'] as Map<String, dynamic>?)?.map(
-        (k, e) => MapEntry(
-            k,
-            (e as List<dynamic>)
-                .map((e) => Chat.fromJson(e as Map<String, dynamic>))
-                .toList()),
+        (k, e) => MapEntry(k, Chat.fromJson(e as Map<String, dynamic>)),
       ),
     );
 

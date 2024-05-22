@@ -4,7 +4,7 @@ part 'chat.g.dart';
 
 @JsonSerializable()
 class ChatRoom {
-  final Map<String,List<Chat>>? chatList;
+  final Map<String,Chat>? chatList;
 
   ChatRoom({this.chatList});
 
