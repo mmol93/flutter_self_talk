@@ -1,7 +1,7 @@
 import 'package:flutter/material.dart';
 import 'package:flutter_riverpod/flutter_riverpod.dart';
 import 'package:self_talk/viewModel/chat_viewModel.dart';
-import 'package:self_talk/widgets/home/item_chat.dart';
+import 'package:self_talk/widgets/home/item_chat_room_list.dart';
 
 class ChatListScreen extends ConsumerStatefulWidget {
   const ChatListScreen({super.key});
@@ -19,7 +19,7 @@ class _ChatListScreen extends ConsumerState<ChatListScreen> {
       body: Expanded(
         child: Column(
           children: [
-            if (chatList != null) ChatItem(chatRoom: chatList,) else Text("Not List"),
+            if (chatList != null) ChatRoomListItem(chatRoom: chatList,) else Text("Not List"),
           ],
         ),
       ),
