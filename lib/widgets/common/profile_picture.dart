@@ -5,16 +5,10 @@ import 'package:self_talk/assets/strings.dart';
 import 'package:self_talk/utils/Constants.dart';
 
 class ProfilePicture extends StatelessWidget {
-  const ProfilePicture({
-    this.pictureHeight = profileImgHeight,
-    this.pictureWidth = profileImgWidth,
-    super.key,
-    this.picturePath = Strings.defaultProfileImgPath,
-  });
+  const ProfilePicture(
+      {super.key, this.picturePath = Strings.defaultProfileImgPath});
 
   final String picturePath;
-  final double pictureWidth;
-  final double pictureHeight;
 
   @override
   Widget build(BuildContext context) {
