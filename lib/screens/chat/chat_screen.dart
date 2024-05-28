@@ -23,11 +23,11 @@ class _ChatScreenState extends ConsumerState<ChatScreen> {
 
     return Scaffold(
       appBar: AppBar(
-        title: Text("$chatId"),
+        title: Text(chatData!.chatList!["abcd1"]!.title),
       ),
       body: Column(
         children: [
-          Text(chatData!.chatList!["abcd1"]!.messageList[0].message),
+          Text(chatData.chatList!["abcd1"]!.messageList[0].message),
           TextButton(
             onPressed: () {
               viewModel.updateMessage(
