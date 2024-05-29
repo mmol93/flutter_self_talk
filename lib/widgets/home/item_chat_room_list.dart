@@ -4,12 +4,14 @@ import 'package:self_talk/models/chat.dart';
 import 'package:self_talk/widgets/home/item_chat_room_picture.dart';
 
 class ChatRoomListItem extends StatelessWidget {
-  const ChatRoomListItem({super.key, required this.chatRoom});
+  const ChatRoomListItem({super.key, required this.chat});
 
-  final ChatRoom chatRoom;
+  final Chat chat;
 
   @override
   Widget build(BuildContext context) {
+    final chatMembers = chat.chatMember;
+
     return Container(
       padding: const EdgeInsets.symmetric(vertical: 10, horizontal: 10),
       child: Row(
@@ -21,30 +23,31 @@ class ChatRoomListItem extends StatelessWidget {
             child: Container(
               alignment: Alignment.centerLeft,
               margin: const EdgeInsets.fromLTRB(10, 0, 10, 0),
-              child: const Column(
+              child: Column(
                 crossAxisAlignment: CrossAxisAlignment.start,
                 children: [
                   Row(
                     children: [
                       Text(
-                        "sdafsadf",
+                        chat.title, // 단톡방 제목
                         style: TextStyle(fontSize: 16),
                       ),
-                      SizedBox(width: 5),
+                      const SizedBox(width: 5),
                       Text(
-                        "34",
-                        style: TextStyle(color: Colors.grey),
+                        chatMembers.length.toString(), // 단톡방 사람 수
+                        style: const TextStyle(color: Colors.grey),
                       ),
-                      SizedBox(width: 5),
-                      Icon(
-                        size: 14,
-                        Icons.notifications_off,
-                        color: Colors.grey,
-                      ),
+                      const SizedBox(width: 5),
+                      if (!chat.alarmOnOff)
+                        const Icon(
+                          size: 14,
+                          Icons.notifications_off,
+                          color: Colors.grey,
+                        ),
                     ],
                   ),
                   Text(
-                    "asdfasf",
+                    chat.lastMessage ?? "", // 최근 메시지
                     style: TextStyle(color: Colors.grey),
                   )
                 ],
@@ -57,8 +60,8 @@ class ChatRoomListItem extends StatelessWidget {
             width: 90,
             height: 44,
             child: Text(
-              "2023-04-32",
-              style: TextStyle(fontSize: 12, color: Colors.grey),
+              chat.getModifiedDateToString(),
+              style: const TextStyle(fontSize: 12, color: Colors.grey),
             ),
           )
         ],

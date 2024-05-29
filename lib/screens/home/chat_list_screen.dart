@@ -14,15 +14,16 @@ class _ChatListScreen extends ConsumerState<ChatListScreen> {
   @override
   Widget build(BuildContext context) {
     final viewModel = ref.watch(chatViewModelProvider.notifier);
-    final chatList = ref.watch(chatViewModelProvider);
+    final chatData = ref.watch(chatViewModelProvider);
     return Scaffold(
       body: Expanded(
-        child: Column(
-          children: [
-            if (chatList != null) ChatRoomListItem(chatRoom: chatList,) else Text("Not List"),
-          ],
-        ),
-      ),
+          child: chatData != null
+              ? Column(
+                  children: chatData.chatList!.entries
+                      .map((chatInfo) => ChatRoomListItem(chat: chatInfo.value))
+                      .toList(),
+                )
+              : Text("생성된 채팅방이 없습니다.")),
       floatingActionButton: Container(
         margin: const EdgeInsets.only(bottom: 50, right: 35),
         child: FloatingActionButton(

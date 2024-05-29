@@ -9,6 +9,7 @@ final chatViewModelProvider = StateNotifierProvider<ChatViewModel, ChatRoom?>(
 // ChatList 예시
 ChatRoom dummyChatList = ChatRoom(chatList: {
   "abcd1": Chat(
+    lastMessage: "마지막 메시지",
     title: '친구들과의 채팅1',
     messageList: [
       Message(
@@ -52,6 +53,8 @@ ChatRoom dummyChatList = ChatRoom(chatList: {
     modifiedDate: DateTime.now().add(const Duration(minutes: 1)),
   ),
   "abcd2": Chat(
+    lastMessage: "마지막 메시지",
+    alarmOnOff: false,
     title: '친구들과의 채팅2',
     messageList: [
       Message(

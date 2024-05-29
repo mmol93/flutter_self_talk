@@ -17,6 +17,8 @@ Map<String, dynamic> _$ChatRoomToJson(ChatRoom instance) => <String, dynamic>{
     };
 
 Chat _$ChatFromJson(Map<String, dynamic> json) => Chat(
+      lastMessage: json['lastMessage'] as String?,
+      alarmOnOff: json['alarmOnOff'] as bool? ?? true,
       title: json['title'] as String,
       messageList: (json['messageList'] as List<dynamic>)
           .map((e) => Message.fromJson(e as Map<String, dynamic>))
@@ -34,7 +36,9 @@ Map<String, dynamic> _$ChatToJson(Chat instance) => <String, dynamic>{
       'messageList': instance.messageList,
       'chatMember': instance.chatMember,
       'notification': instance.notification,
+      'lastMessage': instance.lastMessage,
       'modifiedDate': Chat._toDateJson(instance.modifiedDate),
+      'alarmOnOff': instance.alarmOnOff,
     };
 
 Noti _$NotiFromJson(Map<String, dynamic> json) => Noti(
