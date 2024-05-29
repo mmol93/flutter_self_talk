@@ -1,6 +1,6 @@
-import 'package:flutter/cupertino.dart';
 import 'package:flutter/material.dart';
 import 'package:self_talk/models/chat.dart';
+import 'package:self_talk/widgets/common/profile_picture.dart';
 import 'package:self_talk/widgets/home/item_chat_room_picture.dart';
 
 class ChatRoomListItem extends StatelessWidget {
@@ -17,7 +17,10 @@ class ChatRoomListItem extends StatelessWidget {
       child: Row(
         children: [
           // 단톡방 사진
-          MultiGroupPeople(),
+          if (chatMembers.length >= 5) MultiGroupPeople()
+          else if (chatMembers.length == 4) FourGroupPeople()
+          else if (chatMembers.length == 3) ThreePeoplePicture()
+          else ProfilePicture(),
           // 단톡방 정보
           Expanded(
             child: Container(

@@ -55,9 +55,7 @@ class FourGroupPeople extends StatelessWidget {
               ProfilePicture(),
               ProfilePicture(),
               ProfilePicture(),
-              Container(
-                child: Text("#123"),
-              )
+              Container()
             ],
           ),
         ),
