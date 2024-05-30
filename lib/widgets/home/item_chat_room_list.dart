@@ -17,9 +17,9 @@ class ChatRoomListItem extends StatelessWidget {
       child: Row(
         children: [
           // 단톡방 사진
-          if (chatMembers.length >= 5) MultiGroupPeople()
-          else if (chatMembers.length == 4) FourGroupPeople()
-          else if (chatMembers.length == 3) ThreePeoplePicture()
+          if (chatMembers.length >= 5) MultiChatRoomPicture()
+          else if (chatMembers.length == 4) FourChatRoomPicture()
+          else if (chatMembers.length == 3) ThreeChatRoomPicture()
           else ProfilePicture(),
           // 단톡방 정보
           Expanded(
@@ -33,7 +33,7 @@ class ChatRoomListItem extends StatelessWidget {
                     children: [
                       Text(
                         chat.title, // 단톡방 제목
-                        style: TextStyle(fontSize: 16),
+                        style: const TextStyle(fontSize: 16),
                       ),
                       const SizedBox(width: 5),
                       Text(
@@ -41,7 +41,7 @@ class ChatRoomListItem extends StatelessWidget {
                         style: const TextStyle(color: Colors.grey),
                       ),
                       const SizedBox(width: 5),
-                      if (!chat.alarmOnOff)
+                      if (chat.alarmOnOff == 0)
                         const Icon(
                           size: 14,
                           Icons.notifications_off,
@@ -51,7 +51,7 @@ class ChatRoomListItem extends StatelessWidget {
                   ),
                   Text(
                     chat.lastMessage ?? "", // 최근 메시지
-                    style: TextStyle(color: Colors.grey),
+                    style: const TextStyle(color: Colors.grey),
                   )
                 ],
               ),

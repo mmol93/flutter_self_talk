@@ -3,9 +3,9 @@ import 'package:self_talk/utils/Constants.dart';
 import 'package:self_talk/widgets/common/profile_picture.dart';
 
 
-class ThreePeoplePicture extends StatelessWidget {
+class ThreeChatRoomPicture extends StatelessWidget {
   /// 단톡방에 3명(자신 포함)일 때 사용
-  const ThreePeoplePicture({super.key});
+  const ThreeChatRoomPicture({super.key});
 
   @override
   Widget build(BuildContext context) {
@@ -35,9 +35,9 @@ class ThreePeoplePicture extends StatelessWidget {
   }
 }
 
-class FourGroupPeople extends StatelessWidget {
+class FourChatRoomPicture extends StatelessWidget {
   /// 단톡방에 4명(자신 포함)일 때 사용
-  const FourGroupPeople({super.key});
+  const FourChatRoomPicture({super.key});
 
   @override
   Widget build(BuildContext context) {
@@ -65,9 +65,9 @@ class FourGroupPeople extends StatelessWidget {
 }
 
 
-class MultiGroupPeople extends StatelessWidget {
+class MultiChatRoomPicture extends StatelessWidget {
   /// 단톡방에 5명(자신 포함)이상 일 때 사용
-  const MultiGroupPeople({super.key});
+  const MultiChatRoomPicture({super.key});
 
   @override
   Widget build(BuildContext context) {

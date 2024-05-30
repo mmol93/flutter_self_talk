@@ -54,7 +54,7 @@ ChatRoom dummyChatList = ChatRoom(chatList: {
   ),
   "abcd2": Chat(
     lastMessage: "마지막 메시지",
-    alarmOnOff: false,
+    alarmOnOff: 1,
     title: '친구들과의 채팅2',
     messageList: [
       Message(
@@ -92,7 +92,7 @@ ChatRoom dummyChatList = ChatRoom(chatList: {
   ),
   "abcd3": Chat(
     lastMessage: "마지막 메시지3",
-    alarmOnOff: false,
+    alarmOnOff: 0,
     title: '친구들과의 채팅3',
     messageList: [
       Message(
@@ -144,7 +144,7 @@ ChatRoom dummyChatList = ChatRoom(chatList: {
   ),
   "abcd4": Chat(
     lastMessage: "마지막 메시지3",
-    alarmOnOff: false,
+    alarmOnOff: 0,
     title: '친구들과의 채팅3',
     messageList: [
       Message(
@@ -196,7 +196,7 @@ ChatRoom dummyChatList = ChatRoom(chatList: {
   ),
   "abcd5": Chat(
     lastMessage: "마지막 메시지3",
-    alarmOnOff: false,
+    alarmOnOff: 0,
     title: '친구들과의 채팅3',
     messageList: [
       Message(

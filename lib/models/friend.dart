@@ -8,6 +8,9 @@ class Friend {
   final String name;
   String message;
   String profileImgPath;
+  /// 나 자신인지
+  /// 0: 친구
+  /// 1: 자신
   int me;
 
   Friend({

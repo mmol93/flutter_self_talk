@@ -1,5 +1,6 @@
 import 'package:intl/intl.dart';
 import 'package:json_annotation/json_annotation.dart';
+import 'package:self_talk/assets/strings.dart';
 import 'package:self_talk/models/friend.dart';
 import 'package:self_talk/utils/Typedefs.dart';
 
@@ -39,11 +40,17 @@ class Chat {
   DateTime modifiedDate;
 
   /// 알림 On/Off 아이콘 표시
-  bool alarmOnOff;
+  /// 0: Off
+  /// 1: On
+  int alarmOnOff;
+
+  final String? modifiedChatRoomImg;
 
   Chat({
     this.lastMessage,
-    this.alarmOnOff = true,
+    this.alarmOnOff = 1,
+    this.modifiedChatRoomImg,
+    this.notification,
     required this.title,
     required this.messageList,
     required this.chatMember,
@@ -61,6 +68,16 @@ class Chat {
 
   String getModifiedDateToString() =>
       DateFormat('yyyy-MM-dd').format(modifiedDate);
+
+  /// 해당 단톡방에서 내가 아닌 친구의 사진 경로를 가져온다.
+  /// 그렇기 때문에 항상 같은 친구의 사진을 가져오는게 아님.
+  String getaFriendProfilePath() {
+    try {
+      return chatMember.firstWhere((friend) => friend.me == 0).profileImgPath;
+    } catch(e) {
+      return Strings.defaultProfileImgPath;
+    }
+  }
 }
 
 @JsonSerializable()

@@ -17,9 +17,8 @@ class ProfilePicture extends StatelessWidget {
         SizedBox(
           height: profileImgHeight,
           width: profileImgWidth,
-          // TODO: 나중에 폰 해상도별로 아이콘 크기 맞는지 확인해야됨
           child: ClipPath(
-            clipper: MyClipper(),
+            clipper: ProfileCircleClipper(),
             child: Image.file(
               File(picturePath),
               height: profileImgHeight,
@@ -36,7 +35,7 @@ class ProfilePicture extends StatelessWidget {
   }
 }
 
-class MyClipper extends CustomClipper<Path> {
+class ProfileCircleClipper extends CustomClipper<Path> {
   final double firstLine = 17;
   final double secondLine = 26;
 

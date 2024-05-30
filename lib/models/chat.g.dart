@@ -18,7 +18,11 @@ Map<String, dynamic> _$ChatRoomToJson(ChatRoom instance) => <String, dynamic>{
 
 Chat _$ChatFromJson(Map<String, dynamic> json) => Chat(
       lastMessage: json['lastMessage'] as String?,
-      alarmOnOff: json['alarmOnOff'] as bool? ?? true,
+      alarmOnOff: (json['alarmOnOff'] as num?)?.toInt() ?? 1,
+      modifiedChatRoomImg: json['modifiedChatRoomImg'] as String?,
+      notification: json['notification'] == null
+          ? null
+          : Noti.fromJson(json['notification'] as Map<String, dynamic>),
       title: json['title'] as String,
       messageList: (json['messageList'] as List<dynamic>)
           .map((e) => Message.fromJson(e as Map<String, dynamic>))
@@ -27,9 +31,7 @@ Chat _$ChatFromJson(Map<String, dynamic> json) => Chat(
           .map((e) => Friend.fromJson(e as Map<String, dynamic>))
           .toList(),
       modifiedDate: Chat._fromDateJson((json['modifiedDate'] as num).toInt()),
-    )..notification = json['notification'] == null
-        ? null
-        : Noti.fromJson(json['notification'] as Map<String, dynamic>);
+    );
 
 Map<String, dynamic> _$ChatToJson(Chat instance) => <String, dynamic>{
       'title': instance.title,
@@ -39,6 +41,7 @@ Map<String, dynamic> _$ChatToJson(Chat instance) => <String, dynamic>{
       'lastMessage': instance.lastMessage,
       'modifiedDate': Chat._toDateJson(instance.modifiedDate),
       'alarmOnOff': instance.alarmOnOff,
+      'modifiedChatRoomImg': instance.modifiedChatRoomImg,
     };
 
 Noti _$NotiFromJson(Map<String, dynamic> json) => Noti(
