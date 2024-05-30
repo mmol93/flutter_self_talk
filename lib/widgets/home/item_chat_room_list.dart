@@ -16,11 +16,15 @@ class ChatRoomListItem extends StatelessWidget {
       padding: const EdgeInsets.symmetric(vertical: 10, horizontal: 10),
       child: Row(
         children: [
-          // 단톡방 사진
-          if (chatMembers.length >= 5) MultiChatRoomPicture()
-          else if (chatMembers.length == 4) FourChatRoomPicture()
-          else if (chatMembers.length == 3) ThreeChatRoomPicture()
-          else ProfilePicture(),
+          // 단톡방 사진 셋팅
+          if (chatMembers.length >= 5)
+            MultiChatRoomPicture(chat: chat)
+          else if (chatMembers.length == 4)
+            FourChatRoomPicture(chat: chat)
+          else if (chatMembers.length == 3)
+            ThreeChatRoomPicture(chat: chat)
+          else
+            ProfilePicture(picturePath: chat.getaFriendProfilePath()),
           // 단톡방 정보
           Expanded(
             child: Container(

@@ -143,9 +143,10 @@ ChatRoom dummyChatList = ChatRoom(chatList: {
     modifiedDate: DateTime.now().add(const Duration(minutes: 1)),
   ),
   "abcd4": Chat(
-    lastMessage: "마지막 메시지3",
+    lastMessage: "마지막 메시지4",
     alarmOnOff: 0,
-    title: '친구들과의 채팅3',
+    title: '친구들과의 채팅4',
+    modifiedChatRoomImg: "",
     messageList: [
       Message(
         id: '1',
@@ -197,7 +198,7 @@ ChatRoom dummyChatList = ChatRoom(chatList: {
   "abcd5": Chat(
     lastMessage: "마지막 메시지3",
     alarmOnOff: 0,
-    title: '친구들과의 채팅3',
+    title: '친구들과의 채팅5',
     messageList: [
       Message(
         id: '1',
