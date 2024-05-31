@@ -19,7 +19,7 @@ class _ChatListScreen extends ConsumerState<ChatListScreen> {
       body: Expanded(
           child: chatData != null
               ? Column(
-                  children: chatData.chatList!.entries
+                  children: chatData.chatRoom!.entries
                       .map((chatInfo) => ChatRoomListItem(chat: chatInfo.value))
                       .toList(),
                 )

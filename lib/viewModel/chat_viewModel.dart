@@ -2,12 +2,13 @@ import 'package:flutter_riverpod/flutter_riverpod.dart';
 import 'package:self_talk/models/chat.dart';
 import 'package:self_talk/models/friend.dart';
 import 'package:self_talk/repository/chat_repository.dart';
+import 'package:self_talk/utils/Typedefs.dart';
 
-final chatViewModelProvider = StateNotifierProvider<ChatViewModel, ChatRoom?>(
+final chatViewModelProvider = StateNotifierProvider<ChatViewModel, ChatList?>(
     (ref) => ChatViewModel(ChatRepository()));
 
 // ChatList 예시
-ChatRoom dummyChatList = ChatRoom(chatList: {
+ChatList dummyChatList = ChatList(chatRoom: {
   "abcd1": Chat(
     lastMessage: "마지막 메시지",
     title: '친구들과의 채팅1',
@@ -256,7 +257,7 @@ ChatRoom dummyChatList = ChatRoom(chatList: {
   ),
 });
 
-class ChatViewModel extends StateNotifier<ChatRoom?> {
+class ChatViewModel extends StateNotifier<ChatList?> {
   final ChatRepository _chatRepository;
 
   ChatViewModel(this._chatRepository) : super(null) {
@@ -271,6 +272,10 @@ class ChatViewModel extends StateNotifier<ChatRoom?> {
     _chatRepository
         .createChatList(dummyChatList)
         .then((value) => getChatList());
+  }
+
+  void createChatRoom(Map<ChatRoomUniqueId, Chat> chatRoom) async {
+    _chatRepository.createChatRoom(chatRoom).then((value) => getChatList());
   }
 
   void updateMessage(

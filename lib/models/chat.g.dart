@@ -6,14 +6,14 @@ part of 'chat.dart';
 // JsonSerializableGenerator
 // **************************************************************************
 
-ChatRoom _$ChatRoomFromJson(Map<String, dynamic> json) => ChatRoom(
-      chatList: (json['chatList'] as Map<String, dynamic>?)?.map(
+ChatList _$ChatListFromJson(Map<String, dynamic> json) => ChatList(
+      chatRoom: (json['chatRoom'] as Map<String, dynamic>?)?.map(
         (k, e) => MapEntry(k, Chat.fromJson(e as Map<String, dynamic>)),
       ),
     );
 
-Map<String, dynamic> _$ChatRoomToJson(ChatRoom instance) => <String, dynamic>{
-      'chatList': instance.chatList,
+Map<String, dynamic> _$ChatListToJson(ChatList instance) => <String, dynamic>{
+      'chatRoom': instance.chatRoom,
     };
 
 Chat _$ChatFromJson(Map<String, dynamic> json) => Chat(
@@ -23,9 +23,9 @@ Chat _$ChatFromJson(Map<String, dynamic> json) => Chat(
       notification: json['notification'] == null
           ? null
           : Noti.fromJson(json['notification'] as Map<String, dynamic>),
-      title: json['title'] as String,
-      messageList: (json['messageList'] as List<dynamic>)
-          .map((e) => Message.fromJson(e as Map<String, dynamic>))
+      title: json['title'] as String?,
+      messageList: (json['messageList'] as List<dynamic>?)
+          ?.map((e) => Message.fromJson(e as Map<String, dynamic>))
           .toList(),
       chatMember: (json['chatMember'] as List<dynamic>)
           .map((e) => Friend.fromJson(e as Map<String, dynamic>))

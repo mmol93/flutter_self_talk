@@ -7,24 +7,24 @@ import 'package:self_talk/utils/Typedefs.dart';
 part 'chat.g.dart';
 
 @JsonSerializable()
-class ChatRoom {
-  final Map<ChatRoomUniqueId, Chat>? chatList;
+class ChatList {
+  final Map<ChatRoomUniqueId, Chat>? chatRoom;
 
-  ChatRoom({this.chatList});
+  ChatList({this.chatRoom});
 
-  factory ChatRoom.fromJson(Map<String, dynamic> json) =>
-      _$ChatRoomFromJson(json);
+  factory ChatList.fromJson(Map<String, dynamic> json) =>
+      _$ChatListFromJson(json);
 
-  Map<String, dynamic> toJson() => _$ChatRoomToJson(this);
+  Map<String, dynamic> toJson() => _$ChatListToJson(this);
 }
 
 @JsonSerializable()
 class Chat {
   /// 채팅 타이틀
-  final String title;
+  final String? title;
 
   /// 채팅 내용
-  final List<Message> messageList;
+  final List<Message>? messageList;
 
   /// 채팅하고 있는 멤버
   final List<Friend> chatMember;
@@ -74,9 +74,32 @@ class Chat {
   String getaFriendProfilePath() {
     try {
       return chatMember.firstWhere((friend) => friend.me == 0).profileImgPath;
-    } catch(e) {
+    } catch (e) {
       return Strings.defaultProfileImgPath;
     }
+  }
+
+  Chat createEmptyChat() {
+    String initTitle = "";
+    for (var indexedValue in chatMember.indexed) {
+      if (indexedValue.$2.me == 0) {
+        // 제목에는 자신의 이름을 넣을 필요 없음
+        if (indexedValue.$1 != chatMember.length - 1) {
+          // 마지막 요소가 아닐 때
+          initTitle = "$initTitle${indexedValue.$2.name}, ";
+        } else {
+          // 마지막 요소일 때
+          initTitle = "$initTitle${indexedValue.$2.name}";
+        }
+      }
+    }
+
+    return Chat(
+      title: initTitle,
+      messageList: null,
+      chatMember: chatMember,
+      modifiedDate: DateTime.now()
+    );
   }
 }
 

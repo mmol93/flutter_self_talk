@@ -36,7 +36,7 @@ class ChatRoomListItem extends StatelessWidget {
                   Row(
                     children: [
                       Text(
-                        chat.title, // 단톡방 제목
+                        chat.title!, // 단톡방 제목
                         style: const TextStyle(fontSize: 16),
                       ),
                       const SizedBox(width: 5),
