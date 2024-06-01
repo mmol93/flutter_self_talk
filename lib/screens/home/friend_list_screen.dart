@@ -60,7 +60,7 @@ class _FriendListScreen extends ConsumerState<FriendListScreen> {
                   profileImgPath: myProfile.first.profileImgPath,
                   me: myProfile.first.me,
                 ),
-                clickedFriendControl: (clickedFriend) {
+                clickFriendItem: (clickedFriend) {
                   switch (clickedFriend) {
                     case FriendControl.modifyProfile:
                       slideNavigateStateful(
@@ -111,7 +111,7 @@ class _FriendListScreen extends ConsumerState<FriendListScreen> {
                           profileImgPath: friend.profileImgPath,
                           me: friend.me,
                         ),
-                        clickedFriendControl: (clickedFriendControl) {
+                        clickFriendItem: (clickedFriendControl) {
                           switch (clickedFriendControl) {
                             case FriendControl.setAsMe:
                               friendViewModel.updateAsMe(friend);
@@ -125,6 +125,7 @@ class _FriendListScreen extends ConsumerState<FriendListScreen> {
                                 modifiedDate: DateTime.now(),
                               ).createEmptyChat();
                               chatViewModel.createChatRoom({uuid: initChat});
+                              // TODO: 방 만들고 해당 방으로 진입하게 해야함
 
                             case FriendControl.modifyProfile:
                               slideNavigateStateful(

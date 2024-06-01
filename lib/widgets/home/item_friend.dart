@@ -5,10 +5,10 @@ import '../common/profile_picture.dart';
 
 class FriendItem extends StatelessWidget {
   const FriendItem(
-      {super.key, required this.friend, required this.clickedFriendControl});
+      {super.key, required this.friend, required this.clickFriendItem});
 
   final Friend friend;
-  final void Function(FriendControl) clickedFriendControl;
+  final void Function(FriendControl) clickFriendItem;
 
   Future<FriendControl?> _showFriendDialog(
       BuildContext context, Friend friend) async {
@@ -93,15 +93,15 @@ class FriendItem extends StatelessWidget {
               await _showFriendDialog(context, friend);
           switch (friendControlResult) {
             case FriendControl.setAsMe:
-              clickedFriendControl(FriendControl.setAsMe);
+              clickFriendItem(FriendControl.setAsMe);
             case FriendControl.chat1on1:
-              clickedFriendControl(FriendControl.chat1on1);
+              clickFriendItem(FriendControl.chat1on1);
             case FriendControl.modifyProfile:
-              clickedFriendControl(FriendControl.modifyProfile);
+              clickFriendItem(FriendControl.modifyProfile);
             case FriendControl.deleteItself:
-              clickedFriendControl(FriendControl.deleteItself);
+              clickFriendItem(FriendControl.deleteItself);
             case FriendControl.chatMulti:
-              clickedFriendControl(FriendControl.chatMulti);
+              clickFriendItem(FriendControl.chatMulti);
             case null:
           }
         },

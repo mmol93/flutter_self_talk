@@ -39,7 +39,7 @@ class ChatRoomListItem extends StatelessWidget {
                         chat.title!, // 단톡방 제목
                         style: const TextStyle(fontSize: 16),
                       ),
-                      const SizedBox(width: 5),
+                      const SizedBox(width: 8),
                       Text(
                         chatMembers.length.toString(), // 단톡방 사람 수
                         style: const TextStyle(color: Colors.grey),
