@@ -1,8 +1,8 @@
 import 'dart:io';
 import 'dart:math';
-
 import 'package:flutter/material.dart';
 import 'package:self_talk/assets/strings.dart';
+import 'package:self_talk/utils/Constants.dart';
 
 class ProfilePicture extends StatelessWidget {
   const ProfilePicture(
@@ -12,21 +12,17 @@ class ProfilePicture extends StatelessWidget {
 
   @override
   Widget build(BuildContext context) {
-    const double imgHeight = 44.0;
-    const double imgWidth = 44.0;
-
     return Row(
       children: [
-        Container(
-          height: imgHeight,
-          width: imgWidth,
-          // TODO: 나중에 폰 해상도별로 아이콘 크기 맞는지 확인해야됨
+        SizedBox(
+          height: profileImgHeight,
+          width: profileImgWidth,
           child: ClipPath(
-            clipper: MyClipper(),
+            clipper: ProfileCircleClipper(),
             child: Image.file(
               File(picturePath),
-              height: imgHeight,
-              width: imgWidth,
+              height: profileImgHeight,
+              width: profileImgWidth,
               fit: BoxFit.cover,
               errorBuilder: (context, exception, stackTrace) {
                 return Image.asset(Strings.defaultProfileImgPath);
@@ -39,7 +35,7 @@ class ProfilePicture extends StatelessWidget {
   }
 }
 
-class MyClipper extends CustomClipper<Path> {
+class ProfileCircleClipper extends CustomClipper<Path> {
   final double firstLine = 17;
   final double secondLine = 26;
 
@@ -58,7 +54,7 @@ class MyClipper extends CustomClipper<Path> {
       ..lineTo(size.width * 0.67, 0)
       ..arcTo(
         Rect.fromCenter(
-            center: Offset(secondLine, firstLine+1.4),
+            center: Offset(secondLine, firstLine + 1.4),
             width: firstLine * 2 + 3,
             height: firstLine * 2 + 3),
         1.5 * pi,
@@ -74,7 +70,7 @@ class MyClipper extends CustomClipper<Path> {
           false)
       ..lineTo(size.width * 0.67, size.width)
       ..arcTo(
-        Rect.fromLTRB(0, size.width / 3-1, size.width-15, size.width),
+        Rect.fromLTRB(0, size.width / 3 - 1, size.width - 15, size.width),
         0.5 * pi,
         0.5 * pi,
         false,

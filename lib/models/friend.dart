@@ -1,10 +1,16 @@
+import 'package:json_annotation/json_annotation.dart';
 import 'package:self_talk/assets/strings.dart';
+part 'friend.g.dart';
 
+@JsonSerializable()
 class Friend {
   final String id;
   final String name;
   String message;
   String profileImgPath;
+  /// 나 자신인지
+  /// 0: 친구
+  /// 1: 자신
   int me;
 
   Friend({
@@ -38,4 +44,7 @@ class Friend {
   String toString() {
     return "Friend(id: $id, name: $name, message: $message, profileImgPath: $profileImgPath, me: $me)";
   }
+
+  factory Friend.fromJson(Map<String, dynamic> json) => _$FriendFromJson(json);
+  Map<String, dynamic> toJson() => _$FriendToJson(this);
 }

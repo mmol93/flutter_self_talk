@@ -67,6 +67,18 @@ dependencies:
   # fluttertoast - https://pub.dev/packages/fluttertoast/install
   fluttertoast: ^8.2.5
 
+  # shared_preferences - https://pub.dev/packages/shared_preferences/install
+  shared_preferences: ^2.2.3
+
+  # json_annotation - https://pub.dev/packages/json_annotation/install
+  json_annotation: ^4.9.0
+
+  # build_runner - https://pub.dev/packages/build_runner/install
+  build_runner: ^2.4.9
+
+  # intl - https://pub.dev/packages/intl/install
+  intl: ^0.19.0
+
 dev_dependencies:
   flutter_test:
     sdk: flutter
@@ -78,9 +90,9 @@ dev_dependencies:
   # rules and activating additional ones.
   flutter_lints: ^2.0.0
   riverpod_generator: ^2.4.0
-  build_runner: ^2.4.9
   custom_lint: ^0.6.4
   riverpod_lint: ^2.3.10
+  json_serializable: ^6.6.0
 
 # For information on the generic Dart part of this file, see the
 # following page: https://dart.dev/tools/pub/pubspec

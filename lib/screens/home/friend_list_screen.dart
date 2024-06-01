@@ -1,11 +1,14 @@
 import 'package:flutter/material.dart';
 import 'package:flutter_riverpod/flutter_riverpod.dart';
+import 'package:self_talk/models/chat.dart';
 import 'package:self_talk/models/friend.dart';
 import 'package:self_talk/models/friend_control.dart';
 import 'package:self_talk/navigator/slide_navigator.dart';
 import 'package:self_talk/screens/friend/add_friend_screen.dart';
 import 'package:self_talk/screens/friend/update_friend_screen.dart';
+import 'package:self_talk/viewModel/chat_viewModel.dart';
 import 'package:self_talk/viewModel/friend_viewModel.dart';
+import 'package:uuid/uuid.dart';
 import '../../widgets/home/item_friend.dart';
 
 class FriendListScreen extends ConsumerStatefulWidget {
@@ -18,7 +21,8 @@ class FriendListScreen extends ConsumerStatefulWidget {
 class _FriendListScreen extends ConsumerState<FriendListScreen> {
   @override
   Widget build(BuildContext context) {
-    final viewModel = ref.watch(friendViewModelProvider.notifier);
+    final friendViewModel = ref.watch(friendViewModelProvider.notifier);
+    final chatViewModel = ref.watch(chatViewModelProvider.notifier);
     final friends = ref
         .watch(friendViewModelProvider)
         .where((friend) => friend.me == 0)
@@ -27,6 +31,7 @@ class _FriendListScreen extends ConsumerState<FriendListScreen> {
         .watch(friendViewModelProvider)
         .where((friend) => friend.me == 1)
         .toList();
+
     return Scaffold(
       body: Expanded(
           child: Column(
@@ -55,20 +60,20 @@ class _FriendListScreen extends ConsumerState<FriendListScreen> {
                   profileImgPath: myProfile.first.profileImgPath,
                   me: myProfile.first.me,
                 ),
-                clickedFriendControl: (clickedFriend) {
+                clickFriendItem: (clickedFriend) {
                   switch (clickedFriend) {
                     case FriendControl.modifyProfile:
                       slideNavigateStateful(
                         context,
                         UpdateFriendScreen(
                           updateFriend: (updatedFriend) {
-                            viewModel.updateFriend(updatedFriend);
+                            friendViewModel.updateFriend(updatedFriend);
                           },
                           targetFriend: myProfile.first,
                         ),
                       );
                     case FriendControl.deleteItself:
-                      viewModel.deleteFriend(myProfile.first.id);
+                      friendViewModel.deleteFriend(myProfile.first.id);
                     default:
                   }
                 },
@@ -99,38 +104,51 @@ class _FriendListScreen extends ConsumerState<FriendListScreen> {
                     padding:
                         const EdgeInsets.symmetric(vertical: 2, horizontal: 4),
                     child: FriendItem(
-                      friend: Friend(
-                        id: friend.id,
-                        name: friend.name,
-                        message: friend.message,
-                        profileImgPath: friend.profileImgPath,
-                        me: friend.me,
-                      ),
-                      clickedFriendControl: (clickedFriendControl) {
-                        switch (clickedFriendControl) {
-                          case FriendControl.setAsMe:
-                            viewModel.updateAsMe(friend);
-                          case FriendControl.chat1on1:
-                          case FriendControl.modifyProfile:
-                            slideNavigateStateful(
-                              context,
-                              UpdateFriendScreen(
-                                updateFriend: (updatedFriend) {
-                                  if (updatedFriend.me == 1) {
-                                    viewModel.updateAsMe(updatedFriend);
-                                  } else {
-                                    viewModel.updateFriend(updatedFriend);
-                                  }
-                                },
-                                targetFriend: friend,
-                              ),
-                            );
-                          case FriendControl.deleteItself:
-                            viewModel.deleteFriend(friend.id);
-                          case FriendControl.chatMulti:
-                        }
-                      }
-                    ),
+                        friend: Friend(
+                          id: friend.id,
+                          name: friend.name,
+                          message: friend.message,
+                          profileImgPath: friend.profileImgPath,
+                          me: friend.me,
+                        ),
+                        clickFriendItem: (clickedFriendControl) {
+                          switch (clickedFriendControl) {
+                            case FriendControl.setAsMe:
+                              friendViewModel.updateAsMe(friend);
+
+                            case FriendControl.chat1on1:
+                              final uuid = const Uuid().v4();
+                              final initChat = Chat(
+                                title: null,
+                                messageList: null,
+                                chatMember: [friend, myProfile.first],
+                                modifiedDate: DateTime.now(),
+                              ).createEmptyChat();
+                              chatViewModel.createChatRoom({uuid: initChat});
+                              // TODO: 방 만들고 해당 방으로 진입하게 해야함
+
+                            case FriendControl.modifyProfile:
+                              slideNavigateStateful(
+                                context,
+                                UpdateFriendScreen(
+                                  updateFriend: (updatedFriend) {
+                                    if (updatedFriend.me == 1) {
+                                      friendViewModel.updateAsMe(updatedFriend);
+                                    } else {
+                                      friendViewModel
+                                          .updateFriend(updatedFriend);
+                                    }
+                                  },
+                                  targetFriend: friend,
+                                ),
+                              );
+
+                            case FriendControl.deleteItself:
+                              friendViewModel.deleteFriend(friend.id);
+
+                            case FriendControl.chatMulti:
+                          }
+                        }),
                   );
                 },
                 separatorBuilder: (context, index) => Divider(
@@ -158,15 +176,16 @@ class _FriendListScreen extends ConsumerState<FriendListScreen> {
                 createFriend: (createdFriend) {
                   if (createdFriend.me == 1) {
                     // 내 프로필로 설정했다면 기존 '내 프로필'을 친구로 바꿔야한다.
-                    viewModel.changeMeToFriend();
+                    friendViewModel.changeMeToFriend();
                   }
-                  viewModel.insertFriend(createdFriend);
+                  friendViewModel.insertFriend(createdFriend);
                 },
               ),
             );
           },
         ),
       ),
+      // TODO: 테스트용 버튼임, 나중에는 삭제하기
       floatingActionButtonLocation: FloatingActionButtonLocation.endFloat,
     );
   }
