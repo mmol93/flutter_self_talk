@@ -8,7 +8,7 @@ class ChatRepository {
     return await SharedPreferences.getInstance();
   }
 
-  /// 채팅 리스트 양식 만들기
+  /// 채팅 리스트 양식 만들기 = 채팅 초기화
   Future<void> createChatList(ChatList chatList) async {
     final prefs = await _initPrefs();
     final chatListJson = jsonEncode(chatList.toJson());
@@ -48,13 +48,13 @@ class ChatRepository {
     await prefs.setString('chatList', chatListJson);
   }
 
-  // TODO: 미완성 - 특정 채팅방을 삭제하게 해야함
+  // TODO: 미완성 - 특정 채팅방을 삭제하게 해야함(지금은 모든 채팅 데이터를 삭제하게 되있음...)
   Future<void> deleteChatList() async {
     final prefs = await _initPrefs();
     await prefs.remove('chatList');
   }
 
-  /// 채팅방을 만듬
+  /// 채팅방 자체를 만듬(새로운 채팅방 만들기 등...)
   Future<void> createChatRoom(Map<ChatRoomUniqueId, Chat> chatRoom) async {
     final prefs = await _initPrefs();
     final currentChatListJson = prefs.getString('chatList');

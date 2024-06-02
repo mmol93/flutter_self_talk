@@ -1,5 +1,7 @@
 import 'package:flutter/material.dart';
 import 'package:flutter_riverpod/flutter_riverpod.dart';
+import 'package:self_talk/navigator/moving_navigator.dart';
+import 'package:self_talk/screens/chat/chat_screen.dart';
 import 'package:self_talk/viewModel/chat_viewModel.dart';
 import 'package:self_talk/widgets/home/item_chat_room_list.dart';
 
@@ -20,7 +22,12 @@ class _ChatListScreen extends ConsumerState<ChatListScreen> {
           child: chatData != null
               ? Column(
                   children: chatData.chatRoom!.entries
-                      .map((chatInfo) => ChatRoomListItem(chat: chatInfo.value))
+                      .map((chatInfo) => ChatRoomListItem(
+                            chat: chatInfo.value,
+                            clickChatRoomListItem: () {
+                              centerNavigateStateful(context, ChatScreen(chatId: chatInfo.key,));
+                            },
+                          ))
                       .toList(),
                 )
               : Text("생성된 채팅방이 없습니다.")),

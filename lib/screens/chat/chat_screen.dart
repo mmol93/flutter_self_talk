@@ -23,15 +23,15 @@ class _ChatScreenState extends ConsumerState<ChatScreen> {
 
     return Scaffold(
       appBar: AppBar(
-        title: Text(chatData!.chatRoom!["abcd1"]!.title ?? ""),
+        title: Text(chatData!.chatRoom![chatId]?.title ?? ""),
       ),
       body: Column(
         children: [
-          Text(chatData.chatRoom!["abcd1"]!.messageList?[0].message ?? ""),
+          Text(chatData.chatRoom![chatId]?.messageList?[0].message ?? ""),
           TextButton(
             onPressed: () {
               viewModel.updateMessage(
-                chatId: "abcd1",
+                chatId: chatId ?? "",
                 messageIndex: 0,
                 message:  Message(
                   id: '1',
