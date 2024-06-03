@@ -1,5 +1,6 @@
 import 'package:flutter/material.dart';
 import 'package:flutter_riverpod/flutter_riverpod.dart';
+import 'package:self_talk/colors/default_color.dart';
 import 'package:self_talk/models/chat.dart';
 import 'package:self_talk/viewModel/chat_viewModel.dart';
 import 'package:uuid/uuid.dart';
@@ -22,8 +23,24 @@ class _ChatScreenState extends ConsumerState<ChatScreen> {
     final chatData = ref.watch(chatViewModelProvider);
 
     return Scaffold(
+      backgroundColor: defaultBackground,
       appBar: AppBar(
-        title: Text(chatData!.chatRoom![chatId]?.title ?? ""),
+        backgroundColor: defaultBackground,
+        title: Row(
+          children: [
+            Text(chatData!.chatRoom![chatId]?.title ?? ""),
+            const SizedBox(width: 5),
+            Text(
+              chatData.chatRoom![chatId]?.chatMember.length.toString() ?? "",
+              style: const TextStyle(color: Colors.grey, fontWeight: FontWeight.bold),
+            )
+          ],
+        ),
+        actions: [
+          IconButton(onPressed: (){}, icon: const Icon(Icons.search_outlined)),
+          // TODO: 기능 추가 필요
+          IconButton(onPressed: (){}, icon: const Icon(Icons.menu)),
+        ],
       ),
       body: Column(
         children: [
@@ -33,7 +50,7 @@ class _ChatScreenState extends ConsumerState<ChatScreen> {
               viewModel.updateMessage(
                 chatId: chatId ?? "",
                 messageIndex: 0,
-                message:  Message(
+                message: Message(
                   id: '1',
                   messageTime: DateTime.now().add(const Duration(minutes: 1)),
                   message: '반갑습니다22',
