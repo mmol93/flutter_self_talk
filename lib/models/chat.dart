@@ -33,7 +33,7 @@ class Chat {
   Noti? notification;
 
   /// 최근 메시지
-  final String? lastMessage;
+  String? lastMessage;
 
   /// 해당 채팅의 제일 최근 수정된 날짜 - 메시지만 카운트함
   @JsonKey(fromJson: _fromDateJson, toJson: _toDateJson)

@@ -38,11 +38,14 @@ class ChatRepository {
     final chatListJson = prefs.getString('chatList');
     if (chatListJson != null) {
       final chatData = ChatList.fromJson(jsonDecode(chatListJson));
-      if (chatData.chatRoom![chatId]!.messageList == null) {
-        chatData.chatRoom![chatId]!.messageList = [message];
+      final targetChat = chatData.chatRoom![chatId]!;
+      if (targetChat.messageList == null) {
+        targetChat.messageList = [message];
       }else {
-        chatData.chatRoom![chatId]!.messageList?.add(message);
+        targetChat.messageList?.add(message);
       }
+      targetChat.lastMessage = message.message;
+      targetChat.modifiedDate = DateTime.now();
       await updateChatList(chatData);
     }
   }
