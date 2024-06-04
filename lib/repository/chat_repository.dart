@@ -30,6 +30,21 @@ class ChatRepository {
     }
   }
 
+  /// 해당 채팅방에서 특정 메시지 삭제하기
+  Future<void> deleteMessage(
+    String chatId,
+    int messageIndex,
+    Message message,
+  ) async {
+    final prefs = await _initPrefs();
+    final chatListJson = prefs.getString('chatList');
+    if (chatListJson != null) {
+      final chatData = ChatList.fromJson(jsonDecode(chatListJson));
+      chatData.chatRoom![chatId]!.messageList?.remove(messageIndex);
+    }
+  }
+
+  /// 해당 채팅방에 메시지 추가하기
   Future<void> addMessage(
     String chatId,
     Message message,
@@ -41,7 +56,7 @@ class ChatRepository {
       final targetChat = chatData.chatRoom![chatId]!;
       if (targetChat.messageList == null) {
         targetChat.messageList = [message];
-      }else {
+      } else {
         targetChat.messageList?.add(message);
       }
       targetChat.lastMessage = message.message;

@@ -268,16 +268,19 @@ class ChatViewModel extends StateNotifier<ChatList?> {
     state = await _chatRepository.readChatList();
   }
 
+  /// 채팅 리스트 양식 만들기 = 채팅 초기화
   void createChatList() async {
     _chatRepository
         .createChatList(dummyChatList)
         .then((value) => getChatList());
   }
 
+  /// 채팅방 자체를 만듬(새로운 채팅방 만들기 등...)
   void createChatRoom(Map<ChatRoomUniqueId, Chat> chatRoom) async {
     _chatRepository.createChatRoom(chatRoom).then((value) => getChatList());
   }
 
+  /// 해당 채팅방에 메시지 추가하기
   void addMessage({
     required String chatId,
     required Message message,
@@ -285,6 +288,18 @@ class ChatViewModel extends StateNotifier<ChatList?> {
     _chatRepository.addMessage(chatId, message).then((value) => getChatList());
   }
 
+  /// 해당 채팅방에서 특정 메시지 삭제하기
+  void deleteMessage({
+    required String chatId,
+    required int messageIndex,
+    required Message message,
+  }) async {
+    _chatRepository
+        .deleteMessage(chatId, messageIndex, message)
+        .then((value) => getChatList());
+  }
+
+  /// 특정 채팅방의 특정 채팅 수정하기
   // TODO: 메시지뿐 아니라 사람도 바꿀 수 있어야함
   void updateMessage({
     required String chatId,
