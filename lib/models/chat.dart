@@ -24,7 +24,7 @@ class Chat {
   final String? title;
 
   /// 채팅 내용
-  final List<Message>? messageList;
+  List<Message>? messageList;
 
   /// 채팅하고 있는 멤버
   final List<Friend> chatMember;
@@ -117,14 +117,14 @@ class Noti {
 
 @JsonSerializable()
 class Message {
-  final String id;
+  final String friendId;
   final DateTime messageTime;
   final String message;
   final MessageType messageType;
   final bool isMe;
 
   Message({
-    required this.id,
+    required this.friendId,
     required this.messageTime,
     required this.message,
     required this.messageType,

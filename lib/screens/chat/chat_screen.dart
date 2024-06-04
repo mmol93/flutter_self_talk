@@ -64,11 +64,10 @@ class _ChatScreenState extends ConsumerState<ChatScreen> {
           ),
           TextButton(
             onPressed: () {
-              viewModel.updateMessage(
+              viewModel.addMessage(
                 chatId: chatId ?? "",
-                messageIndex: 0,
                 message: Message(
-                  id: '1',
+                  friendId: '1',
                   messageTime: DateTime.now().add(const Duration(minutes: 1)),
                   message: '반갑습니다22',
                   messageType: MessageType.message,

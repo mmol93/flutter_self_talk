@@ -14,14 +14,14 @@ ChatList dummyChatList = ChatList(chatRoom: {
     title: '친구들과의 채팅1',
     messageList: [
       Message(
-        id: '1',
+        friendId: '1',
         messageTime: DateTime.now(),
         message: '안녕하세요',
         messageType: MessageType.message,
         isMe: true,
       ),
       Message(
-        id: '2',
+        friendId: '2',
         messageTime: DateTime.now().add(const Duration(minutes: 1)),
         message: '반갑습니다',
         messageType: MessageType.message,
@@ -59,14 +59,14 @@ ChatList dummyChatList = ChatList(chatRoom: {
     title: '친구들과의 채팅2',
     messageList: [
       Message(
-        id: '1',
+        friendId: '1',
         messageTime: DateTime.now(),
         message: '안녕하세요',
         messageType: MessageType.message,
         isMe: true,
       ),
       Message(
-        id: '2',
+        friendId: '2',
         messageTime: DateTime.now().add(const Duration(minutes: 1)),
         message: '반갑습니다',
         messageType: MessageType.message,
@@ -97,14 +97,14 @@ ChatList dummyChatList = ChatList(chatRoom: {
     title: '친구들과의 채팅3',
     messageList: [
       Message(
-        id: '1',
+        friendId: '1',
         messageTime: DateTime.now(),
         message: '안녕하세요',
         messageType: MessageType.message,
         isMe: true,
       ),
       Message(
-        id: '2',
+        friendId: '2',
         messageTime: DateTime.now().add(const Duration(minutes: 1)),
         message: '반갑습니다',
         messageType: MessageType.message,
@@ -150,14 +150,14 @@ ChatList dummyChatList = ChatList(chatRoom: {
     modifiedChatRoomImg: "",
     messageList: [
       Message(
-        id: '1',
+        friendId: '1',
         messageTime: DateTime.now(),
         message: '안녕하세요',
         messageType: MessageType.message,
         isMe: true,
       ),
       Message(
-        id: '2',
+        friendId: '2',
         messageTime: DateTime.now().add(const Duration(minutes: 1)),
         message: '반갑습니다',
         messageType: MessageType.message,
@@ -202,14 +202,14 @@ ChatList dummyChatList = ChatList(chatRoom: {
     title: '친구들과의 채팅5',
     messageList: [
       Message(
-        id: '1',
+        friendId: '1',
         messageTime: DateTime.now(),
         message: '안녕하세요',
         messageType: MessageType.message,
         isMe: true,
       ),
       Message(
-        id: '2',
+        friendId: '2',
         messageTime: DateTime.now().add(const Duration(minutes: 1)),
         message: '반갑습니다',
         messageType: MessageType.message,
@@ -278,12 +278,21 @@ class ChatViewModel extends StateNotifier<ChatList?> {
     _chatRepository.createChatRoom(chatRoom).then((value) => getChatList());
   }
 
-  void updateMessage(
-      {required String chatId,
-      required int messageIndex,
-      required Message message}) async {
+  void addMessage({
+    required String chatId,
+    required Message message,
+  }) async {
+    _chatRepository.addMessage(chatId, message).then((value) => getChatList());
+  }
+
+  // TODO: 메시지뿐 아니라 사람도 바꿀 수 있어야함
+  void updateMessage({
+    required String chatId,
+    required int messageIndex,
+    required Message message,
+  }) async {
     _chatRepository
-        .updateChat(chatId, messageIndex, message)
+        .updateMessage(chatId, messageIndex, message)
         .then((value) => getChatList());
   }
 }

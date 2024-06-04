@@ -16,7 +16,7 @@ class ChatRepository {
   }
 
   /// 특정 채팅방의 특정 채팅 수정하기
-  Future<void> updateChat(
+  Future<void> updateMessage(
     String chatId,
     int messageIndex,
     Message message,
@@ -26,6 +26,23 @@ class ChatRepository {
     if (chatListJson != null) {
       final chatData = ChatList.fromJson(jsonDecode(chatListJson));
       chatData.chatRoom![chatId]!.messageList?[messageIndex] = message;
+      await updateChatList(chatData);
+    }
+  }
+
+  Future<void> addMessage(
+    String chatId,
+    Message message,
+  ) async {
+    final prefs = await _initPrefs();
+    final chatListJson = prefs.getString('chatList');
+    if (chatListJson != null) {
+      final chatData = ChatList.fromJson(jsonDecode(chatListJson));
+      if (chatData.chatRoom![chatId]!.messageList == null) {
+        chatData.chatRoom![chatId]!.messageList = [message];
+      }else {
+        chatData.chatRoom![chatId]!.messageList?.add(message);
+      }
       await updateChatList(chatData);
     }
   }
