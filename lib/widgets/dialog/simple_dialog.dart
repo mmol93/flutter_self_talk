@@ -2,7 +2,7 @@ import 'dart:io';
 import 'package:flutter/cupertino.dart';
 import 'package:flutter/material.dart';
 
-void showCommonDialog({
+void showTextDialog({
   required String title,
   required String okText,
   required String content,

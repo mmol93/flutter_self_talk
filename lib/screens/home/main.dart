@@ -8,7 +8,7 @@ import 'package:smooth_page_indicator/smooth_page_indicator.dart';
 
 import '../../assets/strings.dart';
 import '../../colors/default_color.dart';
-import '../../widgets/dialog/common_dialog.dart';
+import '../../widgets/dialog/simple_dialog.dart';
 
 const pageList = ["친구", "채팅", "설정"];
 
@@ -55,7 +55,7 @@ class _HomePageState extends State<HomePage> {
   void initState() {
     super.initState();
     WidgetsBinding.instance.addPostFrameCallback((timeStamp) {
-      showCommonDialog(
+      showTextDialog(
         context: context,
         title: Strings.startCautionTitle,
         content: Strings.startCautionContent,

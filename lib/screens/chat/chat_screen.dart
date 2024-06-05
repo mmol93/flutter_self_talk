@@ -3,10 +3,12 @@ import 'package:flutter_riverpod/flutter_riverpod.dart';
 import 'package:self_talk/colors/default_color.dart';
 import 'package:self_talk/models/chat.dart';
 import 'package:self_talk/viewModel/chat_viewModel.dart';
+import 'package:self_talk/widgets/dialog/list_dialog.dart';
 import 'package:uuid/uuid.dart';
 
 class ChatScreen extends ConsumerStatefulWidget {
   final String? chatId;
+
   const ChatScreen({this.chatId, super.key});
 
   @override
@@ -56,12 +58,16 @@ class _ChatScreenState extends ConsumerState<ChatScreen> {
       body: Column(
         children: [
           ListView.builder(
-            shrinkWrap: true,
-            itemBuilder: (context, index) {
-              return Text(targetChatData.messageList![index].message);
-            },
-            itemCount: targetChatData.messageList?.length ?? 0
-          ),
+              shrinkWrap: true,
+              itemBuilder: (context, index) {
+                return GestureDetector(
+                  onLongPress: () {
+                    showListDialog(title: targetChatData.messageList![index].message,contents: ["메시지 내용 변경", "삭제하기"], context: context);
+                  },
+                  child: Text(targetChatData.messageList![index].message),
+                );
+              },
+              itemCount: targetChatData.messageList?.length ?? 0),
           TextButton(
             onPressed: () {
               viewModel.addMessage(
