@@ -2,6 +2,7 @@ import 'package:flutter/material.dart';
 import 'package:flutter_riverpod/flutter_riverpod.dart';
 import 'package:self_talk/colors/default_color.dart';
 import 'package:self_talk/models/chat.dart';
+import 'package:self_talk/models/list_item_model.dart';
 import 'package:self_talk/viewModel/chat_viewModel.dart';
 import 'package:self_talk/widgets/dialog/list_dialog.dart';
 import 'package:uuid/uuid.dart';
@@ -21,11 +22,42 @@ class _ChatScreenState extends ConsumerState<ChatScreen> {
   @override
   void initState() {
     super.initState();
-    if (widget.chatId == null) {
-      chatId = const Uuid().v4();
-    } else {
-      chatId = widget.chatId;
-    }
+    chatId = widget.chatId ?? const Uuid().v4();
+  }
+
+  void _showMessageOptions(BuildContext context, ChatViewModel viewModel,
+      Chat targetChatData, int index) {
+    final message = targetChatData.messageList![index];
+
+    showListDialog(
+      title: message.message,
+      context: context,
+      listItemModel: [
+        ListItemModel(
+          itemTitle: "수정하기",
+          clickEvent: () => _updateMessage(viewModel, message, index),
+        ),
+        ListItemModel(
+          itemTitle: "삭제하기",
+          // TODO: 삭제하기 기능 추가
+        ),
+      ],
+    );
+  }
+
+  void _updateMessage(ChatViewModel viewModel, Message message, int index) {
+    // TODO: Message update dialog를 띄워서 수정할 수 있도록 하기
+    viewModel.updateMessage(
+      chatId: chatId!,
+      messageIndex: index,
+      message: Message(
+        friendId: message.friendId,
+        messageTime: message.messageTime,
+        message: "수정된 메시지",
+        messageType: message.messageType,
+        isMe: message.isMe,
+      ),
+    );
   }
 
   @override
@@ -61,8 +93,9 @@ class _ChatScreenState extends ConsumerState<ChatScreen> {
               shrinkWrap: true,
               itemBuilder: (context, index) {
                 return GestureDetector(
-                  onLongPress: () {
-                    showListDialog(title: targetChatData.messageList![index].message,contents: ["메시지 내용 변경", "삭제하기"], context: context);
+                  onTap: () {
+                    _showMessageOptions(
+                        context, viewModel, targetChatData, index);
                   },
                   child: Text(targetChatData.messageList![index].message),
                 );
