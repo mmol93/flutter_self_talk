@@ -5,6 +5,7 @@ import 'package:self_talk/models/chat.dart';
 import 'package:self_talk/models/list_item_model.dart';
 import 'package:self_talk/viewModel/chat_viewModel.dart';
 import 'package:self_talk/widgets/dialog/list_dialog.dart';
+import 'package:self_talk/widgets/dialog/modify_message_dialog.dart';
 import 'package:uuid/uuid.dart';
 
 class ChatScreen extends ConsumerStatefulWidget {
@@ -35,13 +36,25 @@ class _ChatScreenState extends ConsumerState<ChatScreen> {
       listItemModel: [
         ListItemModel(
           itemTitle: "수정하기",
-          clickEvent: () => _updateMessage(viewModel, message, index),
+          clickEvent: () => _showModifyMessageDialog(viewModel, message, index),
         ),
         ListItemModel(
           itemTitle: "삭제하기",
           // TODO: 삭제하기 기능 추가
         ),
       ],
+    );
+  }
+
+  void _showModifyMessageDialog(
+      ChatViewModel viewModel, Message message, int index) {
+    showModifyMessageDialog(
+      message: message,
+      viewModel: viewModel,
+      context: context,
+      clickEvent: (message) {
+        _updateMessage(viewModel, message, index);
+      },
     );
   }
 

@@ -55,17 +55,19 @@ Map<String, dynamic> _$NotiToJson(Noti instance) => <String, dynamic>{
     };
 
 Message _$MessageFromJson(Map<String, dynamic> json) => Message(
-      friendId: json['id'] as String,
+      friendId: json['friendId'] as String,
       messageTime: DateTime.parse(json['messageTime'] as String),
       message: json['message'] as String,
       messageType: $enumDecode(_$MessageTypeEnumMap, json['messageType']),
       isMe: json['isMe'] as bool,
+      secondMessage: json['secondMessage'] as String?,
     );
 
 Map<String, dynamic> _$MessageToJson(Message instance) => <String, dynamic>{
-      'id': instance.friendId,
+      'friendId': instance.friendId,
       'messageTime': instance.messageTime.toIso8601String(),
       'message': instance.message,
+      'secondMessage': instance.secondMessage,
       'messageType': _$MessageTypeEnumMap[instance.messageType]!,
       'isMe': instance.isMe,
     };

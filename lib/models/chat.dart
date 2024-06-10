@@ -120,6 +120,7 @@ class Message {
   final String friendId;
   final DateTime messageTime;
   final String message;
+  final String? secondMessage;
   final MessageType messageType;
   final bool isMe;
 
@@ -129,6 +130,7 @@ class Message {
     required this.message,
     required this.messageType,
     required this.isMe,
+    this.secondMessage
   });
 
   factory Message.fromJson(Map<String, dynamic> json) =>
