@@ -118,9 +118,9 @@ class Noti {
 @JsonSerializable()
 class Message {
   final String friendId;
-  final DateTime messageTime;
-  final String message;
-  final String? secondMessage;
+  DateTime messageTime;
+  String message;
+  String? secondMessage;
   final MessageType messageType;
   final bool isMe;
 

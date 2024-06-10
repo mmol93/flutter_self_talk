@@ -59,14 +59,14 @@ class _ChatScreenState extends ConsumerState<ChatScreen> {
   }
 
   void _updateMessage(ChatViewModel viewModel, Message message, int index) {
-    // TODO: Message update dialog를 띄워서 수정할 수 있도록 하기
     viewModel.updateMessage(
       chatId: chatId!,
       messageIndex: index,
       message: Message(
         friendId: message.friendId,
         messageTime: message.messageTime,
-        message: "수정된 메시지",
+        message: message.message,
+        secondMessage: message.secondMessage,
         messageType: message.messageType,
         isMe: message.isMe,
       ),

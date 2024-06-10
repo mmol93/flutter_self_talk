@@ -24,6 +24,7 @@ void showListDialog({
             return GestureDetector(
               behavior: HitTestBehavior.opaque,
               onTap: () {
+                Navigator.of(ctx).pop();
                 listItemModel[index].clickEvent!();
               },
               child: Container(

@@ -11,8 +11,8 @@ void showModifyMessageDialog({
   Function(Message message)? clickEvent,
 }) {
   Widget buildDialog(BuildContext context) {
-    final _firstMessageController = TextEditingController();
-    final _secondMessageController = TextEditingController();
+    final firstMessageController = TextEditingController(text: message.message);
+    final secondMessageController = TextEditingController(text: message.secondMessage);
 
     return AlertDialog(
       title: const Text("대화 수정"),
@@ -20,13 +20,13 @@ void showModifyMessageDialog({
         child: Column(
           children: [
             TextField(
-              controller: _firstMessageController,
+              controller: firstMessageController,
               decoration: const InputDecoration(labelText: "수정할 메시지"),
               maxLines: null,
             ),
             const SizedBox(height: 10),
             TextField(
-              controller: _secondMessageController,
+              controller: secondMessageController,
               decoration: const InputDecoration(labelText: "수정할 두 번째 줄 메시지"),
               maxLines: null,
             )
@@ -37,6 +37,8 @@ void showModifyMessageDialog({
         TextButton(
           onPressed: () {
             if (clickEvent != null) {
+              message.message = firstMessageController.text;
+              message.secondMessage = secondMessageController.text;
               clickEvent(message);
             }
             Navigator.pop(context);
