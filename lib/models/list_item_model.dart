@@ -1,6 +1,6 @@
 class ListItemModel{
   final String itemTitle;
-  List<void Function()>? clickEvent;
+  Function()? clickEvent;
 
-  ListItemModel({required this.itemTitle, clickEvent});
+  ListItemModel({required this.itemTitle, this.clickEvent});
 }

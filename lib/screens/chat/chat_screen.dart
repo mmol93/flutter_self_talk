@@ -27,7 +27,7 @@ class _ChatScreenState extends ConsumerState<ChatScreen> {
 
   void _showMessageOptions(BuildContext context, ChatViewModel viewModel,
       Chat targetChatData, int index) {
-    final message = targetChatData.messageList![index];
+    final Message message = targetChatData.messageList![index];
 
     showListDialog(
       title: message.message,
