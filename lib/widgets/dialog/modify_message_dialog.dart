@@ -12,7 +12,8 @@ void showModifyMessageDialog({
 }) {
   Widget buildDialog(BuildContext context) {
     final firstMessageController = TextEditingController(text: message.message);
-    final secondMessageController = TextEditingController(text: message.secondMessage);
+    final secondMessageController =
+        TextEditingController(text: message.secondMessage);
 
     return AlertDialog(
       title: const Text("대화 수정"),
@@ -25,11 +26,12 @@ void showModifyMessageDialog({
               maxLines: null,
             ),
             const SizedBox(height: 10),
-            TextField(
-              controller: secondMessageController,
-              decoration: const InputDecoration(labelText: "수정할 두 번째 줄 메시지"),
-              maxLines: null,
-            )
+            if (message.secondMessage?.isNotEmpty != null)
+              TextField(
+                controller: secondMessageController,
+                decoration: const InputDecoration(labelText: "수정할 두 번째 줄 메시지"),
+                maxLines: null,
+              )
           ],
         ),
       ),

@@ -16,26 +16,31 @@ class ChatRepository {
   }
 
   /// 특정 채팅방의 특정 채팅 수정하기
-  Future<void> updateMessage(
-    String chatId,
-    int messageIndex,
-    Message message,
-  ) async {
+  Future<void> updateMessage(String chatId,
+      int messageIndex,
+      Message message,) async {
     final prefs = await _initPrefs();
     final chatListJson = prefs.getString('chatList');
     if (chatListJson != null) {
       final chatData = ChatList.fromJson(jsonDecode(chatListJson));
-      chatData.chatRoom![chatId]!.messageList?[messageIndex] = message;
+      final messages = chatData.chatRoom![chatId]!.messageList;
+      messages?[messageIndex] = message;
+
+      // 변경한게 마지막 메시지 + 일반 메시지 타입이면 채팅방의 마지막 메시지도 바꿔야한다.
+      if (messages != null) {
+        if (messages.length - 1 == messageIndex && MessageType.message == message.messageType) {
+          chatData.chatRoom![chatId]?.lastMessage = message.message;
+        }
+      }
+
       await updateChatList(chatData);
     }
   }
 
   /// 해당 채팅방에서 특정 메시지 삭제하기
-  Future<void> deleteMessage(
-    String chatId,
-    int messageIndex,
-    Message message,
-  ) async {
+  Future<void> deleteMessage(String chatId,
+      int messageIndex,
+      Message message,) async {
     final prefs = await _initPrefs();
     final chatListJson = prefs.getString('chatList');
     if (chatListJson != null) {
@@ -45,10 +50,8 @@ class ChatRepository {
   }
 
   /// 해당 채팅방에 메시지 추가하기
-  Future<void> addMessage(
-    String chatId,
-    Message message,
-  ) async {
+  Future<void> addMessage(String chatId,
+      Message message,) async {
     final prefs = await _initPrefs();
     final chatListJson = prefs.getString('chatList');
     if (chatListJson != null) {
@@ -100,7 +103,7 @@ class ChatRepository {
 
     if (currentChatListJson != null) {
       final currentChatList =
-          ChatList.fromJson(jsonDecode(currentChatListJson));
+      ChatList.fromJson(jsonDecode(currentChatListJson));
       // 새롭게 생성되는 단톡방은 무조건 한 번에 하나만 생성하기 때문에 전부 first로 해도 상관없다.
       currentChatList.chatRoom![chatRoom.keys.first] = chatRoom.values.first;
       final chatListJson = jsonEncode(currentChatList.toJson());
