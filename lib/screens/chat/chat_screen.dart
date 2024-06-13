@@ -4,6 +4,7 @@ import 'package:self_talk/colors/default_color.dart';
 import 'package:self_talk/models/chat.dart';
 import 'package:self_talk/models/list_item_model.dart';
 import 'package:self_talk/viewModel/chat_viewModel.dart';
+import 'package:self_talk/widgets/dialog/common_time_picker_dialog.dart';
 import 'package:self_talk/widgets/dialog/list_dialog.dart';
 import 'package:self_talk/widgets/dialog/modify_message_dialog.dart';
 import 'package:uuid/uuid.dart';
@@ -35,6 +36,10 @@ class _ChatScreenState extends ConsumerState<ChatScreen> {
       context: context,
       listItemModel: [
         ListItemModel(
+          itemTitle: "날짜 바꾸기",
+          clickEvent: () => _showTimePickerDialog(viewModel, message, index),
+        ),
+        ListItemModel(
           itemTitle: "수정하기",
           clickEvent: () => _showModifyMessageDialog(viewModel, message, index),
         ),
@@ -46,8 +51,29 @@ class _ChatScreenState extends ConsumerState<ChatScreen> {
     );
   }
 
+  /// TimePicker로 시간 바꾸기
+  Future _showTimePickerDialog(
+    ChatViewModel viewModel,
+    Message message,
+    int index,
+  ) async {
+    final DateTime? pickedTime = await showMyTimePickerDialog(context,
+        initTime: TimeOfDay.fromDateTime(message.messageTime));
+
+    if (pickedTime != null) {
+      viewModel.updateMessage(
+          chatId: chatId!,
+          messageIndex: index,
+          message: message.copyWith(messageTime: pickedTime));
+    }
+  }
+
+  /// 메시지 수정 Dialog 표시
   void _showModifyMessageDialog(
-      ChatViewModel viewModel, Message message, int index) {
+    ChatViewModel viewModel,
+    Message message,
+    int index,
+  ) {
     showModifyMessageDialog(
       message: message,
       viewModel: viewModel,
@@ -58,7 +84,12 @@ class _ChatScreenState extends ConsumerState<ChatScreen> {
     );
   }
 
-  void _updateMessage(ChatViewModel viewModel, Message message, int index) {
+  /// DB의 Message 업데이트
+  void _updateMessage(
+    ChatViewModel viewModel,
+    Message message,
+    int index,
+  ) {
     viewModel.updateMessage(
       chatId: chatId!,
       messageIndex: index,
@@ -127,7 +158,7 @@ class _ChatScreenState extends ConsumerState<ChatScreen> {
                 ),
               );
             },
-            child: Text("추가하기"),
+            child: const Text("추가하기"),
           )
         ],
       ),

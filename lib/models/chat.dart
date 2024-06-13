@@ -95,11 +95,10 @@ class Chat {
     }
 
     return Chat(
-      title: initTitle,
-      messageList: null,
-      chatMember: chatMember,
-      modifiedDate: DateTime.now()
-    );
+        title: initTitle,
+        messageList: null,
+        chatMember: chatMember,
+        modifiedDate: DateTime.now());
   }
 }
 
@@ -124,14 +123,30 @@ class Message {
   final MessageType messageType;
   final bool isMe;
 
-  Message({
-    required this.friendId,
-    required this.messageTime,
-    required this.message,
-    required this.messageType,
-    required this.isMe,
-    this.secondMessage
-  });
+  Message(
+      {required this.friendId,
+      required this.messageTime,
+      required this.message,
+      required this.messageType,
+      required this.isMe,
+      this.secondMessage});
+
+  Message copyWith({
+    String? friendId,
+    DateTime? messageTime,
+    String? message,
+    String? secondMessage,
+    MessageType? messageType,
+    bool? isMe,
+  }) {
+    return Message(
+      friendId: friendId ?? this.friendId,
+      messageTime: messageTime ?? this.messageTime,
+      message: message ?? this.message,
+      messageType: messageType ?? this.messageType,
+      isMe: isMe ?? this.isMe,
+    );
+  }
 
   factory Message.fromJson(Map<String, dynamic> json) =>
       _$MessageFromJson(json);
