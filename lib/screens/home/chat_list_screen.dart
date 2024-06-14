@@ -19,22 +19,24 @@ class _ChatListScreen extends ConsumerState<ChatListScreen> {
     final chatData = ref.watch(chatViewModelProvider);
     return Scaffold(
       body: Expanded(
-          child: chatData != null
-              ? Column(
-                  children: chatData.chatRoom!.entries
-                      .map((chatInfo) => ChatRoomListItem(
-                            chat: chatInfo.value,
-                            clickChatRoomListItem: () {
-                              centerNavigateStateful(context, ChatScreen(chatId: chatInfo.key,));
-                            },
-                          ))
-                      .toList(),
-                )
-              : Text("생성된 채팅방이 없습니다.")),
+        child: chatData != null
+            ? Column(
+                children: chatData.chatRoom!.entries
+                    .map((chatInfo) => ChatRoomListItem(
+                          chat: chatInfo.value,
+                          clickChatRoomListItem: () {
+                            centerNavigateStateful(
+                                context, ChatScreen(chatId: chatInfo.key));
+                          },
+                        ))
+                    .toList())
+            : const Text("생성된 채팅방이 없습니다."),
+      ),
+      // TODO: 나중에는 floatButton을 삭제한다.
       floatingActionButton: Container(
         margin: const EdgeInsets.only(bottom: 50, right: 35),
         child: FloatingActionButton(
-          child: Icon(Icons.chat_bubble),
+          child: const Icon(Icons.chat_bubble),
           onPressed: () {
             viewModel.createChatList();
           },

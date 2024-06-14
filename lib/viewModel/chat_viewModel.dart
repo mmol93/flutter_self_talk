@@ -300,7 +300,6 @@ class ChatViewModel extends StateNotifier<ChatList?> {
   }
 
   /// 특정 채팅방의 특정 채팅 수정하기
-  // TODO: 메시지뿐 아니라 사람도 바꿀 수 있어야함
   void updateMessage({
     required String chatId,
     required int messageIndex,

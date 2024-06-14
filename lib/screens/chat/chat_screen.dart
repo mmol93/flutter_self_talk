@@ -45,7 +45,7 @@ class _ChatScreenState extends ConsumerState<ChatScreen> {
         ),
         ListItemModel(
           itemTitle: "삭제하기",
-          // TODO: 삭제하기 기능 추가
+          clickEvent: () => viewModel.deleteMessage(chatId: chatId!, messageIndex: index, message: message)
         ),
       ],
     );
