@@ -40,6 +40,27 @@ class ChatRepository {
     }
   }
 
+  /// 메시지를 삭제 후에 마지막 메시지를 업데이트 한다.
+  Future<void> updateLastMessage(String chatId) async {
+    final prefs = await _initPrefs();
+    final chatListJson = prefs.getString('chatList');
+    if (chatListJson != null) {
+      final chatData = ChatList.fromJson(jsonDecode(chatListJson));
+      final messages = chatData.chatRoom![chatId]!.messageList;
+
+      if (messages != null) {
+        for (var message in messages.reversed) {
+          // 뒤에서 부터 확인하니 리소스도 그렇게 들지 않을 것임
+          if (message.messageType == MessageType.message) {
+            chatData.chatRoom![chatId]?.lastMessage = message.message;
+            await updateChatList(chatData);
+            break;
+          }
+        }
+      }
+    }
+  }
+
   /// 해당 채팅방에서 특정 메시지 삭제하기
   Future<void> deleteMessage(
     String chatId,
@@ -52,8 +73,8 @@ class ChatRepository {
       final chatData = ChatList.fromJson(jsonDecode(chatListJson));
       final currentChatRoom = chatData.chatRoom![chatId]!;
       currentChatRoom.messageList?.removeAt(messageIndex);
-      // TODO: 삭제한 메시지가 마지막 메시지였으면 채팅 리스트에 표시되는 마지막 채팅 내용도 바꿔야한다.
       await updateChatList(chatData);
+      await updateLastMessage(chatId);
     }
   }
 
