@@ -1,3 +1,5 @@
+import 'dart:ui';
+
 import 'package:flutter/material.dart';
 import 'package:flutter_riverpod/flutter_riverpod.dart';
 import 'package:self_talk/colors/default_color.dart';
@@ -44,9 +46,9 @@ class _ChatScreenState extends ConsumerState<ChatScreen> {
           clickEvent: () => _showModifyMessageDialog(viewModel, message, index),
         ),
         ListItemModel(
-          itemTitle: "삭제하기",
-          clickEvent: () => viewModel.deleteMessage(chatId: chatId!, messageIndex: index, message: message)
-        ),
+            itemTitle: "삭제하기",
+            clickEvent: () => viewModel.deleteMessage(
+                chatId: chatId!, messageIndex: index, message: message)),
       ],
     );
   }
@@ -109,6 +111,7 @@ class _ChatScreenState extends ConsumerState<ChatScreen> {
     final viewModel = ref.watch(chatViewModelProvider.notifier);
     final wholeChatList = ref.watch(chatViewModelProvider);
     final Chat targetChatData = wholeChatList!.chatRoom![chatId]!;
+    final inputTextController = TextEditingController();
 
     return Scaffold(
       backgroundColor: defaultBackground,
@@ -127,24 +130,70 @@ class _ChatScreenState extends ConsumerState<ChatScreen> {
         ),
         actions: [
           IconButton(onPressed: () {}, icon: const Icon(Icons.search_outlined)),
-          // TODO: 기능 추가 필요
+          // TODO: 메뉴 버튼 기능 추가 필요
           IconButton(onPressed: () {}, icon: const Icon(Icons.menu)),
         ],
       ),
       body: Column(
         children: [
-          ListView.builder(
-              shrinkWrap: true,
-              itemBuilder: (context, index) {
-                return GestureDetector(
-                  onTap: () {
-                    _showMessageOptions(
-                        context, viewModel, targetChatData, index);
-                  },
-                  child: Text(targetChatData.messageList![index].message),
-                );
-              },
-              itemCount: targetChatData.messageList?.length ?? 0),
+          Expanded(
+            child: ListView.builder(
+                itemBuilder: (context, index) {
+                  return GestureDetector(
+                    onTap: () {
+                      _showMessageOptions(
+                          context, viewModel, targetChatData, index);
+                    },
+                    child: Text(targetChatData.messageList![index].message),
+                  );
+                },
+                itemCount: targetChatData.messageList?.length ?? 0),
+          ),
+          // TODO: 아직 미완성
+          ConstrainedBox(
+            constraints: const BoxConstraints(maxHeight: 120),
+            child: Container(
+              color: Colors.white,
+              child: Row(
+                children: [
+                  IconButton(
+                    // TODO: 미디어 파일 업로드 기능 필요
+                    onPressed: () {},
+                    icon: const Icon(Icons.add),
+                    color: Colors.grey,
+                  ),
+                  Expanded(
+                    child: TextField(
+                      controller: inputTextController,
+                      maxLines: null,
+                      decoration: const InputDecoration(
+                        border: InputBorder.none, // 밑줄 제거
+                      ),
+                    ),
+                  ),
+                  IconButton(
+                    onPressed: () {},
+                    icon: Image.asset(
+                      'assets/images/kid.png',
+                      width: 33,
+                      height: 33,
+                      color: Colors.grey,
+                    ),
+                  ),
+                  IconButton(
+                    onPressed: () {},
+                    icon: const Text(
+                      '＃',
+                      style: TextStyle(
+                          fontSize: 22,
+                          color: Colors.grey,
+                          fontWeight: FontWeight.w500),
+                    ),
+                  )
+                ],
+              ),
+            ),
+          ),
           TextButton(
             onPressed: () {
               viewModel.addMessage(
@@ -159,7 +208,7 @@ class _ChatScreenState extends ConsumerState<ChatScreen> {
               );
             },
             child: const Text("추가하기"),
-          )
+          ),
         ],
       ),
     );
