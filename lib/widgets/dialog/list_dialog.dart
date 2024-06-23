@@ -10,7 +10,7 @@ void showListDialog({
 }) {
   Widget buildDialog(BuildContext ctx) {
     return AlertDialog(
-      title: Text(title ?? ""),
+      title: title != null ? Text(title) : null,
       content: SizedBox(
         height: 50 * listItemModel.length.toDouble(),
         width: 200,

@@ -22,11 +22,11 @@ class _ChatListScreen extends ConsumerState<ChatListScreen> {
         child: chatData != null
             ? Column(
                 children: chatData.chatRoom!.entries
-                    .map((chatInfo) => ChatRoomListItem(
-                          chat: chatInfo.value,
+                    .map((flattenChatData) => ChatRoomListItem(
+                          chat: flattenChatData.value,
                           clickChatRoomListItem: () {
                             centerNavigateStateful(
-                                context, ChatScreen(chatId: chatInfo.key));
+                                context, ChatScreen(chatId: flattenChatData.key));
                           },
                         ))
                     .toList())

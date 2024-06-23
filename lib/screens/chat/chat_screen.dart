@@ -1,15 +1,13 @@
-import 'dart:ui';
-
 import 'package:flutter/material.dart';
 import 'package:flutter_riverpod/flutter_riverpod.dart';
 import 'package:self_talk/colors/default_color.dart';
 import 'package:self_talk/models/chat.dart';
+import 'package:self_talk/models/friend.dart';
 import 'package:self_talk/models/list_item_model.dart';
 import 'package:self_talk/viewModel/chat_viewModel.dart';
 import 'package:self_talk/widgets/dialog/common_time_picker_dialog.dart';
 import 'package:self_talk/widgets/dialog/list_dialog.dart';
 import 'package:self_talk/widgets/dialog/modify_message_dialog.dart';
-import 'package:uuid/uuid.dart';
 
 class ChatScreen extends ConsumerStatefulWidget {
   final String? chatId;
@@ -21,16 +19,18 @@ class ChatScreen extends ConsumerStatefulWidget {
 }
 
 class _ChatScreenState extends ConsumerState<ChatScreen> {
-  late final String? chatId;
+  late final String? currentChatRoomId;
+  Friend? currentSelectedFriend;
 
   @override
   void initState() {
     super.initState();
-    chatId = widget.chatId ?? const Uuid().v4();
+    currentChatRoomId = widget.chatId;
+    currentSelectedFriend = null;
   }
 
-  void _showMessageOptions(BuildContext context, ChatViewModel viewModel,
-      Chat targetChatData, int index) {
+  /// 메시지 클릭 시 나오는 옵션 및 기능을 dialog로 표시
+  void _showMessageOptions(ChatViewModel viewModel, Chat targetChatData, int index) {
     final Message message = targetChatData.messageList![index];
 
     showListDialog(
@@ -46,14 +46,30 @@ class _ChatScreenState extends ConsumerState<ChatScreen> {
           clickEvent: () => _showModifyMessageDialog(viewModel, message, index),
         ),
         ListItemModel(
-            itemTitle: "삭제하기",
-            clickEvent: () => viewModel.deleteMessage(
-                chatId: chatId!, messageIndex: index, message: message)),
+          itemTitle: "삭제하기",
+          clickEvent: () => viewModel.deleteMessage(
+              chatId: currentChatRoomId!,
+              messageIndex: index,
+              message: message),
+        ),
       ],
     );
   }
 
-  /// TimePicker로 시간 바꾸기
+  void _showFriendSelectionDialog(Friend me, Chat targetChatData) {
+    showListDialog(context: context, listItemModel: [
+      for (var friend in targetChatData.chatMember)
+        ListItemModel(
+          itemTitle: friend.name == me.name ? "(자신)${friend.name}" : friend.name,
+          clickEvent: () {
+            currentSelectedFriend = friend;
+            setState(() {});
+          },
+        )
+    ]);
+  }
+
+  /// TimePicker로 메시지의 시간 바꾸기
   Future _showTimePickerDialog(
     ChatViewModel viewModel,
     Message message,
@@ -64,7 +80,7 @@ class _ChatScreenState extends ConsumerState<ChatScreen> {
 
     if (pickedTime != null) {
       viewModel.updateMessage(
-          chatId: chatId!,
+          chatId: currentChatRoomId!,
           messageIndex: index,
           message: message.copyWith(messageTime: pickedTime));
     }
@@ -86,14 +102,14 @@ class _ChatScreenState extends ConsumerState<ChatScreen> {
     );
   }
 
-  /// DB의 Message 업데이트
+  /// DB의 Message 데이터 업데이트
   void _updateMessage(
     ChatViewModel viewModel,
     Message message,
     int index,
   ) {
     viewModel.updateMessage(
-      chatId: chatId!,
+      chatId: currentChatRoomId!,
       messageIndex: index,
       message: Message(
         friendId: message.friendId,
@@ -105,13 +121,14 @@ class _ChatScreenState extends ConsumerState<ChatScreen> {
       ),
     );
   }
+  final inputTextController = TextEditingController();
 
   @override
   Widget build(BuildContext context) {
     final viewModel = ref.watch(chatViewModelProvider.notifier);
     final wholeChatList = ref.watch(chatViewModelProvider);
-    final Chat targetChatData = wholeChatList!.chatRoom![chatId]!;
-    final inputTextController = TextEditingController();
+    final Chat targetChatData = wholeChatList!.chatRoom![currentChatRoomId]!;
+    final me = targetChatData.chatMember.firstWhere((friend) => friend.me == 1);
 
     return Scaffold(
       backgroundColor: defaultBackground,
@@ -119,18 +136,21 @@ class _ChatScreenState extends ConsumerState<ChatScreen> {
         backgroundColor: defaultBackground,
         title: Row(
           children: [
-            Text(targetChatData.title ?? ""),
+            Text(
+              targetChatData.title ?? "",
+              style: const TextStyle(fontWeight: FontWeight.bold),
+            ),
             const SizedBox(width: 5),
             Text(
               targetChatData.chatMember.length.toString(),
               style: const TextStyle(
-                  color: Colors.grey, fontWeight: FontWeight.bold),
+                  color: Colors.grey, fontWeight: FontWeight.w600),
             )
           ],
         ),
         actions: [
           IconButton(onPressed: () {}, icon: const Icon(Icons.search_outlined)),
-          // TODO: 메뉴 버튼 기능 추가 필요
+          // TODO: 메뉴 버튼 기능(대화상대 초대, 캡처용으로 전환 등) 추가 필요
           IconButton(onPressed: () {}, icon: const Icon(Icons.menu)),
         ],
       ),
@@ -141,13 +161,29 @@ class _ChatScreenState extends ConsumerState<ChatScreen> {
                 itemBuilder: (context, index) {
                   return GestureDetector(
                     onTap: () {
-                      _showMessageOptions(
-                          context, viewModel, targetChatData, index);
+                      _showMessageOptions(viewModel, targetChatData, index);
                     },
                     child: Text(targetChatData.messageList![index].message),
                   );
                 },
                 itemCount: targetChatData.messageList?.length ?? 0),
+          ),
+          Row(
+            mainAxisAlignment: MainAxisAlignment.center,
+            children: [
+              const Text("현재 채팅 유저: "),
+              TextButton(
+                onPressed: () {
+                  _showFriendSelectionDialog(me, targetChatData);
+                },
+                child: Text(
+                  currentSelectedFriend != null
+                      ? me == currentSelectedFriend ? "(자신)${currentSelectedFriend!.name}" : currentSelectedFriend!.name
+                      : "선택된 친구 없음",
+                  style: const TextStyle(fontWeight: FontWeight.bold),
+                ),
+              )
+            ],
           ),
           // TODO: 아직 미완성
           ConstrainedBox(
@@ -164,11 +200,21 @@ class _ChatScreenState extends ConsumerState<ChatScreen> {
                   ),
                   Expanded(
                     child: TextField(
+                      onTapOutside: (pointerDownEvent) {
+                        FocusManager.instance.primaryFocus?.unfocus();
+                      },
                       controller: inputTextController,
                       maxLines: null,
                       decoration: const InputDecoration(
                         border: InputBorder.none, // 밑줄 제거
                       ),
+                      onChanged: (text) {
+                        // 뭔가를 입력하면 보내기 버튼으로 바꾸기
+                        if (text.isNotEmpty) {
+                          inputTextController.text = text;
+                          // TODO: 메시지 보내기 기능 넣기 & 보내기 버튼 디자인으로 바꾸는 기능
+                        }
+                      },
                     ),
                   ),
                   IconButton(
@@ -197,7 +243,7 @@ class _ChatScreenState extends ConsumerState<ChatScreen> {
           TextButton(
             onPressed: () {
               viewModel.addMessage(
-                chatId: chatId ?? "",
+                chatId: currentChatRoomId ?? "",
                 message: Message(
                   friendId: '1',
                   messageTime: DateTime.now().add(const Duration(minutes: 1)),
