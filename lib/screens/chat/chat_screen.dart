@@ -148,7 +148,7 @@ class _ChatScreenState extends ConsumerState<ChatScreen> {
     }
   }
 
-  final inputTextController = TextEditingController();
+  final _inputTextController = TextEditingController();
 
   @override
   Widget build(BuildContext context) {
@@ -181,115 +181,119 @@ class _ChatScreenState extends ConsumerState<ChatScreen> {
           IconButton(onPressed: () {}, icon: const Icon(Icons.menu)),
         ],
       ),
-      body: Column(
-        children: [
-          Expanded(
-            child: ListView.builder(
-                itemBuilder: (context, index) {
-                  return GestureDetector(
-                    onTap: () {
-                      _showMessageOptions(viewModel, targetChatData, index);
-                    },
-                    child: Text(targetChatData.messageList![index].message),
-                  );
-                },
-                itemCount: targetChatData.messageList?.length ?? 0),
-          ),
-          Row(
-            mainAxisAlignment: MainAxisAlignment.center,
-            children: [
-              const Text("현재 채팅 유저: "),
-              TextButton(
-                onPressed: () {
-                  _showFriendSelectionDialog(me, targetChatData);
-                },
-                child: Text(
-                  currentSelectedFriend != null
-                      ? me == currentSelectedFriend
-                          ? "(자신)${currentSelectedFriend!.name}"
-                          : currentSelectedFriend!.name
-                      : "선택된 친구 없음",
-                  style: const TextStyle(fontWeight: FontWeight.bold),
-                ),
-              )
-            ],
-          ),
-          // TODO: 기능 부분 아직 미완성 & 디자인 부분은 거의 완성한듯?
-          ConstrainedBox(
-            constraints: const BoxConstraints(maxHeight: 120),
-            child: Container(
-              color: Colors.white,
-              // IntrinsicHeight를 사용하면 Row 위젯의 자식의 height도 같이 커지게 할 수 있다.
-              child: IntrinsicHeight(
-                child: Row(
-                  // IntrinsicHeight을 사용함과 동시에 CrossAxisAlignment.stretch도 적용해야한다.
-                  crossAxisAlignment: CrossAxisAlignment.stretch,
-                  children: [
-                    IconButton(
-                      // TODO: 미디어 파일 업로드 기능 필요
-                      onPressed: () {},
-                      icon: const Icon(Icons.add),
-                      color: Colors.grey,
-                    ),
-                    Expanded(
-                      child: TextField(
-                        onTapOutside: (pointerDownEvent) {
-                          FocusManager.instance.primaryFocus?.unfocus();
-                        },
-                        controller: inputTextController,
-                        maxLines: null,
-                        decoration: const InputDecoration(
-                          border: InputBorder.none,
-                        ),
-                        onChanged: (text) {
-                          ref.read(_messageInputProvider.notifier).state = text;
-                        },
-                      ),
-                    ),
-                    IconButton(
-                      onPressed: () {},
-                      icon: Image.asset(
-                        'assets/images/kid.png',
-                        width: 34,
-                        height: 34,
+      body: GestureDetector(
+        onTap: () {
+          FocusManager.instance.primaryFocus?.unfocus();
+        },
+        child: Column(
+          children: [
+            Expanded(
+              child: ListView.builder(
+                  itemBuilder: (context, index) {
+                    return GestureDetector(
+                      onTap: () {
+                        _showMessageOptions(viewModel, targetChatData, index);
+                      },
+                      child: Text(targetChatData.messageList![index].message),
+                    );
+                  },
+                  itemCount: targetChatData.messageList?.length ?? 0),
+            ),
+            Row(
+              mainAxisAlignment: MainAxisAlignment.center,
+              children: [
+                const Text("현재 채팅 유저: "),
+                TextButton(
+                  onPressed: () {
+                    _showFriendSelectionDialog(me, targetChatData);
+                  },
+                  child: Text(
+                    currentSelectedFriend != null
+                        ? me == currentSelectedFriend
+                            ? "(자신)${currentSelectedFriend!.name}"
+                            : currentSelectedFriend!.name
+                        : "선택된 친구 없음",
+                    style: const TextStyle(fontWeight: FontWeight.bold),
+                  ),
+                )
+              ],
+            ),
+            // TODO: 기능 부분 아직 미완성 & 디자인 부분은 거의 완성한듯?
+            ConstrainedBox(
+              constraints: const BoxConstraints(maxHeight: 120),
+              child: Container(
+                color: Colors.white,
+                // IntrinsicHeight를 사용하면 Row 위젯의 자식의 height도 같이 커지게 할 수 있다.
+                child: IntrinsicHeight(
+                  child: Row(
+                    // IntrinsicHeight을 사용함과 동시에 CrossAxisAlignment.stretch도 적용해야한다.
+                    crossAxisAlignment: CrossAxisAlignment.stretch,
+                    children: [
+                      IconButton(
+                        // TODO: 미디어 파일 업로드 기능 필요
+                        onPressed: () {},
+                        icon: const Icon(Icons.add),
                         color: Colors.grey,
                       ),
-                    ),
-                    Consumer(builder: (context, ref, child) {
-                      var messageText = ref.watch(_messageInputProvider);
-                      if (messageText.isEmpty) {
-                        return Container(
-                          padding: const EdgeInsets.all(13),
-                          child: SvgPicture.asset(
-                            'assets/images/sharp.svg',
-                            width: 20,
-                            colorFilter: const ColorFilter.mode(
-                                Colors.grey, BlendMode.srcIn),
+                      Expanded(
+                        child: TextField(
+                          controller: _inputTextController,
+                          maxLines: null,
+                          decoration: const InputDecoration(
+                            border: InputBorder.none,
                           ),
-                        );
-                      } else {
-                        return GestureDetector(
-                          onTap: () {
-                            _sendMessage(viewModel: viewModel, message: messageText, me: me);
-                            messageText = "";
+                          onChanged: (text) {
+                            ref.read(_messageInputProvider.notifier).state = text;
                           },
-                          child: Container(
+                        ),
+                      ),
+                      IconButton(
+                        onPressed: () {},
+                        icon: Image.asset(
+                          'assets/images/kid.png',
+                          width: 34,
+                          height: 34,
+                          color: Colors.grey,
+                        ),
+                      ),
+                      Consumer(builder: (context, ref, child) {
+                        var messageText = ref.watch(_messageInputProvider);
+                        if (messageText.isEmpty) {
+                          return Container(
                             padding: const EdgeInsets.all(13),
-                            alignment: Alignment.bottomCenter,
-                            decoration:
-                                const BoxDecoration(color: defaultYellow),
-                            child: const Icon(
-                                size: 20, Icons.send, color: Colors.black),
-                          ),
-                        );
-                      }
-                    })
-                  ],
+                            child: SvgPicture.asset(
+                              'assets/images/sharp.svg',
+                              width: 20,
+                              colorFilter: const ColorFilter.mode(
+                                  Colors.grey, BlendMode.srcIn),
+                            ),
+                          );
+                        } else {
+                          return GestureDetector(
+                            onTap: () {
+                              _sendMessage(viewModel: viewModel, message: messageText, me: me);
+                              // 보낸 후 TextInput 초기화
+                              ref.read(_messageInputProvider.notifier).state = "";
+                              _inputTextController.text = "";
+                            },
+                            child: Container(
+                              padding: const EdgeInsets.all(13),
+                              alignment: Alignment.bottomCenter,
+                              decoration:
+                                  const BoxDecoration(color: defaultYellow),
+                              child: const Icon(
+                                  size: 20, Icons.send, color: Colors.black),
+                            ),
+                          );
+                        }
+                      })
+                    ],
+                  ),
                 ),
               ),
             ),
-          ),
-        ],
+          ],
+        ),
       ),
     );
   }
