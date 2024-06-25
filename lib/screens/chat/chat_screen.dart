@@ -6,6 +6,7 @@ import 'package:self_talk/models/chat.dart';
 import 'package:self_talk/models/friend.dart';
 import 'package:self_talk/models/list_item_model.dart';
 import 'package:self_talk/viewModel/chat_viewModel.dart';
+import 'package:self_talk/widgets/common/utils.dart';
 import 'package:self_talk/widgets/dialog/common_time_picker_dialog.dart';
 import 'package:self_talk/widgets/dialog/list_dialog.dart';
 import 'package:self_talk/widgets/dialog/modify_message_dialog.dart';
@@ -126,6 +127,27 @@ class _ChatScreenState extends ConsumerState<ChatScreen> {
     );
   }
 
+  void _sendMessage({
+    required ChatViewModel viewModel,
+    required String message,
+    required Friend me,
+  }) {
+    if (currentSelectedFriend != null) {
+      viewModel.addMessage(
+        chatId: currentChatRoomId!,
+        message: Message(
+          friendId: currentSelectedFriend!.id,
+          messageTime: DateTime.now(),
+          message: message,
+          messageType: MessageType.message,
+          isMe: me.name == currentSelectedFriend!.name ? true : false,
+        ),
+      );
+    } else {
+      showToast("먼저 메시지를 보낼 친구를 선택하세요");
+    }
+  }
+
   final inputTextController = TextEditingController();
 
   @override
@@ -234,7 +256,7 @@ class _ChatScreenState extends ConsumerState<ChatScreen> {
                       ),
                     ),
                     Consumer(builder: (context, ref, child) {
-                      final messageText = ref.watch(_messageInputProvider);
+                      var messageText = ref.watch(_messageInputProvider);
                       if (messageText.isEmpty) {
                         return Container(
                           padding: const EdgeInsets.all(13),
@@ -247,7 +269,10 @@ class _ChatScreenState extends ConsumerState<ChatScreen> {
                         );
                       } else {
                         return GestureDetector(
-                          onTap: () {},
+                          onTap: () {
+                            _sendMessage(viewModel: viewModel, message: messageText, me: me);
+                            messageText = "";
+                          },
                           child: Container(
                             padding: const EdgeInsets.all(13),
                             alignment: Alignment.bottomCenter,
@@ -263,21 +288,6 @@ class _ChatScreenState extends ConsumerState<ChatScreen> {
                 ),
               ),
             ),
-          ),
-          TextButton(
-            onPressed: () {
-              viewModel.addMessage(
-                chatId: currentChatRoomId ?? "",
-                message: Message(
-                  friendId: '1',
-                  messageTime: DateTime.now().add(const Duration(minutes: 1)),
-                  message: '반갑습니다22',
-                  messageType: MessageType.message,
-                  isMe: false,
-                ),
-              );
-            },
-            child: const Text("추가하기"),
           ),
         ],
       ),
