@@ -13,7 +13,7 @@ import 'package:self_talk/widgets/dialog/modify_message_dialog.dart';
 class ChatScreen extends ConsumerStatefulWidget {
   final String? chatId;
 
-  const ChatScreen({this.chatId, super.key});
+  const ChatScreen({this.chatId, Key? key}) : super(key: key);
 
   @override
   ConsumerState<ConsumerStatefulWidget> createState() => _ChatScreenState();
@@ -74,7 +74,7 @@ class _ChatScreenState extends ConsumerState<ChatScreen> {
   }
 
   /// TimePicker로 메시지의 시간 바꾸기
-  Future _showTimePickerDialog(
+  Future<void> _showTimePickerDialog(
     ChatViewModel viewModel,
     Message message,
     int index,
@@ -195,73 +195,73 @@ class _ChatScreenState extends ConsumerState<ChatScreen> {
           // TODO: 기능 부분 아직 미완성 & 디자인 부분은 거의 완성한듯?
           ConstrainedBox(
             constraints: const BoxConstraints(maxHeight: 120),
-            child: Consumer(
-              builder: (context, ref, child) {
-                final messageText = ref.watch(_messageInputProvider);
-                return Container(
-                  color: Colors.white,
-                  // IntrinsicHeight를 사용하면 Row 위젯의 자식의 height도 같이 커지게 할 수 있다.
-                  child: IntrinsicHeight(
-                    child: Row(
-                        // IntrinsicHeight을 사용함과 동시에 CrossAxisAlignment.stretch도 적용해야한다.
-                        crossAxisAlignment: CrossAxisAlignment.stretch,
-                      children: [
-                        IconButton(
-                          // TODO: 미디어 파일 업로드 기능 필요
-                          onPressed: () {},
-                          icon: const Icon(Icons.add),
-                          color: Colors.grey,
+            child: Container(
+              color: Colors.white,
+              // IntrinsicHeight를 사용하면 Row 위젯의 자식의 height도 같이 커지게 할 수 있다.
+              child: IntrinsicHeight(
+                child: Row(
+                  // IntrinsicHeight을 사용함과 동시에 CrossAxisAlignment.stretch도 적용해야한다.
+                  crossAxisAlignment: CrossAxisAlignment.stretch,
+                  children: [
+                    IconButton(
+                      // TODO: 미디어 파일 업로드 기능 필요
+                      onPressed: () {},
+                      icon: const Icon(Icons.add),
+                      color: Colors.grey,
+                    ),
+                    Expanded(
+                      child: TextField(
+                        onTapOutside: (pointerDownEvent) {
+                          FocusManager.instance.primaryFocus?.unfocus();
+                        },
+                        controller: inputTextController,
+                        maxLines: null,
+                        decoration: const InputDecoration(
+                          border: InputBorder.none,
                         ),
-                        Expanded(
-                          child: TextField(
-                            onTapOutside: (pointerDownEvent) {
-                              FocusManager.instance.primaryFocus?.unfocus();
-                            },
-                            controller: inputTextController,
-                            maxLines: null,
-                            decoration: const InputDecoration(
-                              border: InputBorder.none, // 밑줄 제거
-                            ),
-                            onChanged: (text) {
-                              // 뭔가를 입력하면 보내기 버튼으로 바꾸기
-                              if (text.isNotEmpty) {
-                                inputTextController.text = text;
-                                // TODO: 메시지 보내기 기능 넣기 추가 해야함
-                              }
-                              ref.read(_messageInputProvider.notifier).state = text;
-                            },
-                          ),
-                        ),
-                        IconButton(
-                          onPressed: () {},
-                          icon: Image.asset(
-                            'assets/images/kid.png',
-                            width: 34,
-                            height: 34,
-                            color: Colors.grey,
-                          ),
-                        ),
-                        if (messageText.isEmpty) Container(
+                        onChanged: (text) {
+                          ref.read(_messageInputProvider.notifier).state = text;
+                        },
+                      ),
+                    ),
+                    IconButton(
+                      onPressed: () {},
+                      icon: Image.asset(
+                        'assets/images/kid.png',
+                        width: 34,
+                        height: 34,
+                        color: Colors.grey,
+                      ),
+                    ),
+                    Consumer(builder: (context, ref, child) {
+                      final messageText = ref.watch(_messageInputProvider);
+                      if (messageText.isEmpty) {
+                        return Container(
                           padding: const EdgeInsets.all(13),
                           child: SvgPicture.asset(
-                              'assets/images/sharp.svg',
-                              width: 20,
-                              colorFilter: const ColorFilter.mode(Colors.grey, BlendMode.srcIn),
+                            'assets/images/sharp.svg',
+                            width: 20,
+                            colorFilter: const ColorFilter.mode(
+                                Colors.grey, BlendMode.srcIn),
                           ),
-                        ) else GestureDetector(
+                        );
+                      } else {
+                        return GestureDetector(
                           onTap: () {},
                           child: Container(
                             padding: const EdgeInsets.all(13),
                             alignment: Alignment.bottomCenter,
-                            decoration: const BoxDecoration(color: defaultYellow),
-                            child: Icon(size: 20, Icons.send, color: Colors.black),
+                            decoration:
+                                const BoxDecoration(color: defaultYellow),
+                            child: const Icon(
+                                size: 20, Icons.send, color: Colors.black),
                           ),
-                        ),
-                      ],
-                    ),
-                  ),
-                );
-              },
+                        );
+                      }
+                    })
+                  ],
+                ),
+              ),
             ),
           ),
           TextButton(
