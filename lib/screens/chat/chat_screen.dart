@@ -1,4 +1,5 @@
 import 'package:flutter/material.dart';
+import 'package:flutter_chat_bubble/chat_bubble.dart';
 import 'package:flutter_riverpod/flutter_riverpod.dart';
 import 'package:flutter_svg/flutter_svg.dart';
 import 'package:self_talk/colors/default_color.dart';
@@ -6,6 +7,7 @@ import 'package:self_talk/models/chat.dart';
 import 'package:self_talk/models/friend.dart';
 import 'package:self_talk/models/list_item_model.dart';
 import 'package:self_talk/viewModel/chat_viewModel.dart';
+import 'package:self_talk/widgets/chat/message_bubble.dart';
 import 'package:self_talk/widgets/common/utils.dart';
 import 'package:self_talk/widgets/dialog/common_time_picker_dialog.dart';
 import 'package:self_talk/widgets/dialog/list_dialog.dart';
@@ -194,7 +196,13 @@ class _ChatScreenState extends ConsumerState<ChatScreen> {
                       onTap: () {
                         _showMessageOptions(viewModel, targetChatData, index);
                       },
-                      child: Text(targetChatData.messageList![index].message),
+                      child: ChatBubble(
+                        clipper:
+                            ChatBubbleClipper12(type: BubbleType.receiverBubble),
+                        backGroundColor: Color(0xffE7E7ED),
+                        margin: EdgeInsets.only(top: 20),
+                        child: Text(targetChatData.messageList![index].message),
+                      ),
                     );
                   },
                   itemCount: targetChatData.messageList?.length ?? 0),
@@ -243,7 +251,8 @@ class _ChatScreenState extends ConsumerState<ChatScreen> {
                             border: InputBorder.none,
                           ),
                           onChanged: (text) {
-                            ref.read(_messageInputProvider.notifier).state = text;
+                            ref.read(_messageInputProvider.notifier).state =
+                                text;
                           },
                         ),
                       ),
@@ -271,9 +280,13 @@ class _ChatScreenState extends ConsumerState<ChatScreen> {
                         } else {
                           return GestureDetector(
                             onTap: () {
-                              _sendMessage(viewModel: viewModel, message: messageText, me: me);
+                              _sendMessage(
+                                  viewModel: viewModel,
+                                  message: messageText,
+                                  me: me);
                               // 보낸 후 TextInput 초기화
-                              ref.read(_messageInputProvider.notifier).state = "";
+                              ref.read(_messageInputProvider.notifier).state =
+                                  "";
                               _inputTextController.text = "";
                             },
                             child: Container(
