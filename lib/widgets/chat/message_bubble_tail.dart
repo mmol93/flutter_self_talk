@@ -7,6 +7,7 @@ class ChatBubbleClipper11 extends CustomClipper<Path> {
   final double nipSize;
   final double sizeRatio;
 
+  /// 꼬리가 있는 메시비 버블
   ChatBubbleClipper11({
     this.type,
     this.radius = 15,
@@ -17,7 +18,6 @@ class ChatBubbleClipper11 extends CustomClipper<Path> {
   @override
   Path getClip(Size size) {
     var path = Path();
-
     if (type == BubbleType.sendBubble) {
       path.moveTo(radius, size.height);
       path.lineTo(size.width - radius - nipSize, size.height);

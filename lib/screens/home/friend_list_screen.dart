@@ -123,7 +123,7 @@ class _FriendListScreen extends ConsumerState<FriendListScreen> {
                                 messageList: null,
                                 chatMember: [friend, myProfile.first],
                                 modifiedDate: DateTime.now(),
-                              ).createEmptyChat();
+                              ).createEmptyChatRoom();
                               chatViewModel.createChatRoom({uuid: initChat});
                               // TODO: 방 만들고 해당 방으로 진입하게 해야함
 

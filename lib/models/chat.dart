@@ -79,7 +79,8 @@ class Chat {
     }
   }
 
-  Chat createEmptyChat() {
+  /// 빈 채팅방을 만든다.
+  Chat createEmptyChatRoom() {
     String initTitle = "";
     for (var indexedValue in chatMember.indexed) {
       if (indexedValue.$2.me == 0) {
@@ -99,6 +100,66 @@ class Chat {
         messageList: null,
         chatMember: chatMember,
         modifiedDate: DateTime.now());
+  }
+
+  String? getFriendName(String friendId) {
+    try {
+      return chatMember.firstWhere((friend) => friend.me == 0).name;
+    } catch (e) {
+      return null;
+    }
+  }
+
+  /// 채팅의 메시지 버블에서 날짜를 표시할지 말지 결정
+  bool shouldShowDate(int targetIndex) {
+    // ** 아래 조건 순서 바꾸면 안됨!! **
+    DateFormat formatter = DateFormat('yyyy.MM.dd-HH:mm');
+
+    // 채팅 내역의 마지막 메시지면 무조건 날짜를 표시
+    if (messageList?.isNotEmpty == true &&
+        targetIndex == messageList!.length - 1) return true;
+
+    // 다음 채팅의 사람이 서로 다르면 날짜 표시하기
+    if (messageList![targetIndex + 1].friendId != messageList![targetIndex].friendId) return true;
+
+
+    if (messageList?.isNotEmpty == true && targetIndex + 1 <= messageList!.length - 1 && targetIndex - 1 >= 0) {
+      // 직적 메시지와 날짜 같음 && 다음 메시지와 날짜 다름 = true
+      if (formatter.format(messageList![targetIndex - 1].messageTime) == formatter.format(messageList![targetIndex].messageTime) && formatter.format(messageList![targetIndex + 1].messageTime) != formatter.format(messageList![targetIndex].messageTime)) return true;
+    }
+
+    if (messageList?.isNotEmpty == true &&
+        targetIndex + 1 <= messageList!.length - 1) {
+      // 다음 메시지를 보고 날짜가 같으면 false
+      if (formatter.format(messageList![targetIndex + 1].messageTime) ==
+          formatter.format(messageList![targetIndex].messageTime)) return false;
+    }
+
+    if (targetIndex - 1 >= 0 && messageList?.isNotEmpty == true) {
+      // 직전 메시지와 날짜가 다르거나 보내는 사람이 다르면 true를 반환한다.
+      return formatter.format(messageList![targetIndex].messageTime) !=
+              formatter.format(messageList![targetIndex - 1].messageTime) ||
+          messageList![targetIndex - 1].friendId !=
+              messageList![targetIndex].friendId;
+    }
+
+    /// 첫 메시지 같은 경우에 무조건 시간을 표시해야하니 true
+    return true;
+  }
+
+  /// 채팅의 메시지 버블에서 Tail이 달린 버블을 사용할지 그냥 둥근 버블을 사용할지 결정
+  bool shouldUseTailBubble(int targetIndex) {
+    if (targetIndex - 1 >= 0 && messageList?.isNotEmpty == true) {
+      DateFormat formatter = DateFormat('yyyy.MM.dd-HH:mm');
+      // 직전 메시지와 날짜가 다르거나 보내는 사람이 다르면 true를 반환한다.
+      return formatter.format(messageList![targetIndex].messageTime) !=
+              formatter.format(messageList![targetIndex - 1].messageTime) ||
+          messageList![targetIndex - 1].friendId !=
+              messageList![targetIndex].friendId;
+    }
+
+    /// 첫 메시지 같은 경우에 무조건 시간을 표시해야하니 true
+    return true;
   }
 }
 

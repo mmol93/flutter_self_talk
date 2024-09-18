@@ -1,5 +1,4 @@
 import 'package:flutter/material.dart';
-import 'package:flutter_chat_bubble/chat_bubble.dart';
 import 'package:flutter_riverpod/flutter_riverpod.dart';
 import 'package:flutter_svg/flutter_svg.dart';
 import 'package:self_talk/colors/default_color.dart';
@@ -7,7 +6,8 @@ import 'package:self_talk/models/chat.dart';
 import 'package:self_talk/models/friend.dart';
 import 'package:self_talk/models/list_item_model.dart';
 import 'package:self_talk/viewModel/chat_viewModel.dart';
-import 'package:self_talk/widgets/chat/message_bubble.dart';
+import 'package:self_talk/widgets/chat/message_from_me.dart';
+import 'package:self_talk/widgets/chat/message_from_others.dart';
 import 'package:self_talk/widgets/common/utils.dart';
 import 'package:self_talk/widgets/dialog/common_time_picker_dialog.dart';
 import 'package:self_talk/widgets/dialog/list_dialog.dart';
@@ -54,9 +54,10 @@ class _ChatScreenState extends ConsumerState<ChatScreen> {
         ListItemModel(
           itemTitle: "삭제하기",
           clickEvent: () => viewModel.deleteMessage(
-              chatId: currentChatRoomId!,
-              messageIndex: index,
-              message: message),
+            chatId: currentChatRoomId!,
+            messageIndex: index,
+            message: message,
+          ),
         ),
       ],
     );
@@ -196,13 +197,32 @@ class _ChatScreenState extends ConsumerState<ChatScreen> {
                       onTap: () {
                         _showMessageOptions(viewModel, targetChatData, index);
                       },
-                      child: ChatBubble(
-                        clipper:
-                            ChatBubbleClipper12(type: BubbleType.receiverBubble),
-                        backGroundColor: Color(0xffE7E7ED),
-                        margin: EdgeInsets.only(top: 20),
-                        child: Text(targetChatData.messageList![index].message),
-                      ),
+                      child: targetChatData.messageList![index].isMe
+                          ? Padding(
+                            padding: const EdgeInsets.fromLTRB(0, 5, 4, 0),
+                            child: MessageFromMe(
+                                shouldUseTailBubble:
+                                    targetChatData.shouldUseTailBubble(index),
+                                showDate: targetChatData.shouldShowDate(index),
+                                date: targetChatData
+                                    .messageList![index].messageTime,
+                                message:
+                                    targetChatData.messageList![index].message,
+                              ),
+                          )
+                          : Padding(
+                            padding: const EdgeInsets.fromLTRB(4, 5, 0, 0),
+                            child: MessageFromOthers(
+                                shouldUseTailBubble:
+                                    targetChatData.shouldUseTailBubble(index),
+                                showDate: targetChatData.shouldShowDate(index),
+                                date: targetChatData
+                                    .messageList![index].messageTime,
+                                message:
+                                    targetChatData.messageList![index].message,
+                                friendName: targetChatData.getFriendName(targetChatData.messageList![index].friendId) ?? "(알 수 없음)",
+                              ),
+                          ),
                     );
                   },
                   itemCount: targetChatData.messageList?.length ?? 0),

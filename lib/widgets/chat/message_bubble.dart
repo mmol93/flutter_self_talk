@@ -5,6 +5,7 @@ class ChatBubbleClipper12 extends CustomClipper<Path> {
   final double radius;
   final BubbleType? type;
 
+  /// 일반적인 둥근 메시지 버블
   ChatBubbleClipper12({
     this.type,
     this.radius = 15,
