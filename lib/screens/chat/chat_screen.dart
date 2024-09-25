@@ -38,6 +38,7 @@ class _ChatScreenState extends ConsumerState<ChatScreen> {
   @override
   void dispose() {
     // 사용하던 observer, controller 해제
+    _scrollController.dispose();
     _inputTextController.dispose();
     super.dispose();
   }
@@ -144,6 +145,11 @@ class _ChatScreenState extends ConsumerState<ChatScreen> {
     required Friend me,
   }) {
     if (currentSelectedFriend != null) {
+      WidgetsBinding.instance.addPostFrameCallback((_) {
+        // ListView에 reverse를 적용했으니 0.0으로 가게 해야 제일 밑으로 간다.
+        _scrollController.jumpTo(0.0);
+      });
+
       viewModel.addMessage(
         chatId: currentChatRoomId!,
         message: Message(
@@ -160,7 +166,9 @@ class _ChatScreenState extends ConsumerState<ChatScreen> {
   }
 
   final _inputTextController = TextEditingController();
+  final ScrollController _scrollController = ScrollController();
   int reversedChatIndex = 0;
+
 
   @override
   Widget build(BuildContext context) {
@@ -204,6 +212,7 @@ class _ChatScreenState extends ConsumerState<ChatScreen> {
                   reverse: true,
                   shrinkWrap: true,
                   padding: const EdgeInsets.symmetric(vertical: 8, horizontal: 0),
+                  controller: _scrollController,
                   itemBuilder: (context, index) {
                     // ListView에서 reverse를 true로 했기 때문에 사용하는 데이터도 reverse 처리를 해서 사용한다.
                     reversedChatIndex = (targetChatData.messageList?.length ?? 0)- index - 1;
