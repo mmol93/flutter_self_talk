@@ -1,3 +1,4 @@
+
 import 'package:flutter/material.dart';
 import 'package:flutter_riverpod/flutter_riverpod.dart';
 import 'package:flutter_svg/flutter_svg.dart';
@@ -32,6 +33,13 @@ class _ChatScreenState extends ConsumerState<ChatScreen> {
     super.initState();
     currentChatRoomId = widget.chatId;
     currentSelectedFriend = null;
+  }
+
+  @override
+  void dispose() {
+    // 사용하던 observer, controller 해제
+    _inputTextController.dispose();
+    super.dispose();
   }
 
   /// 메시지 클릭 시 나오는 옵션 및 기능을 dialog로 표시
@@ -152,6 +160,7 @@ class _ChatScreenState extends ConsumerState<ChatScreen> {
   }
 
   final _inputTextController = TextEditingController();
+  int reversedChatIndex = 0;
 
   @override
   Widget build(BuildContext context) {
@@ -192,37 +201,35 @@ class _ChatScreenState extends ConsumerState<ChatScreen> {
           children: [
             Expanded(
               child: ListView.builder(
+                  reverse: true,
+                  shrinkWrap: true,
+                  padding: const EdgeInsets.symmetric(vertical: 8, horizontal: 0),
                   itemBuilder: (context, index) {
+                    // ListView에서 reverse를 true로 했기 때문에 사용하는 데이터도 reverse 처리를 해서 사용한다.
+                    reversedChatIndex = (targetChatData.messageList?.length ?? 0)- index - 1;
+
                     return GestureDetector(
-                      onTap: () {
-                        _showMessageOptions(viewModel, targetChatData, index);
-                      },
-                      child: targetChatData.messageList![index].isMe
+                      onTap: () {_showMessageOptions(viewModel, targetChatData, reversedChatIndex);},
+                      child: targetChatData.messageList![reversedChatIndex].isMe
                           ? Padding(
-                            padding: const EdgeInsets.fromLTRB(0, 5, 4, 0),
-                            child: MessageFromMe(
-                                shouldUseTailBubble:
-                                    targetChatData.shouldUseTailBubble(index),
-                                showDate: targetChatData.shouldShowDate(index),
-                                date: targetChatData
-                                    .messageList![index].messageTime,
-                                message:
-                                    targetChatData.messageList![index].message,
+                              padding: const EdgeInsets.fromLTRB(0, 5, 4, 0),
+                              child: MessageFromMe(
+                                shouldUseTailBubble: targetChatData.shouldUseTailBubble(reversedChatIndex),
+                                showDate: targetChatData.shouldShowDate(reversedChatIndex),
+                                date: targetChatData.messageList![reversedChatIndex].messageTime,
+                                message: targetChatData.messageList![reversedChatIndex].message,
                               ),
-                          )
+                            )
                           : Padding(
-                            padding: const EdgeInsets.fromLTRB(4, 5, 0, 0),
-                            child: MessageFromOthers(
-                                shouldUseTailBubble:
-                                    targetChatData.shouldUseTailBubble(index),
-                                showDate: targetChatData.shouldShowDate(index),
-                                date: targetChatData
-                                    .messageList![index].messageTime,
-                                message:
-                                    targetChatData.messageList![index].message,
-                                friendName: targetChatData.getFriendName(targetChatData.messageList![index].friendId) ?? "(알 수 없음)",
+                              padding: const EdgeInsets.fromLTRB(4, 5, 0, 0),
+                              child: MessageFromOthers(
+                                shouldUseTailBubble: targetChatData.shouldUseTailBubble(reversedChatIndex),
+                                showDate: targetChatData.shouldShowDate(reversedChatIndex),
+                                date: targetChatData.messageList![reversedChatIndex].messageTime,
+                                message: targetChatData.messageList![reversedChatIndex].message,
+                                friendName: targetChatData.getFriendName(targetChatData.messageList![reversedChatIndex].friendId) ?? "(알 수 없음)",
                               ),
-                          ),
+                            ),
                     );
                   },
                   itemCount: targetChatData.messageList?.length ?? 0),
