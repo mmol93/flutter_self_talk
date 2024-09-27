@@ -14,11 +14,12 @@ ChatList dummyChatList = ChatList(chatRoom: {
     title: '친구들과의 채팅1',
     messageList: [
       Message(
-        friendId: '1',
+        friendId: '3',
         messageTime: DateTime.now(),
         message: '안녕하세요',
         messageType: MessageType.message,
         isMe: true,
+        notSeenMemberNumber: 0,
       ),
       Message(
         friendId: '2',
@@ -26,6 +27,7 @@ ChatList dummyChatList = ChatList(chatRoom: {
         message: '반갑습니다',
         messageType: MessageType.message,
         isMe: false,
+        notSeenMemberNumber: 0,
       ),
     ],
     chatMember: [
@@ -64,6 +66,7 @@ ChatList dummyChatList = ChatList(chatRoom: {
         message: '안녕하세요',
         messageType: MessageType.message,
         isMe: true,
+        notSeenMemberNumber: 0,
       ),
       Message(
         friendId: '2',
@@ -71,6 +74,7 @@ ChatList dummyChatList = ChatList(chatRoom: {
         message: '반갑습니다',
         messageType: MessageType.message,
         isMe: false,
+        notSeenMemberNumber: 0,
       ),
     ],
     chatMember: [
@@ -102,6 +106,7 @@ ChatList dummyChatList = ChatList(chatRoom: {
         message: '안녕하세요',
         messageType: MessageType.message,
         isMe: true,
+        notSeenMemberNumber: 0,
       ),
       Message(
         friendId: '2',
@@ -109,6 +114,7 @@ ChatList dummyChatList = ChatList(chatRoom: {
         message: '반갑습니다',
         messageType: MessageType.message,
         isMe: false,
+        notSeenMemberNumber: 0,
       ),
     ],
     chatMember: [
@@ -155,6 +161,7 @@ ChatList dummyChatList = ChatList(chatRoom: {
         message: '안녕하세요',
         messageType: MessageType.message,
         isMe: true,
+        notSeenMemberNumber: 0,
       ),
       Message(
         friendId: '2',
@@ -162,6 +169,7 @@ ChatList dummyChatList = ChatList(chatRoom: {
         message: '반갑습니다',
         messageType: MessageType.message,
         isMe: false,
+        notSeenMemberNumber: 0,
       ),
     ],
     chatMember: [
@@ -207,6 +215,7 @@ ChatList dummyChatList = ChatList(chatRoom: {
         message: '안녕하세요',
         messageType: MessageType.message,
         isMe: true,
+        notSeenMemberNumber: 0,
       ),
       Message(
         friendId: '2',
@@ -214,6 +223,7 @@ ChatList dummyChatList = ChatList(chatRoom: {
         message: '반갑습니다',
         messageType: MessageType.message,
         isMe: false,
+        notSeenMemberNumber: 0,
       ),
     ],
     chatMember: [
@@ -284,8 +294,9 @@ class ChatViewModel extends StateNotifier<ChatList?> {
   void addMessage({
     required String chatId,
     required Message message,
+    required bool notSameSpeaker,
   }) async {
-    _chatRepository.addMessage(chatId, message).then((value) => getChatList());
+    _chatRepository.addMessage(chatId, message, notSameSpeaker).then((value) => getChatList());
   }
 
   /// 해당 채팅방에서 특정 메시지 삭제하기

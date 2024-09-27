@@ -1,4 +1,5 @@
 import 'dart:convert';
+
 import 'package:self_talk/models/chat.dart';
 import 'package:self_talk/utils/Typedefs.dart';
 import 'package:shared_preferences/shared_preferences.dart';
@@ -82,19 +83,25 @@ class ChatRepository {
   Future<void> addMessage(
     String chatId,
     Message message,
+    bool notSameSpeaker,
   ) async {
     final prefs = await _initPrefs();
     final chatListJson = prefs.getString('chatList');
     if (chatListJson != null) {
       final chatData = ChatList.fromJson(jsonDecode(chatListJson));
-      final targetChat = chatData.chatRoom![chatId]!;
-      if (targetChat.messageList == null) {
-        targetChat.messageList = [message];
+      final targetChatRoom = chatData.chatRoom![chatId]!;
+      if (targetChatRoom.messageList == null) {
+        targetChatRoom.messageList = [message];
       } else {
-        targetChat.messageList?.add(message);
+        targetChatRoom.messageList?.forEach((message) {
+          if (message.notSeenMemberNumber > 0 && notSameSpeaker) {
+            message.notSeenMemberNumber -= 1;
+          }
+        });
+        targetChatRoom.messageList?.add(message);
       }
-      targetChat.lastMessage = message.message;
-      targetChat.modifiedDate = DateTime.now();
+      targetChatRoom.lastMessage = message.message;
+      targetChatRoom.modifiedDate = DateTime.now();
       await updateChatList(chatData);
     }
   }
@@ -111,6 +118,7 @@ class ChatRepository {
   }
 
   /// 모든 채팅 리스트 업데이트
+  /// 일반적으로 어떤 업데이트 실시 후 해당 함수를 사용해 UI 및 데이터 갱신
   Future<void> updateChatList(ChatList chatRoom) async {
     final prefs = await _initPrefs();
     final chatListJson = jsonEncode(chatRoom.toJson());

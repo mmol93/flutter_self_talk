@@ -27,6 +27,11 @@ class _ChatScreenState extends ConsumerState<ChatScreen> {
   late final String? currentChatRoomId;
   Friend? currentSelectedFriend;
   final _messageInputProvider = StateProvider<String>((ref) => '');
+  final _inputTextController = TextEditingController();
+  final ScrollController _scrollController = ScrollController();
+  int reversedChatIndex = 0;
+  // 현재 채팅중인 사람이 직전 사람과 다름 = true
+  Friend? previousSelectedFriend;
 
   @override
   void initState() {
@@ -76,8 +81,7 @@ class _ChatScreenState extends ConsumerState<ChatScreen> {
     showListDialog(context: context, listItemModel: [
       for (var friend in targetChatData.chatMember)
         ListItemModel(
-          itemTitle:
-              friend.name == me.name ? "(자신)${friend.name}" : friend.name,
+          itemTitle: friend.name == me.name ? "(자신)${friend.name}" : friend.name,
           clickEvent: () {
             currentSelectedFriend = friend;
             setState(() {});
@@ -135,6 +139,7 @@ class _ChatScreenState extends ConsumerState<ChatScreen> {
         secondMessage: message.secondMessage,
         messageType: message.messageType,
         isMe: message.isMe,
+        notSeenMemberNumber: message.notSeenMemberNumber
       ),
     );
   }
@@ -143,6 +148,7 @@ class _ChatScreenState extends ConsumerState<ChatScreen> {
     required ChatViewModel viewModel,
     required String message,
     required Friend me,
+    required int currentMemberNumber,
   }) {
     if (currentSelectedFriend != null) {
       WidgetsBinding.instance.addPostFrameCallback((_) {
@@ -158,17 +164,16 @@ class _ChatScreenState extends ConsumerState<ChatScreen> {
           message: message,
           messageType: MessageType.message,
           isMe: me.name == currentSelectedFriend!.name ? true : false,
+          notSeenMemberNumber: currentMemberNumber-1
         ),
+        notSameSpeaker: currentSelectedFriend != previousSelectedFriend || previousSelectedFriend == null
       );
+
+      previousSelectedFriend = currentSelectedFriend;
     } else {
       showToast("먼저 메시지를 보낼 친구를 선택하세요");
     }
   }
-
-  final _inputTextController = TextEditingController();
-  final ScrollController _scrollController = ScrollController();
-  int reversedChatIndex = 0;
-
 
   @override
   Widget build(BuildContext context) {
@@ -227,6 +232,7 @@ class _ChatScreenState extends ConsumerState<ChatScreen> {
                                 showDate: targetChatData.shouldShowDate(reversedChatIndex),
                                 date: targetChatData.messageList![reversedChatIndex].messageTime,
                                 message: targetChatData.messageList![reversedChatIndex].message,
+                                notSeenMemberNumber: targetChatData.messageList![reversedChatIndex].notSeenMemberNumber,
                               ),
                             )
                           : Padding(
@@ -237,6 +243,7 @@ class _ChatScreenState extends ConsumerState<ChatScreen> {
                                 date: targetChatData.messageList![reversedChatIndex].messageTime,
                                 message: targetChatData.messageList![reversedChatIndex].message,
                                 friendName: targetChatData.getFriendName(targetChatData.messageList![reversedChatIndex].friendId) ?? "(알 수 없음)",
+                                notSeenMemberNumber: targetChatData.messageList![reversedChatIndex].notSeenMemberNumber,
                               ),
                             ),
                     );
@@ -251,18 +258,12 @@ class _ChatScreenState extends ConsumerState<ChatScreen> {
                   onPressed: () {
                     _showFriendSelectionDialog(me, targetChatData);
                   },
-                  child: Text(
-                    currentSelectedFriend != null
-                        ? me == currentSelectedFriend
-                            ? "(자신)${currentSelectedFriend!.name}"
-                            : currentSelectedFriend!.name
-                        : "선택된 친구 없음",
+                  child: Text(currentSelectedFriend != null ? me == currentSelectedFriend ? "(자신)${currentSelectedFriend!.name}" : currentSelectedFriend!.name : "선택된 친구 없음",
                     style: const TextStyle(fontWeight: FontWeight.bold),
                   ),
                 )
               ],
             ),
-            // TODO: 기능 부분 아직 미완성 & 디자인 부분은 거의 완성한듯?
             ConstrainedBox(
               constraints: const BoxConstraints(maxHeight: 120),
               child: Container(
@@ -319,10 +320,11 @@ class _ChatScreenState extends ConsumerState<ChatScreen> {
                               _sendMessage(
                                   viewModel: viewModel,
                                   message: messageText,
-                                  me: me);
+                                  me: me,
+                                  currentMemberNumber: targetChatData.chatMember.length
+                                  );
                               // 보낸 후 TextInput 초기화
-                              ref.read(_messageInputProvider.notifier).state =
-                                  "";
+                              ref.read(_messageInputProvider.notifier).state = "";
                               _inputTextController.text = "";
                             },
                             child: Container(
@@ -330,8 +332,7 @@ class _ChatScreenState extends ConsumerState<ChatScreen> {
                               alignment: Alignment.bottomCenter,
                               decoration:
                                   const BoxDecoration(color: defaultYellow),
-                              child: const Icon(
-                                  size: 20, Icons.send, color: Colors.black),
+                              child: const Icon(size: 20, Icons.send, color: Colors.black),
                             ),
                           );
                         }

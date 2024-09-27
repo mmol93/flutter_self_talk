@@ -60,6 +60,7 @@ Message _$MessageFromJson(Map<String, dynamic> json) => Message(
       message: json['message'] as String,
       messageType: $enumDecode(_$MessageTypeEnumMap, json['messageType']),
       isMe: json['isMe'] as bool,
+      notSeenMemberNumber: (json['notSeenMemberNumber'] as num).toInt(),
       secondMessage: json['secondMessage'] as String?,
     );
 
@@ -70,6 +71,7 @@ Map<String, dynamic> _$MessageToJson(Message instance) => <String, dynamic>{
       'secondMessage': instance.secondMessage,
       'messageType': _$MessageTypeEnumMap[instance.messageType]!,
       'isMe': instance.isMe,
+      'notSeenMemberNumber': instance.notSeenMemberNumber,
     };
 
 const _$MessageTypeEnumMap = {

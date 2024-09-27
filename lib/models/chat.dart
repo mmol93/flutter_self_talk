@@ -85,7 +85,7 @@ class Chat {
     for (var indexedValue in chatMember.indexed) {
       if (indexedValue.$2.me == 0) {
         // 자기 자신을 이미 제외했기 때문에 -2로 한다.
-        if (indexedValue.$1 != chatMember.length - 2) {
+        if (indexedValue.$1 != chatMember.length - 1) {
           // 마지막 요소가 아닐 때
           initTitle = "$initTitle${indexedValue.$2.name}, ";
         } else {
@@ -104,7 +104,7 @@ class Chat {
 
   String? getFriendName(String friendId) {
     try {
-      return chatMember.firstWhere((friend) => friend.me == 0).name;
+      return chatMember.firstWhere((friend) => friend.id == friendId).name;
     } catch (e) {
       return null;
     }
@@ -183,6 +183,7 @@ class Message {
   String? secondMessage;
   final MessageType messageType;
   final bool isMe;
+  int notSeenMemberNumber = 0;
 
   Message(
       {required this.friendId,
@@ -190,6 +191,7 @@ class Message {
       required this.message,
       required this.messageType,
       required this.isMe,
+      required this.notSeenMemberNumber,
       this.secondMessage});
 
   Message copyWith({
@@ -199,6 +201,7 @@ class Message {
     String? secondMessage,
     MessageType? messageType,
     bool? isMe,
+    int? notSeenMemberNumber,
   }) {
     return Message(
       friendId: friendId ?? this.friendId,
@@ -206,6 +209,7 @@ class Message {
       message: message ?? this.message,
       messageType: messageType ?? this.messageType,
       isMe: isMe ?? this.isMe,
+      notSeenMemberNumber: notSeenMemberNumber ?? this.notSeenMemberNumber
     );
   }
 

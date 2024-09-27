@@ -13,6 +13,7 @@ class MessageFromOthers extends StatelessWidget {
   final DateTime date;
   final String profilePicturePath;
   final String message;
+  final int notSeenMemberNumber;
 
   const MessageFromOthers({
     super.key,
@@ -22,6 +23,7 @@ class MessageFromOthers extends StatelessWidget {
     required this.message,
     required this.shouldUseTailBubble,
     required this.friendName,
+    required this.notSeenMemberNumber,
   });
 
   @override
@@ -55,22 +57,32 @@ class MessageFromOthers extends StatelessWidget {
                         children: [
                           ChatBubble(
                             clipper: shouldUseTailBubble
-                                ? ChatBubbleClipper11(
-                                    type: BubbleType.receiverBubble)
-                                : ChatBubbleClipper12(
-                                    type: BubbleType.receiverBubble),
+                                ? ChatBubbleClipper11(type: BubbleType.receiverBubble)
+                                : ChatBubbleClipper12(type: BubbleType.receiverBubble),
                             margin: shouldUseTailBubble
                                 ? const EdgeInsets.fromLTRB(0, 2, 0, 0)
                                 : const EdgeInsets.fromLTRB(4, 2, 0, 0),
                             padding: const EdgeInsets.symmetric(horizontal: 12, vertical: 10),
                             child: Text(message),
                           ),
-                          Opacity(
-                            opacity: showDate ? 1.0 : 0.0,
-                            child: Text(
-                              DateFormat('HH:mm').format(date),
-                              style: const TextStyle(fontSize: 8),
-                            ),
+                          Column(
+                            crossAxisAlignment: CrossAxisAlignment.end,
+                            children: [
+                              Opacity(
+                                opacity: notSeenMemberNumber > 0 ? 1.0 : 0.0,
+                                child: Text(
+                                  notSeenMemberNumber.toString(),
+                                  style: const TextStyle(fontSize: 7, color: Colors.yellow),
+                                ),
+                              ),
+                              Opacity(
+                                opacity: showDate ? 1.0 : 0.0,
+                                child: Text(
+                                  DateFormat('HH:mm').format(date),
+                                  style: const TextStyle(fontSize: 8),
+                                ),
+                              ),
+                            ],
                           )
                         ],
                       ),
