@@ -29,7 +29,6 @@ class _ChatScreenState extends ConsumerState<ChatScreen> {
   final _messageInputProvider = StateProvider<String>((ref) => '');
   final _inputTextController = TextEditingController();
   final ScrollController _scrollController = ScrollController();
-  int reversedChatIndex = 0;
   // 현재 채팅중인 사람이 직전 사람과 다름 = true
   Friend? previousSelectedFriend;
 
@@ -49,8 +48,7 @@ class _ChatScreenState extends ConsumerState<ChatScreen> {
   }
 
   /// 메시지 클릭 시 나오는 옵션 및 기능을 dialog로 표시
-  void _showMessageOptions(
-      ChatViewModel viewModel, Chat targetChatData, int index) {
+  void _showMessageOptions(ChatViewModel viewModel, Chat targetChatData, int index) {
     final Message message = targetChatData.messageList![index];
 
     showListDialog(
@@ -222,7 +220,7 @@ class _ChatScreenState extends ConsumerState<ChatScreen> {
                   controller: _scrollController,
                   itemBuilder: (context, index) {
                     // ListView에서 reverse를 true로 했기 때문에 사용하는 데이터도 reverse 처리를 해서 사용한다.
-                    reversedChatIndex = (targetChatData.messageList?.length ?? 0)- index - 1;
+                    final reversedChatIndex = (targetChatData.messageList?.length ?? 0)- index - 1;
                     return GestureDetector(
                       onTap: () {_showMessageOptions(viewModel, targetChatData, reversedChatIndex);},
                       child: targetChatData.messageList![reversedChatIndex].isMe
@@ -291,8 +289,7 @@ class _ChatScreenState extends ConsumerState<ChatScreen> {
                                 border: InputBorder.none,
                               ),
                               onChanged: (text) {
-                                ref.read(_messageInputProvider.notifier).state =
-                                    text;
+                                ref.read(_messageInputProvider.notifier).state = text;
                               },
                             ),
                           ),
