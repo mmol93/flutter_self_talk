@@ -90,6 +90,7 @@ class _ChatScreenState extends ConsumerState<ChatScreen> {
     ]);
   }
 
+
   /// TimePicker로 메시지의 시간 바꾸기
   Future<void> _showTimePickerDialog(
     ChatViewModel viewModel,
@@ -260,7 +261,7 @@ class _ChatScreenState extends ConsumerState<ChatScreen> {
                       onPressed: () {
                         _showFriendSelectionDialog(me, targetChatData);
                       },
-                      child: Text(currentSelectedFriend != null ? me == currentSelectedFriend ? "(자신)${currentSelectedFriend!.name}" : currentSelectedFriend!.name : "선택된 친구 없음",
+                      child: Text(currentSelectedFriend != null ? me.id == currentSelectedFriend?.id ? "(자신)${currentSelectedFriend!.name}" : currentSelectedFriend!.name : "선택된 친구 없음",
                         style: const TextStyle(fontWeight: FontWeight.bold),
                       ),
                     )
@@ -346,7 +347,6 @@ class _ChatScreenState extends ConsumerState<ChatScreen> {
                 ),
               ],
             ),
-
           ],
         ),
       ),
