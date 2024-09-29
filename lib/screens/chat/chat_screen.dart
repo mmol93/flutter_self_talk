@@ -14,6 +14,8 @@ import 'package:self_talk/widgets/dialog/common_time_picker_dialog.dart';
 import 'package:self_talk/widgets/dialog/list_dialog.dart';
 import 'package:self_talk/widgets/dialog/modify_message_dialog.dart';
 
+import '../../widgets/dialog/number_modify_dialog.dart';
+
 class ChatScreen extends ConsumerStatefulWidget {
   final String? chatId;
 
@@ -71,6 +73,10 @@ class _ChatScreenState extends ConsumerState<ChatScreen> {
             message: message,
           ),
         ),
+        ListItemModel(
+          itemTitle: "읽은 않은 사람 수 바꾸기",
+          clickEvent: () => _showNoWatchMemberNumber(viewModel, message, index)
+        )
       ],
     );
   }
@@ -103,6 +109,22 @@ class _ChatScreenState extends ConsumerState<ChatScreen> {
           chatId: currentChatRoomId!,
           messageIndex: index,
           message: message.copyWith(messageTime: pickedTime));
+    }
+  }
+
+  // 읽은 사람 수 바꾸기 Dialog 표시
+  Future<void> _showNoWatchMemberNumber(
+      ChatViewModel viewModel,
+      Message message,
+      int index,
+    ) async {
+    final int? enteredNumber = await showNumericInputDialog(context);
+
+    if (enteredNumber != null) {
+      viewModel.updateMessage(
+          chatId: currentChatRoomId!,
+          messageIndex: index,
+          message: message.copyWith(notSeenMemberNumber: enteredNumber));
     }
   }
 

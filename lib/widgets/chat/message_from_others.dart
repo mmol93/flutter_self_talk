@@ -65,24 +65,30 @@ class MessageFromOthers extends StatelessWidget {
                             padding: const EdgeInsets.symmetric(horizontal: 12, vertical: 10),
                             child: Text(message),
                           ),
-                          Column(
-                            crossAxisAlignment: CrossAxisAlignment.end,
-                            children: [
-                              Opacity(
-                                opacity: notSeenMemberNumber > 0 ? 1.0 : 0.0,
-                                child: Text(
-                                  notSeenMemberNumber.toString(),
-                                  style: const TextStyle(fontSize: 7, color: Colors.yellow),
+                          Padding(
+                            padding: const EdgeInsets.fromLTRB(4, 0, 0, 0),
+                            child: Column(
+                              crossAxisAlignment: CrossAxisAlignment.start,
+                              children: [
+                                Opacity(
+                                  opacity: notSeenMemberNumber > 0 ? 1.0 : 0.0,
+                                  child: Text(
+                                    notSeenMemberNumber.toString(),
+                                    style: const TextStyle(fontSize: 7, color: Colors.yellow),
+                                  ),
                                 ),
-                              ),
-                              Opacity(
-                                opacity: showDate ? 1.0 : 0.0,
-                                child: Text(
-                                  DateFormat('HH:mm').format(date),
-                                  style: const TextStyle(fontSize: 8),
+                                Visibility(
+                                  visible: notSeenMemberNumber > 0 || showDate,
+                                  child: Opacity(
+                                    opacity: showDate ? 1.0 : 0.0,
+                                    child: Text(
+                                      DateFormat('HH:mm').format(date),
+                                      style: const TextStyle(fontSize: 8),
+                                    ),
+                                  ),
                                 ),
-                              ),
-                            ],
+                              ],
+                            ),
                           )
                         ],
                       ),

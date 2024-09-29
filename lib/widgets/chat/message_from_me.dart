@@ -44,11 +44,14 @@ class MessageFromMe extends StatelessWidget {
                         style: const TextStyle(fontSize: 7, color: Colors.yellow),
                       ),
                     ),
-                    Opacity(
-                      opacity: showDate ? 1.0 : 0.0,
-                      child: Text(
-                        DateFormat('HH:mm').format(date),
-                        style: const TextStyle(fontSize: 8),
+                    Visibility(
+                      visible: notSeenMemberNumber > 0 || showDate,
+                      child: Opacity(
+                        opacity: showDate ? 1.0 : 0.0,
+                        child: Text(
+                          DateFormat('HH:mm').format(date),
+                          style: const TextStyle(fontSize: 8),
+                        ),
                       ),
                     ),
                   ],
