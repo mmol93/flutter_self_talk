@@ -219,4 +219,7 @@ class Message {
   Map<String, dynamic> toJson() => _$MessageToJson(this);
 }
 
+/// message: 일반적인 메시지
+/// date: 날짜 구분선
+/// state: 초대, 나가기 등 상태에 관한 메시지
 enum MessageType { message, date, state }

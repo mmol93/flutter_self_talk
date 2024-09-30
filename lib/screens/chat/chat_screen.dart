@@ -1,7 +1,11 @@
 
+import 'dart:io';
+
 import 'package:flutter/material.dart';
 import 'package:flutter_riverpod/flutter_riverpod.dart';
 import 'package:flutter_svg/flutter_svg.dart';
+import 'package:image_picker/image_picker.dart';
+import 'package:permission_handler/permission_handler.dart';
 import 'package:self_talk/colors/default_color.dart';
 import 'package:self_talk/models/chat.dart';
 import 'package:self_talk/models/friend.dart';
@@ -49,6 +53,43 @@ class _ChatScreenState extends ConsumerState<ChatScreen> {
     super.dispose();
   }
 
+  /// 사진 파일에 대한 권한 요구하기
+  Future<bool> _getPhotoPermission() async {
+    var storageStatus = await Permission.storage.status;
+    var photosStatus = await Permission.photos.status;
+
+    // storage 권한 요청
+    if (!storageStatus.isGranted) {
+      storageStatus = await Permission.storage.request();
+    }
+
+    // photos 권한 요청
+    if (!photosStatus.isGranted) {
+      photosStatus = await Permission.photos.request();
+    }
+
+    // 권한이 부여되었는지 여부를 반환
+    return storageStatus.isGranted || photosStatus.isGranted;
+  }
+
+  Future<File?> _pickImage() async {
+    bool isPermissionGranted = await _getPhotoPermission();
+
+    if (isPermissionGranted) {
+      final picker = ImagePicker();
+      final pickedFile = await picker.pickImage(source: ImageSource.gallery);
+
+      if (pickedFile != null) {
+        return File(pickedFile.path); // 선택된 이미지 파일 반환
+      } else {
+        return null; // 이미지 선택 안 된 경우 null 반환
+      }
+    } else {
+      showToast("이미지 파일을 첨부하기 위해선 권한이 필요합니다.");
+    }
+    return null;
+  }
+
   /// 메시지 클릭 시 나오는 옵션 및 기능을 dialog로 표시
   void _showMessageOptions(ChatViewModel viewModel, Chat targetChatData, int index) {
     final Message message = targetChatData.messageList![index];
@@ -81,6 +122,23 @@ class _ChatScreenState extends ConsumerState<ChatScreen> {
     );
   }
 
+  /// 메시지에서 추가 기능 사용 옵션 Dialog 보여주기
+  void _showAttachmentOptions() {
+    showListDialog(
+      title: "추가 기능",
+      context: context,
+      listItemModel: [
+        ListItemModel(
+          itemTitle: "사진 파일 첨부",
+          clickEvent: () async {
+            final pickedImage = await _pickImage();
+          }
+        )
+      ],
+    );
+  }
+
+  /// 채팅을 시작할 친구 선택
   void _showFriendSelectionDialog(Friend me, Chat targetChatData) {
     showListDialog(context: context, listItemModel: [
       for (var friend in targetChatData.chatMember)
@@ -299,7 +357,9 @@ class _ChatScreenState extends ConsumerState<ChatScreen> {
                         children: [
                           IconButton(
                             // TODO: 미디어 파일 업로드 기능 필요
-                            onPressed: () {},
+                            onPressed: () {
+                              _showAttachmentOptions();
+                            },
                             icon: const Icon(Icons.add),
                             color: Colors.grey,
                           ),
