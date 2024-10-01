@@ -123,7 +123,11 @@ class _ChatScreenState extends ConsumerState<ChatScreen> {
   }
 
   /// 메시지에서 추가 기능 사용 옵션 Dialog 보여주기
-  void _showAttachmentOptions() {
+  void _showAttachmentOptions({
+    required ChatViewModel viewModel,
+    required Friend me,
+    required int currentMemberNumber
+  }) {
     showListDialog(
       title: "추가 기능",
       context: context,
@@ -131,7 +135,16 @@ class _ChatScreenState extends ConsumerState<ChatScreen> {
         ListItemModel(
           itemTitle: "사진 파일 첨부",
           clickEvent: () async {
-            final pickedImage = await _pickImage();
+            final File? pickedImage = await _pickImage();
+
+            if (pickedImage != null) {
+              _sendMessage(
+                imagePath: pickedImage.path,
+                viewModel: viewModel,
+                me: me,
+                currentMemberNumber: currentMemberNumber,
+              );
+            }
           }
         )
       ],
@@ -224,8 +237,9 @@ class _ChatScreenState extends ConsumerState<ChatScreen> {
   }
 
   void _sendMessage({
+    String? message,
+    String? imagePath,
     required ChatViewModel viewModel,
-    required String message,
     required Friend me,
     required int currentMemberNumber,
   }) {
@@ -240,10 +254,11 @@ class _ChatScreenState extends ConsumerState<ChatScreen> {
         message: Message(
           friendId: currentSelectedFriend!.id,
           messageTime: DateTime.now(),
-          message: message,
+          message: message ?? "",
           messageType: MessageType.message,
           isMe: me.name == currentSelectedFriend!.name ? true : false,
-          notSeenMemberNumber: currentMemberNumber-1
+          notSeenMemberNumber: currentMemberNumber-1,
+          imagePath: imagePath
         ),
         notSameSpeaker: currentSelectedFriend != previousSelectedFriend || previousSelectedFriend == null
       );
@@ -309,9 +324,7 @@ class _ChatScreenState extends ConsumerState<ChatScreen> {
                               child: MessageFromMe(
                                 shouldUseTailBubble: targetChatData.shouldUseTailBubble(reversedChatIndex),
                                 showDate: targetChatData.shouldShowDate(reversedChatIndex),
-                                date: targetChatData.messageList![reversedChatIndex].messageTime,
-                                message: targetChatData.messageList![reversedChatIndex].message,
-                                notSeenMemberNumber: targetChatData.messageList![reversedChatIndex].notSeenMemberNumber,
+                                message: targetChatData.messageList![reversedChatIndex],
                               ),
                             )
                           : Padding(
@@ -319,10 +332,8 @@ class _ChatScreenState extends ConsumerState<ChatScreen> {
                               child: MessageFromOthers(
                                 shouldUseTailBubble: targetChatData.shouldUseTailBubble(reversedChatIndex),
                                 showDate: targetChatData.shouldShowDate(reversedChatIndex),
-                                date: targetChatData.messageList![reversedChatIndex].messageTime,
-                                message: targetChatData.messageList![reversedChatIndex].message,
                                 friendName: targetChatData.getFriendName(targetChatData.messageList![reversedChatIndex].friendId) ?? "(알 수 없음)",
-                                notSeenMemberNumber: targetChatData.messageList![reversedChatIndex].notSeenMemberNumber,
+                                message: targetChatData.messageList![reversedChatIndex],
                               ),
                             ),
                     );
@@ -358,7 +369,11 @@ class _ChatScreenState extends ConsumerState<ChatScreen> {
                           IconButton(
                             // TODO: 미디어 파일 업로드 기능 필요
                             onPressed: () {
-                              _showAttachmentOptions();
+                              _showAttachmentOptions(
+                                viewModel: viewModel,
+                                me: me,
+                                currentMemberNumber: targetChatData.chatMember.length 
+                              );
                             },
                             icon: const Icon(Icons.add),
                             color: Colors.grey,

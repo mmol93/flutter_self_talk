@@ -62,6 +62,7 @@ Message _$MessageFromJson(Map<String, dynamic> json) => Message(
       isMe: json['isMe'] as bool,
       notSeenMemberNumber: (json['notSeenMemberNumber'] as num).toInt(),
       secondMessage: json['secondMessage'] as String?,
+      imagePath: json['imagePath'] as String?,
     );
 
 Map<String, dynamic> _$MessageToJson(Message instance) => <String, dynamic>{
@@ -72,6 +73,7 @@ Map<String, dynamic> _$MessageToJson(Message instance) => <String, dynamic>{
       'messageType': _$MessageTypeEnumMap[instance.messageType]!,
       'isMe': instance.isMe,
       'notSeenMemberNumber': instance.notSeenMemberNumber,
+      'imagePath': instance.imagePath,
     };
 
 const _$MessageTypeEnumMap = {

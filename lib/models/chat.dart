@@ -184,6 +184,7 @@ class Message {
   final MessageType messageType;
   final bool isMe;
   int notSeenMemberNumber = 0;
+  String? imagePath;
 
   Message(
       {required this.friendId,
@@ -192,7 +193,8 @@ class Message {
       required this.messageType,
       required this.isMe,
       required this.notSeenMemberNumber,
-      this.secondMessage});
+      this.secondMessage,
+      this.imagePath});
 
   Message copyWith({
     String? friendId,
@@ -202,6 +204,7 @@ class Message {
     MessageType? messageType,
     bool? isMe,
     int? notSeenMemberNumber,
+    String? imagePath,
   }) {
     return Message(
       friendId: friendId ?? this.friendId,
@@ -209,7 +212,8 @@ class Message {
       message: message ?? this.message,
       messageType: messageType ?? this.messageType,
       isMe: isMe ?? this.isMe,
-      notSeenMemberNumber: notSeenMemberNumber ?? this.notSeenMemberNumber
+      notSeenMemberNumber: notSeenMemberNumber ?? this.notSeenMemberNumber,
+      imagePath: imagePath ?? this.imagePath
     );
   }
 
