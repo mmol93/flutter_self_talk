@@ -1,4 +1,3 @@
-
 import 'dart:io';
 
 import 'package:flutter/material.dart';
@@ -35,6 +34,7 @@ class _ChatScreenState extends ConsumerState<ChatScreen> {
   final _messageInputProvider = StateProvider<String>((ref) => '');
   final _inputTextController = TextEditingController();
   final ScrollController _scrollController = ScrollController();
+
   // 현재 채팅중인 사람이 직전 사람과 다름 = true
   Friend? previousSelectedFriend;
 
@@ -115,38 +115,33 @@ class _ChatScreenState extends ConsumerState<ChatScreen> {
           ),
         ),
         ListItemModel(
-          itemTitle: "읽은 않은 사람 수 바꾸기",
-          clickEvent: () => _showNoWatchMemberNumber(viewModel, message, index)
-        )
+            itemTitle: "읽은 않은 사람 수 바꾸기",
+            clickEvent: () => _showNoWatchMemberNumber(viewModel, message, index))
       ],
     );
   }
 
   /// 메시지에서 추가 기능 사용 옵션 Dialog 보여주기
-  void _showAttachmentOptions({
-    required ChatViewModel viewModel,
-    required Friend me,
-    required int currentMemberNumber
-  }) {
+  void _showAttachmentOptions(
+      {required ChatViewModel viewModel, required Friend me, required int currentMemberNumber}) {
     showListDialog(
       title: "추가 기능",
       context: context,
       listItemModel: [
         ListItemModel(
-          itemTitle: "사진 파일 첨부",
-          clickEvent: () async {
-            final File? pickedImage = await _pickImage();
+            itemTitle: "사진 파일 첨부",
+            clickEvent: () async {
+              final File? pickedImage = await _pickImage();
 
-            if (pickedImage != null) {
-              _sendMessage(
-                imagePath: pickedImage.path,
-                viewModel: viewModel,
-                me: me,
-                currentMemberNumber: currentMemberNumber,
-              );
-            }
-          }
-        )
+              if (pickedImage != null) {
+                _sendMessage(
+                  imagePath: pickedImage.path,
+                  viewModel: viewModel,
+                  me: me,
+                  currentMemberNumber: currentMemberNumber,
+                );
+              }
+            })
       ],
     );
   }
@@ -164,7 +159,6 @@ class _ChatScreenState extends ConsumerState<ChatScreen> {
         )
     ]);
   }
-
 
   /// TimePicker로 메시지의 시간 바꾸기
   Future<void> _showTimePickerDialog(
@@ -185,10 +179,10 @@ class _ChatScreenState extends ConsumerState<ChatScreen> {
 
   // 읽은 사람 수 바꾸기 Dialog 표시
   Future<void> _showNoWatchMemberNumber(
-      ChatViewModel viewModel,
-      Message message,
-      int index,
-    ) async {
+    ChatViewModel viewModel,
+    Message message,
+    int index,
+  ) async {
     final int? enteredNumber = await showNumericInputDialog(context);
 
     if (enteredNumber != null) {
@@ -225,14 +219,13 @@ class _ChatScreenState extends ConsumerState<ChatScreen> {
       chatId: currentChatRoomId!,
       messageIndex: index,
       message: Message(
-        friendId: message.friendId,
-        messageTime: message.messageTime,
-        message: message.message,
-        secondMessage: message.secondMessage,
-        messageType: message.messageType,
-        isMe: message.isMe,
-        notSeenMemberNumber: message.notSeenMemberNumber
-      ),
+          friendId: message.friendId,
+          messageTime: message.messageTime,
+          message: message.message,
+          secondMessage: message.secondMessage,
+          messageType: message.messageType,
+          isMe: message.isMe,
+          notSeenMemberNumber: message.notSeenMemberNumber),
     );
   }
 
@@ -250,18 +243,17 @@ class _ChatScreenState extends ConsumerState<ChatScreen> {
       });
 
       viewModel.addMessage(
-        chatId: currentChatRoomId!,
-        message: Message(
-          friendId: currentSelectedFriend!.id,
-          messageTime: DateTime.now(),
-          message: message ?? "",
-          messageType: MessageType.message,
-          isMe: me.name == currentSelectedFriend!.name ? true : false,
-          notSeenMemberNumber: currentMemberNumber-1,
-          imagePath: imagePath
-        ),
-        notSameSpeaker: currentSelectedFriend != previousSelectedFriend || previousSelectedFriend == null
-      );
+          chatId: currentChatRoomId!,
+          message: Message(
+              friendId: currentSelectedFriend!.id,
+              messageTime: DateTime.now(),
+              message: message ?? "",
+              messageType: MessageType.message,
+              isMe: me.name == currentSelectedFriend!.name ? true : false,
+              notSeenMemberNumber: currentMemberNumber - 1,
+              imagePath: imagePath),
+          notSameSpeaker:
+              currentSelectedFriend != previousSelectedFriend || previousSelectedFriend == null);
 
       previousSelectedFriend = currentSelectedFriend;
     } else {
@@ -289,8 +281,7 @@ class _ChatScreenState extends ConsumerState<ChatScreen> {
             const SizedBox(width: 5),
             Text(
               targetChatData.chatMember.length.toString(),
-              style: const TextStyle(
-                  color: Colors.grey, fontWeight: FontWeight.w600),
+              style: const TextStyle(color: Colors.grey, fontWeight: FontWeight.w600),
             )
           ],
         ),
@@ -315,14 +306,17 @@ class _ChatScreenState extends ConsumerState<ChatScreen> {
                   controller: _scrollController,
                   itemBuilder: (context, index) {
                     // ListView에서 reverse를 true로 했기 때문에 사용하는 데이터도 reverse 처리를 해서 사용한다.
-                    final reversedChatIndex = (targetChatData.messageList?.length ?? 0)- index - 1;
+                    final reversedChatIndex = (targetChatData.messageList?.length ?? 0) - index - 1;
                     return GestureDetector(
-                      onTap: () {_showMessageOptions(viewModel, targetChatData, reversedChatIndex);},
+                      onTap: () {
+                        _showMessageOptions(viewModel, targetChatData, reversedChatIndex);
+                      },
                       child: targetChatData.messageList![reversedChatIndex].isMe
                           ? Padding(
                               padding: const EdgeInsets.fromLTRB(0, 5, 4, 0),
                               child: MessageFromMe(
-                                shouldUseTailBubble: targetChatData.shouldUseTailBubble(reversedChatIndex),
+                                shouldUseTailBubble:
+                                    targetChatData.shouldUseTailBubble(reversedChatIndex),
                                 showDate: targetChatData.shouldShowDate(reversedChatIndex),
                                 message: targetChatData.messageList![reversedChatIndex],
                               ),
@@ -330,9 +324,12 @@ class _ChatScreenState extends ConsumerState<ChatScreen> {
                           : Padding(
                               padding: const EdgeInsets.fromLTRB(4, 5, 0, 0),
                               child: MessageFromOthers(
-                                shouldUseTailBubble: targetChatData.shouldUseTailBubble(reversedChatIndex),
+                                shouldUseTailBubble:
+                                    targetChatData.shouldUseTailBubble(reversedChatIndex),
                                 showDate: targetChatData.shouldShowDate(reversedChatIndex),
-                                friendName: targetChatData.getFriendName(targetChatData.messageList![reversedChatIndex].friendId) ?? "(알 수 없음)",
+                                friendName: targetChatData.getFriendName(
+                                        targetChatData.messageList![reversedChatIndex].friendId) ??
+                                    "(알 수 없음)",
                                 message: targetChatData.messageList![reversedChatIndex],
                               ),
                             ),
@@ -350,7 +347,12 @@ class _ChatScreenState extends ConsumerState<ChatScreen> {
                       onPressed: () {
                         _showFriendSelectionDialog(me, targetChatData);
                       },
-                      child: Text(currentSelectedFriend != null ? me.id == currentSelectedFriend?.id ? "(자신)${currentSelectedFriend!.name}" : currentSelectedFriend!.name : "선택된 친구 없음",
+                      child: Text(
+                        currentSelectedFriend != null
+                            ? me.id == currentSelectedFriend?.id
+                                ? "(자신)${currentSelectedFriend!.name}"
+                                : currentSelectedFriend!.name
+                            : "선택된 친구 없음",
                         style: const TextStyle(fontWeight: FontWeight.bold),
                       ),
                     )
@@ -370,10 +372,9 @@ class _ChatScreenState extends ConsumerState<ChatScreen> {
                             // TODO: 미디어 파일 업로드 기능 필요
                             onPressed: () {
                               _showAttachmentOptions(
-                                viewModel: viewModel,
-                                me: me,
-                                currentMemberNumber: targetChatData.chatMember.length 
-                              );
+                                  viewModel: viewModel,
+                                  me: me,
+                                  currentMemberNumber: targetChatData.chatMember.length);
                             },
                             icon: const Icon(Icons.add),
                             color: Colors.grey,
@@ -407,8 +408,7 @@ class _ChatScreenState extends ConsumerState<ChatScreen> {
                                 child: SvgPicture.asset(
                                   'assets/images/sharp.svg',
                                   width: 20,
-                                  colorFilter: const ColorFilter.mode(
-                                      Colors.grey, BlendMode.srcIn),
+                                  colorFilter: const ColorFilter.mode(Colors.grey, BlendMode.srcIn),
                                 ),
                               );
                             } else {
@@ -418,8 +418,7 @@ class _ChatScreenState extends ConsumerState<ChatScreen> {
                                       viewModel: viewModel,
                                       message: messageText,
                                       me: me,
-                                      currentMemberNumber: targetChatData.chatMember.length
-                                  );
+                                      currentMemberNumber: targetChatData.chatMember.length);
                                   // 보낸 후 TextInput 초기화
                                   ref.read(_messageInputProvider.notifier).state = "";
                                   _inputTextController.text = "";
@@ -427,8 +426,7 @@ class _ChatScreenState extends ConsumerState<ChatScreen> {
                                 child: Container(
                                   padding: const EdgeInsets.all(13),
                                   alignment: Alignment.bottomCenter,
-                                  decoration:
-                                  const BoxDecoration(color: defaultYellow),
+                                  decoration: const BoxDecoration(color: defaultYellow),
                                   child: const Icon(size: 20, Icons.send, color: Colors.black),
                                 ),
                               );
