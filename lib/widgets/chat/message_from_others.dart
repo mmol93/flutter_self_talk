@@ -55,26 +55,32 @@ class MessageFromOthers extends StatelessWidget {
                       child: Row(
                         crossAxisAlignment: CrossAxisAlignment.end,
                         children: [
-                          ChatBubble(
-                            clipper: shouldUseTailBubble
-                                ? ChatBubbleClipper11(type: BubbleType.receiverBubble)
-                                : ChatBubbleClipper12(type: BubbleType.receiverBubble),
-                            margin: shouldUseTailBubble
-                                ? const EdgeInsets.fromLTRB(0, 2, 0, 0)
-                                : const EdgeInsets.fromLTRB(4, 2, 0, 0),
-                            padding: const EdgeInsets.symmetric(horizontal: 12, vertical: 10),
-                            child: message.imagePath == null
-                                ? Text(message.message)
-                                : Container(
-                                    constraints: const BoxConstraints(maxWidth: 230),
+                          message.imagePath == null
+                              ? ChatBubble(
+                                  clipper: shouldUseTailBubble
+                                      ? ChatBubbleClipper11(type: BubbleType.receiverBubble)
+                                      : ChatBubbleClipper12(type: BubbleType.receiverBubble),
+                                  margin: shouldUseTailBubble
+                                      ? const EdgeInsets.fromLTRB(0, 2, 0, 0)
+                                      : const EdgeInsets.fromLTRB(4, 2, 0, 0),
+                                  padding: const EdgeInsets.symmetric(horizontal: 12, vertical: 10),
+                                  child: Text(message.message))
+                              : Container(
+                                  padding: const EdgeInsets.symmetric(horizontal: 4, vertical: 3),
+                                  // TODO: 작은 단말기에서 어떻게 나오는지 확인 필요
+                                  constraints: const BoxConstraints(maxWidth: 230),
+                                  child: ClipRRect(
+                                    borderRadius: BorderRadius.circular(10),
                                     child: Image.file(
                                       File(message.imagePath!),
+                                      // TODO: 사진이 그대로 잘 입력되는지 확인하기
                                       fit: BoxFit.fill,
                                       // 실패 시 그냥 무시되는 빈 위젯 제출
-                                      errorBuilder: (context, error, stackTrace) => const SizedBox.shrink(),
+                                      errorBuilder: (context, error, stackTrace) =>
+                                          const SizedBox.shrink(),
                                     ),
                                   ),
-                          ),
+                                ),
                           Padding(
                             padding: const EdgeInsets.fromLTRB(4, 0, 0, 0),
                             child: Column(
