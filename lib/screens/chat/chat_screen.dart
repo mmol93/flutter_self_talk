@@ -10,8 +10,7 @@ import 'package:self_talk/models/chat.dart';
 import 'package:self_talk/models/friend.dart';
 import 'package:self_talk/models/list_item_model.dart';
 import 'package:self_talk/viewModel/chat_viewModel.dart';
-import 'package:self_talk/widgets/chat/message_from_me.dart';
-import 'package:self_talk/widgets/chat/message_from_others.dart';
+import 'package:self_talk/widgets/chat/merged_message.dart';
 import 'package:self_talk/widgets/common/utils.dart';
 import 'package:self_talk/widgets/dialog/common_time_picker_dialog.dart';
 import 'package:self_talk/widgets/dialog/list_dialog.dart';
@@ -196,7 +195,7 @@ class _ChatScreenState extends ConsumerState<ChatScreen> {
     Message? message,
   }) async {
     final DateTime? pickedTime = await showMyTimePickerDialog(context,
-        initTime: message == null ? TimeOfDay.fromDateTime(message!.messageTime) : TimeOfDay.now());
+        initTime: TimeOfDay.fromDateTime(message?.messageTime ?? DateTime.now()));
     return pickedTime;
   }
 
@@ -261,6 +260,9 @@ class _ChatScreenState extends ConsumerState<ChatScreen> {
     required Friend me,
     required int currentMemberNumber,
   }) {
+    if (messageType != MessageType.message && currentSelectedFriend == null) {
+      currentSelectedFriend = me;
+    }
     if (currentSelectedFriend != null) {
       WidgetsBinding.instance.addPostFrameCallback((_) {
         // ListView에 reverse를 적용했으니 0.0으로 가게 해야 제일 밑으로 간다.
@@ -336,28 +338,19 @@ class _ChatScreenState extends ConsumerState<ChatScreen> {
                       onTap: () {
                         _showMessageOptions(viewModel, targetChatData, reversedChatIndex);
                       },
-                      child: targetChatData.messageList![reversedChatIndex].isMe
-                          ? Padding(
-                              padding: const EdgeInsets.fromLTRB(0, 5, 4, 0),
-                              child: MessageFromMe(
-                                shouldUseTailBubble:
-                                    targetChatData.shouldUseTailBubble(reversedChatIndex),
-                                showDate: targetChatData.shouldShowDate(reversedChatIndex),
-                                message: targetChatData.messageList![reversedChatIndex],
-                              ),
-                            )
-                          : Padding(
-                              padding: const EdgeInsets.fromLTRB(4, 5, 0, 0),
-                              child: MessageFromOthers(
-                                shouldUseTailBubble:
-                                    targetChatData.shouldUseTailBubble(reversedChatIndex),
-                                showDate: targetChatData.shouldShowDate(reversedChatIndex),
-                                friendName: targetChatData.getFriendName(
-                                        targetChatData.messageList![reversedChatIndex].friendId) ??
-                                    "(알 수 없음)",
-                                message: targetChatData.messageList![reversedChatIndex],
-                              ),
-                            ),
+                      child:
+                      getMergedMessage(
+                        targetChatData.shouldShowDate(reversedChatIndex),
+                        targetChatData.messageList![reversedChatIndex].isMe,
+                        targetChatData.shouldUseTailBubble(reversedChatIndex),
+                          targetChatData.messageList![reversedChatIndex],
+                          targetChatData.getFriendName(
+                              targetChatData.messageList![reversedChatIndex].friendId) ??
+                              "(알 수 없음)",
+                        targetChatData.getaFriendProfilePath(),
+                        messageType: targetChatData.messageList![reversedChatIndex].messageType,
+                        pickedDate: targetChatData.messageList![reversedChatIndex].messageTime
+                      )
                     );
                   },
                   itemCount: targetChatData.messageList?.length ?? 0),

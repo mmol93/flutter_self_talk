@@ -65,7 +65,7 @@ dependencies:
   image_picker: ^1.1.0
 
   # fluttertoast - https://pub.dev/packages/fluttertoast/install
-  fluttertoast: ^8.2.5
+  fluttertoast: ^8.2.8
 
   # shared_preferences - https://pub.dev/packages/shared_preferences/install
   shared_preferences: ^2.2.3
@@ -84,6 +84,9 @@ dependencies:
 
   # permission_handler - https://pub.dev/packages/permission_handler/install
   permission_handler: ^11.3.1
+
+  # flutter_localization - https://pub.dev/packages/flutter_localization/install
+  flutter_localization: ^0.2.2
 
 dev_dependencies:
   flutter_test:

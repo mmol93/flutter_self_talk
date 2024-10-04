@@ -93,15 +93,19 @@ class ChatRepository {
       if (targetChatRoom.messageList == null) {
         targetChatRoom.messageList = [message];
       } else {
-        targetChatRoom.messageList?.forEach((message) {
-          if (message.notSeenMemberNumber > 0 && notSameSpeaker) {
-            message.notSeenMemberNumber -= 1;
-          }
-        });
+        if (message.messageType == MessageType.message) {
+          targetChatRoom.messageList?.forEach((message) {
+            if (message.notSeenMemberNumber > 0 && notSameSpeaker) {
+              message.notSeenMemberNumber -= 1;
+            }
+          });
+        }
         targetChatRoom.messageList?.add(message);
       }
-      targetChatRoom.lastMessage = message.message;
-      targetChatRoom.modifiedDate = DateTime.now();
+      if (message.messageType == MessageType.message) {
+        targetChatRoom.lastMessage = message.message;
+        targetChatRoom.modifiedDate = DateTime.now();
+      }
       await updateChatList(chatData);
     }
   }
