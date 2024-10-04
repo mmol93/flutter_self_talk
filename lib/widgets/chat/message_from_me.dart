@@ -32,6 +32,7 @@ class MessageFromMe extends StatelessWidget {
                 child: Column(
                   crossAxisAlignment: CrossAxisAlignment.end,
                   children: [
+                    // TODO: 전송 실패 기능 추가하기
                     Opacity(
                       opacity: message.notSeenMemberNumber > 0 ? 1.0 : 0.0,
                       child: Text(

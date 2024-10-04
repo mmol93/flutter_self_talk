@@ -95,12 +95,22 @@ class _ChatScreenState extends ConsumerState<ChatScreen> {
     final Message message = targetChatData.messageList![index];
 
     showListDialog(
-      title: message.message,
+      title: message.imagePath == null ? message.message : "[사진]",
       context: context,
       listItemModel: [
         ListItemModel(
           itemTitle: "날짜 바꾸기",
-          clickEvent: () => _showTimePickerDialog(viewModel, message, index),
+          clickEvent: () async {
+            final DateTime? pickedTime =
+                await _showTimePickerDialog(viewModel: viewModel, message: message);
+
+            if (pickedTime != null) {
+              viewModel.updateMessage(
+                  chatId: currentChatRoomId!,
+                  messageIndex: index,
+                  message: message.copyWith(messageTime: pickedTime));
+            }
+          },
         ),
         ListItemModel(
           itemTitle: "수정하기",
@@ -115,33 +125,53 @@ class _ChatScreenState extends ConsumerState<ChatScreen> {
           ),
         ),
         ListItemModel(
-            itemTitle: "읽은 않은 사람 수 바꾸기",
-            clickEvent: () => _showNoWatchMemberNumber(viewModel, message, index))
+          itemTitle: "읽은 않은 사람 수 바꾸기",
+          clickEvent: () => _showNoWatchMemberNumber(viewModel, message, index),
+        )
       ],
     );
   }
 
   /// 메시지에서 추가 기능 사용 옵션 Dialog 보여주기
-  void _showAttachmentOptions(
-      {required ChatViewModel viewModel, required Friend me, required int currentMemberNumber}) {
+  void _showAttachmentOptions({
+    required ChatViewModel viewModel,
+    required Friend me,
+    required int currentMemberNumber,
+  }) {
     showListDialog(
       title: "추가 기능",
       context: context,
       listItemModel: [
         ListItemModel(
-            itemTitle: "사진 파일 첨부",
-            clickEvent: () async {
-              final File? pickedImage = await _pickImage();
+          itemTitle: "사진 파일 첨부",
+          clickEvent: () async {
+            final File? pickedImage = await _pickImage();
 
-              if (pickedImage != null) {
-                _sendMessage(
-                  imagePath: pickedImage.path,
-                  viewModel: viewModel,
-                  me: me,
-                  currentMemberNumber: currentMemberNumber,
-                );
-              }
-            })
+            if (pickedImage != null) {
+              _sendMessage(
+                imagePath: pickedImage.path,
+                viewModel: viewModel,
+                me: me,
+                currentMemberNumber: currentMemberNumber,
+              );
+            }
+          },
+        ),
+        ListItemModel(
+          itemTitle: "날짜 구분선 추가하기",
+          clickEvent: () async {
+            final DateTime? pickedTime = await _showTimePickerDialog(viewModel: viewModel);
+            if (pickedTime != null) {
+              _sendMessage(
+                viewModel: viewModel,
+                me: me,
+                currentMemberNumber: currentMemberNumber,
+                messageType: MessageType.date,
+                pickedDate: pickedTime
+              );
+            }
+          },
+        )
       ],
     );
   }
@@ -161,20 +191,13 @@ class _ChatScreenState extends ConsumerState<ChatScreen> {
   }
 
   /// TimePicker로 메시지의 시간 바꾸기
-  Future<void> _showTimePickerDialog(
-    ChatViewModel viewModel,
-    Message message,
-    int index,
-  ) async {
+  Future<DateTime?> _showTimePickerDialog({
+    required ChatViewModel viewModel,
+    Message? message,
+  }) async {
     final DateTime? pickedTime = await showMyTimePickerDialog(context,
-        initTime: TimeOfDay.fromDateTime(message.messageTime));
-
-    if (pickedTime != null) {
-      viewModel.updateMessage(
-          chatId: currentChatRoomId!,
-          messageIndex: index,
-          message: message.copyWith(messageTime: pickedTime));
-    }
+        initTime: message == null ? TimeOfDay.fromDateTime(message!.messageTime) : TimeOfDay.now());
+    return pickedTime;
   }
 
   // 읽은 사람 수 바꾸기 Dialog 표시
@@ -232,6 +255,8 @@ class _ChatScreenState extends ConsumerState<ChatScreen> {
   void _sendMessage({
     String? message,
     String? imagePath,
+    MessageType messageType = MessageType.message,
+    DateTime? pickedDate,
     required ChatViewModel viewModel,
     required Friend me,
     required int currentMemberNumber,
@@ -246,9 +271,9 @@ class _ChatScreenState extends ConsumerState<ChatScreen> {
           chatId: currentChatRoomId!,
           message: Message(
               friendId: currentSelectedFriend!.id,
-              messageTime: DateTime.now(),
+              messageTime: pickedDate ?? DateTime.now(),
               message: message ?? "",
-              messageType: MessageType.message,
+              messageType: messageType,
               isMe: me.name == currentSelectedFriend!.name ? true : false,
               notSeenMemberNumber: currentMemberNumber - 1,
               imagePath: imagePath),
