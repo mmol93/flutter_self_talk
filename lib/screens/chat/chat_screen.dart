@@ -100,8 +100,11 @@ class _ChatScreenState extends ConsumerState<ChatScreen> {
         ListItemModel(
           itemTitle: "날짜 바꾸기",
           clickEvent: () async {
-            final DateTime? pickedTime =
-                await _showTimePickerDialog(viewModel: viewModel, message: message);
+            final DateTime? pickedTime = await _showTimePickerDialog(
+              viewModel: viewModel,
+              message: message,
+              isDatePicker: MessageType.message != message.messageType,
+            );
 
             if (pickedTime != null) {
               viewModel.updateMessage(
@@ -159,15 +162,16 @@ class _ChatScreenState extends ConsumerState<ChatScreen> {
         ListItemModel(
           itemTitle: "날짜 구분선 추가하기",
           clickEvent: () async {
-            final DateTime? pickedTime = await _showTimePickerDialog(viewModel: viewModel);
+            // TODO: 날짜선에서는 시간이 아니라 날짜 Date를 픽업하도록 변경
+            final DateTime? pickedTime =
+                await _showTimePickerDialog(viewModel: viewModel, isDatePicker: true);
             if (pickedTime != null) {
               _sendMessage(
-                viewModel: viewModel,
-                me: me,
-                currentMemberNumber: currentMemberNumber,
-                messageType: MessageType.date,
-                pickedDate: pickedTime
-              );
+                  viewModel: viewModel,
+                  me: me,
+                  currentMemberNumber: currentMemberNumber,
+                  messageType: MessageType.date,
+                  pickedDate: pickedTime);
             }
           },
         )
@@ -193,10 +197,30 @@ class _ChatScreenState extends ConsumerState<ChatScreen> {
   Future<DateTime?> _showTimePickerDialog({
     required ChatViewModel viewModel,
     Message? message,
+    bool isDatePicker = false,
   }) async {
-    final DateTime? pickedTime = await showMyTimePickerDialog(context,
-        initTime: TimeOfDay.fromDateTime(message?.messageTime ?? DateTime.now()));
-    return pickedTime;
+    if (isDatePicker) {
+      // 날짜 선택기
+      final DateTime? pickedDate = await showDatePicker(
+        context: context,
+        initialDate: message?.messageTime ?? DateTime.now(),
+        firstDate: DateTime(2000),
+        lastDate: DateTime(2100),
+      );
+      return pickedDate;
+    } else {
+      // 시간 선택기
+      final DateTime? pickedTime = await showMyTimePickerDialog(
+        context,
+        initTime: TimeOfDay.fromDateTime(message?.messageTime ?? DateTime.now()),
+      );
+      // 시간을 `DateTime` 형식으로 변환하여 반환
+      if (pickedTime != null) {
+        final now = DateTime.now();
+        return DateTime(now.year, now.month, now.day, pickedTime.hour, pickedTime.minute);
+      }
+    }
+    return null;
   }
 
   // 읽은 사람 수 바꾸기 Dialog 표시
@@ -335,23 +359,21 @@ class _ChatScreenState extends ConsumerState<ChatScreen> {
                     // ListView에서 reverse를 true로 했기 때문에 사용하는 데이터도 reverse 처리를 해서 사용한다.
                     final reversedChatIndex = (targetChatData.messageList?.length ?? 0) - index - 1;
                     return GestureDetector(
-                      onTap: () {
-                        _showMessageOptions(viewModel, targetChatData, reversedChatIndex);
-                      },
-                      child:
-                      getMergedMessage(
-                        targetChatData.shouldShowDate(reversedChatIndex),
-                        targetChatData.messageList![reversedChatIndex].isMe,
-                        targetChatData.shouldUseTailBubble(reversedChatIndex),
-                          targetChatData.messageList![reversedChatIndex],
-                          targetChatData.getFriendName(
-                              targetChatData.messageList![reversedChatIndex].friendId) ??
-                              "(알 수 없음)",
-                        targetChatData.getaFriendProfilePath(),
-                        messageType: targetChatData.messageList![reversedChatIndex].messageType,
-                        pickedDate: targetChatData.messageList![reversedChatIndex].messageTime
-                      )
-                    );
+                        onTap: () {
+                          _showMessageOptions(viewModel, targetChatData, reversedChatIndex);
+                        },
+                        child: getMergedMessage(
+                            targetChatData.shouldShowDate(reversedChatIndex),
+                            targetChatData.messageList![reversedChatIndex].isMe,
+                            targetChatData.shouldUseTailBubble(reversedChatIndex),
+                            targetChatData.messageList![reversedChatIndex],
+                            targetChatData.getFriendName(
+                                    targetChatData.messageList![reversedChatIndex].friendId) ??
+                                "(알 수 없음)",
+                            targetChatData.getaFriendProfilePath(),
+                            messageType: targetChatData.messageList![reversedChatIndex].messageType,
+                            pickedDate:
+                                targetChatData.messageList![reversedChatIndex].messageTime));
                   },
                   itemCount: targetChatData.messageList?.length ?? 0),
             ),
