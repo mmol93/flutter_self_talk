@@ -162,7 +162,6 @@ class _ChatScreenState extends ConsumerState<ChatScreen> {
         ListItemModel(
           itemTitle: "날짜 구분선 추가하기",
           clickEvent: () async {
-            // TODO: 날짜선에서는 시간이 아니라 날짜 Date를 픽업하도록 변경
             final DateTime? pickedTime =
                 await _showTimePickerDialog(viewModel: viewModel, isDatePicker: true);
             if (pickedTime != null) {
@@ -191,6 +190,32 @@ class _ChatScreenState extends ConsumerState<ChatScreen> {
           },
         )
     ]);
+  }
+
+  /// 채팅방의 햄버거 버튼 눌렀을 때 Dialog 띄우기
+  void _showChatRoomOptionDialog() {
+    // TODO: 넣지 않은 기능들 추가하기
+    showListDialog(
+      title: "채팅방 설정 변경",
+      context: context,
+      listItemModel: [
+        ListItemModel(
+          itemTitle: "친구 초대하기",
+        ),
+        ListItemModel(
+          itemTitle: "친구 강퇴하기",
+        ),
+        ListItemModel(
+          itemTitle: "채팅방 이름 변경",
+        ),
+        ListItemModel(
+          itemTitle: "배경색 변경",
+        ),
+        ListItemModel(
+          itemTitle: "갭쳐용으로 전환하기",
+        ),
+      ],
+    );
   }
 
   /// TimePicker로 메시지의 시간 바꾸기
@@ -223,7 +248,7 @@ class _ChatScreenState extends ConsumerState<ChatScreen> {
     return null;
   }
 
-  // 읽은 사람 수 바꾸기 Dialog 표시
+  /// 읽은 사람 수 바꾸기 Dialog 표시
   Future<void> _showNoWatchMemberNumber(
     ChatViewModel viewModel,
     Message message,
@@ -339,7 +364,11 @@ class _ChatScreenState extends ConsumerState<ChatScreen> {
         actions: [
           IconButton(onPressed: () {}, icon: const Icon(Icons.search_outlined)),
           // TODO: 메뉴 버튼 기능(대화상대 초대, 캡처용으로 전환 등) 추가 필요
-          IconButton(onPressed: () {}, icon: const Icon(Icons.menu)),
+          IconButton(
+              onPressed: () {
+                _showChatRoomOptionDialog();
+              },
+              icon: const Icon(Icons.menu)),
         ],
       ),
       body: GestureDetector(
@@ -409,7 +438,6 @@ class _ChatScreenState extends ConsumerState<ChatScreen> {
                         crossAxisAlignment: CrossAxisAlignment.stretch,
                         children: [
                           IconButton(
-                            // TODO: 미디어 파일 업로드 기능 필요
                             onPressed: () {
                               _showAttachmentOptions(
                                   viewModel: viewModel,
