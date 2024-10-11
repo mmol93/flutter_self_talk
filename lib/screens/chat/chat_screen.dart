@@ -90,8 +90,8 @@ class _ChatScreenState extends ConsumerState<ChatScreen> {
   }
 
   /// 메시지 클릭 시 나오는 옵션 및 기능을 dialog로 표시
-  void _showMessageOptions(ChatViewModel viewModel, Chat targetChatData, int index) {
-    final Message message = targetChatData.messageList![index];
+  void _showMessageOptions(ChatViewModel viewModel, Chat currentTargetChatData, int index) {
+    final Message message = currentTargetChatData.messageList![index];
 
     showListDialog(
       title: message.imagePath == null ? message.message : "[사진]",
@@ -129,7 +129,14 @@ class _ChatScreenState extends ConsumerState<ChatScreen> {
         ListItemModel(
           itemTitle: "읽은 않은 사람 수 바꾸기",
           clickEvent: () => _showNoWatchMemberNumber(viewModel, message, index),
-        )
+        ),
+        ListItemModel(
+            itemTitle: "공지로 추가하기",
+            clickEvent: () {
+              setState(() {
+                currentTargetChatData.updateChatRoomNoti(message.message);
+              });
+            })
       ],
     );
   }
@@ -171,11 +178,6 @@ class _ChatScreenState extends ConsumerState<ChatScreen> {
             }
           },
         ),
-        ListItemModel(
-            itemTitle: "공지 추가하기",
-            clickEvent: () {
-              currentTargetChatData.updateChatRoomNoti("");
-            })
       ],
     );
   }
@@ -516,12 +518,12 @@ class _ChatScreenState extends ConsumerState<ChatScreen> {
               ),
             ],
           ),
-          Align(
+          if (targetChatData.notification?.message != null) Align(
             alignment: Alignment.topCenter,
             child: Padding(
               padding: const EdgeInsets.symmetric(horizontal: 4),
               child: Container(
-                padding: EdgeInsets.symmetric(vertical: 6, horizontal: 8),
+                padding: const EdgeInsets.symmetric(vertical: 6, horizontal: 8),
                 decoration:
                     BoxDecoration(color: Colors.white, borderRadius: BorderRadius.circular(5)),
                 child: Row(
@@ -535,17 +537,17 @@ class _ChatScreenState extends ConsumerState<ChatScreen> {
                         colorFilter: const ColorFilter.mode(Colors.black, BlendMode.srcIn),
                       ),
                     ),
-                    SizedBox(width: 4),
+                    const SizedBox(width: 4),
                     Expanded(
                       child: Text(
-                        "asdsadfsafsfssfdadfadfsafsdsafsadfaㄴㅇㄹㅇsf",
+                        targetChatData.notification!.message,
                         style: TextStyle(fontSize: 16),
                         maxLines: 1,
                         overflow: TextOverflow.ellipsis,
                       ),
                     ),
-                    Padding(
-                      padding: const EdgeInsets.all(4.0),
+                    const Padding(
+                      padding: EdgeInsets.all(4.0),
                       child: Icon(
                         Icons.keyboard_arrow_down_outlined,
                         color: Colors.grey,
