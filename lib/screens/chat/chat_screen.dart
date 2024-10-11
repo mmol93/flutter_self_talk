@@ -135,11 +135,8 @@ class _ChatScreenState extends ConsumerState<ChatScreen> {
   }
 
   /// 메시지에서 추가 기능 사용 옵션 Dialog 보여주기
-  void _showAttachmentOptions({
-    required ChatViewModel viewModel,
-    required Friend me,
-    required int currentMemberNumber,
-  }) {
+  void _showAttachmentOptions(
+      {required ChatViewModel viewModel, required Friend me, required Chat currentTargetChatData}) {
     showListDialog(
       title: "추가 기능",
       context: context,
@@ -154,7 +151,7 @@ class _ChatScreenState extends ConsumerState<ChatScreen> {
                 imagePath: pickedImage.path,
                 viewModel: viewModel,
                 me: me,
-                currentMemberNumber: currentMemberNumber,
+                currentMemberNumber: currentTargetChatData.chatMember.length,
               );
             }
           },
@@ -168,12 +165,17 @@ class _ChatScreenState extends ConsumerState<ChatScreen> {
               _sendMessage(
                   viewModel: viewModel,
                   me: me,
-                  currentMemberNumber: currentMemberNumber,
+                  currentMemberNumber: currentTargetChatData.chatMember.length,
                   messageType: MessageType.date,
                   pickedDate: pickedTime);
             }
           },
-        )
+        ),
+        ListItemModel(
+            itemTitle: "공지 추가하기",
+            clickEvent: () {
+              currentTargetChatData.updateChatRoomNoti("");
+            })
       ],
     );
   }
@@ -185,8 +187,9 @@ class _ChatScreenState extends ConsumerState<ChatScreen> {
         ListItemModel(
           itemTitle: friend.name == me.name ? "(자신)${friend.name}" : friend.name,
           clickEvent: () {
-            currentSelectedFriend = friend;
-            setState(() {});
+            setState(() {
+              currentSelectedFriend = friend;
+            });
           },
         )
     ]);
@@ -375,140 +378,186 @@ class _ChatScreenState extends ConsumerState<ChatScreen> {
         onTap: () {
           FocusManager.instance.primaryFocus?.unfocus();
         },
-        child: Column(
-          mainAxisAlignment: MainAxisAlignment.spaceBetween,
-          children: [
-            Flexible(
-              child: ListView.builder(
-                  reverse: true,
-                  shrinkWrap: true,
-                  padding: const EdgeInsets.symmetric(vertical: 8, horizontal: 0),
-                  controller: _scrollController,
-                  itemBuilder: (context, index) {
-                    // ListView에서 reverse를 true로 했기 때문에 사용하는 데이터도 reverse 처리를 해서 사용한다.
-                    final reversedChatIndex = (targetChatData.messageList?.length ?? 0) - index - 1;
-                    return GestureDetector(
-                        onTap: () {
-                          _showMessageOptions(viewModel, targetChatData, reversedChatIndex);
+        child: Stack(children: [
+          Column(
+            mainAxisAlignment: MainAxisAlignment.spaceBetween,
+            children: [
+              Flexible(
+                child: ListView.builder(
+                    reverse: true,
+                    shrinkWrap: true,
+                    padding: const EdgeInsets.symmetric(vertical: 8, horizontal: 0),
+                    controller: _scrollController,
+                    itemBuilder: (context, index) {
+                      // ListView에서 reverse를 true로 했기 때문에 사용하는 데이터도 reverse 처리를 해서 사용한다.
+                      final reversedChatIndex =
+                          (targetChatData.messageList?.length ?? 0) - index - 1;
+                      return GestureDetector(
+                          onTap: () {
+                            _showMessageOptions(viewModel, targetChatData, reversedChatIndex);
+                          },
+                          child: getMergedMessage(
+                              targetChatData.shouldShowDate(reversedChatIndex),
+                              targetChatData.messageList![reversedChatIndex].isMe,
+                              targetChatData.shouldUseTailBubble(reversedChatIndex),
+                              targetChatData.messageList![reversedChatIndex],
+                              targetChatData.getFriendName(
+                                      targetChatData.messageList![reversedChatIndex].friendId) ??
+                                  "(알 수 없음)",
+                              targetChatData.getaFriendProfilePath(),
+                              messageType:
+                                  targetChatData.messageList![reversedChatIndex].messageType,
+                              pickedDate:
+                                  targetChatData.messageList![reversedChatIndex].messageTime));
+                    },
+                    itemCount: targetChatData.messageList?.length ?? 0),
+              ),
+              Column(
+                children: [
+                  Row(
+                    mainAxisAlignment: MainAxisAlignment.center,
+                    children: [
+                      const Text("현재 채팅 유저: "),
+                      TextButton(
+                        onPressed: () {
+                          _showFriendSelectionDialog(me, targetChatData);
                         },
-                        child: getMergedMessage(
-                            targetChatData.shouldShowDate(reversedChatIndex),
-                            targetChatData.messageList![reversedChatIndex].isMe,
-                            targetChatData.shouldUseTailBubble(reversedChatIndex),
-                            targetChatData.messageList![reversedChatIndex],
-                            targetChatData.getFriendName(
-                                    targetChatData.messageList![reversedChatIndex].friendId) ??
-                                "(알 수 없음)",
-                            targetChatData.getaFriendProfilePath(),
-                            messageType: targetChatData.messageList![reversedChatIndex].messageType,
-                            pickedDate:
-                                targetChatData.messageList![reversedChatIndex].messageTime));
-                  },
-                  itemCount: targetChatData.messageList?.length ?? 0),
-            ),
-            Column(
-              children: [
-                Row(
-                  mainAxisAlignment: MainAxisAlignment.center,
-                  children: [
-                    const Text("현재 채팅 유저: "),
-                    TextButton(
-                      onPressed: () {
-                        _showFriendSelectionDialog(me, targetChatData);
-                      },
-                      child: Text(
-                        currentSelectedFriend != null
-                            ? me.id == currentSelectedFriend?.id
-                                ? "(자신)${currentSelectedFriend!.name}"
-                                : currentSelectedFriend!.name
-                            : "선택된 친구 없음",
-                        style: const TextStyle(fontWeight: FontWeight.bold),
-                      ),
-                    )
-                  ],
-                ),
-                ConstrainedBox(
-                  constraints: const BoxConstraints(maxHeight: 120),
-                  child: Container(
-                    color: Colors.white,
-                    // IntrinsicHeight를 사용하면 Row 위젯의 자식의 height도 같이 커지게 할 수 있다.
-                    child: IntrinsicHeight(
-                      child: Row(
-                        // IntrinsicHeight을 사용함과 동시에 CrossAxisAlignment.stretch도 적용해야한다.
-                        crossAxisAlignment: CrossAxisAlignment.stretch,
-                        children: [
-                          IconButton(
-                            onPressed: () {
-                              _showAttachmentOptions(
-                                  viewModel: viewModel,
-                                  me: me,
-                                  currentMemberNumber: targetChatData.chatMember.length);
-                            },
-                            icon: const Icon(Icons.add),
-                            color: Colors.grey,
-                          ),
-                          Expanded(
-                            child: TextField(
-                              controller: _inputTextController,
-                              maxLines: null,
-                              decoration: const InputDecoration(
-                                border: InputBorder.none,
-                              ),
-                              onChanged: (text) {
-                                ref.read(_messageInputProvider.notifier).state = text;
+                        child: Text(
+                          currentSelectedFriend != null
+                              ? me.id == currentSelectedFriend?.id
+                                  ? "(자신)${currentSelectedFriend!.name}"
+                                  : currentSelectedFriend!.name
+                              : "선택된 친구 없음",
+                          style: const TextStyle(fontWeight: FontWeight.bold),
+                        ),
+                      )
+                    ],
+                  ),
+                  ConstrainedBox(
+                    constraints: const BoxConstraints(maxHeight: 120),
+                    child: Container(
+                      color: Colors.white,
+                      // IntrinsicHeight를 사용하면 Row 위젯의 자식의 height도 같이 커지게 할 수 있다.
+                      child: IntrinsicHeight(
+                        child: Row(
+                          // IntrinsicHeight을 사용함과 동시에 CrossAxisAlignment.stretch도 적용해야한다.
+                          crossAxisAlignment: CrossAxisAlignment.stretch,
+                          children: [
+                            IconButton(
+                              onPressed: () {
+                                _showAttachmentOptions(
+                                    viewModel: viewModel,
+                                    me: me,
+                                    currentTargetChatData: targetChatData);
                               },
-                            ),
-                          ),
-                          IconButton(
-                            onPressed: () {},
-                            icon: Image.asset(
-                              'assets/images/kid.png',
-                              width: 34,
-                              height: 34,
+                              icon: const Icon(Icons.add),
                               color: Colors.grey,
                             ),
-                          ),
-                          Consumer(builder: (context, ref, child) {
-                            var messageText = ref.watch(_messageInputProvider);
-                            if (messageText.isEmpty) {
-                              return Container(
-                                padding: const EdgeInsets.all(13),
-                                child: SvgPicture.asset(
-                                  'assets/images/sharp.svg',
-                                  width: 20,
-                                  colorFilter: const ColorFilter.mode(Colors.grey, BlendMode.srcIn),
+                            Expanded(
+                              child: TextField(
+                                controller: _inputTextController,
+                                maxLines: null,
+                                decoration: const InputDecoration(
+                                  border: InputBorder.none,
                                 ),
-                              );
-                            } else {
-                              return GestureDetector(
-                                onTap: () {
-                                  _sendMessage(
-                                      viewModel: viewModel,
-                                      message: messageText,
-                                      me: me,
-                                      currentMemberNumber: targetChatData.chatMember.length);
-                                  // 보낸 후 TextInput 초기화
-                                  ref.read(_messageInputProvider.notifier).state = "";
-                                  _inputTextController.text = "";
+                                onChanged: (text) {
+                                  ref.read(_messageInputProvider.notifier).state = text;
                                 },
-                                child: Container(
+                              ),
+                            ),
+                            IconButton(
+                              onPressed: () {},
+                              icon: Image.asset(
+                                'assets/images/kid.png',
+                                width: 34,
+                                height: 34,
+                                color: Colors.grey,
+                              ),
+                            ),
+                            Consumer(builder: (context, ref, child) {
+                              var messageText = ref.watch(_messageInputProvider);
+                              if (messageText.isEmpty) {
+                                return Container(
                                   padding: const EdgeInsets.all(13),
-                                  alignment: Alignment.bottomCenter,
-                                  decoration: const BoxDecoration(color: defaultYellow),
-                                  child: const Icon(size: 20, Icons.send, color: Colors.black),
-                                ),
-                              );
-                            }
-                          })
-                        ],
+                                  child: SvgPicture.asset(
+                                    'assets/images/sharp.svg',
+                                    width: 20,
+                                    colorFilter:
+                                        const ColorFilter.mode(Colors.grey, BlendMode.srcIn),
+                                  ),
+                                );
+                              } else {
+                                return GestureDetector(
+                                  onTap: () {
+                                    _sendMessage(
+                                        viewModel: viewModel,
+                                        message: messageText,
+                                        me: me,
+                                        currentMemberNumber: targetChatData.chatMember.length);
+                                    // 보낸 후 TextInput 초기화
+                                    ref.read(_messageInputProvider.notifier).state = "";
+                                    _inputTextController.text = "";
+                                  },
+                                  child: Container(
+                                    padding: const EdgeInsets.all(13),
+                                    alignment: Alignment.bottomCenter,
+                                    decoration: const BoxDecoration(color: defaultYellow),
+                                    child: const Icon(size: 20, Icons.send, color: Colors.black),
+                                  ),
+                                );
+                              }
+                            })
+                          ],
+                        ),
                       ),
                     ),
                   ),
+                ],
+              ),
+            ],
+          ),
+          Align(
+            alignment: Alignment.topCenter,
+            child: Padding(
+              padding: const EdgeInsets.symmetric(horizontal: 4),
+              child: Container(
+                padding: EdgeInsets.symmetric(vertical: 6, horizontal: 8),
+                decoration:
+                    BoxDecoration(color: Colors.white, borderRadius: BorderRadius.circular(5)),
+                child: Row(
+                  mainAxisSize: MainAxisSize.max, // 최대 너비 사용
+                  children: [
+                    Padding(
+                      padding: const EdgeInsets.all(8.0),
+                      child: SvgPicture.asset(
+                        'assets/images/announcement.svg',
+                        height: 24,
+                        colorFilter: const ColorFilter.mode(Colors.black, BlendMode.srcIn),
+                      ),
+                    ),
+                    SizedBox(width: 4),
+                    Expanded(
+                      child: Text(
+                        "asdsadfsafsfssfdadfadfsafsdsafsadfaㄴㅇㄹㅇsf",
+                        style: TextStyle(fontSize: 16),
+                        maxLines: 1,
+                        overflow: TextOverflow.ellipsis,
+                      ),
+                    ),
+                    Padding(
+                      padding: const EdgeInsets.all(4.0),
+                      child: Icon(
+                        Icons.keyboard_arrow_down_outlined,
+                        color: Colors.grey,
+                        size: 32,
+                      ),
+                    ),
+                  ],
                 ),
-              ],
+              ),
             ),
-          ],
-        ),
+          )
+        ]),
       ),
     );
   }

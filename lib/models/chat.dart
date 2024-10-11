@@ -3,6 +3,7 @@ import 'package:json_annotation/json_annotation.dart';
 import 'package:self_talk/assets/strings.dart';
 import 'package:self_talk/models/friend.dart';
 import 'package:self_talk/utils/Typedefs.dart';
+import 'package:uuid/uuid.dart';
 
 part 'chat.g.dart';
 
@@ -160,6 +161,12 @@ class Chat {
 
     /// 첫 메시지 같은 경우에 무조건 시간을 표시해야하니 true
     return true;
+  }
+
+  /// 현재 채팅방의 공지를 업데이트 한다.
+  void updateChatRoomNoti(String message) {
+    final id = const Uuid().v4();
+    notification = Noti(id: id, message: message);
   }
 }
 
