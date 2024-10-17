@@ -13,8 +13,7 @@ class ChatList {
 
   ChatList({this.chatRoom});
 
-  factory ChatList.fromJson(Map<String, dynamic> json) =>
-      _$ChatListFromJson(json);
+  factory ChatList.fromJson(Map<String, dynamic> json) => _$ChatListFromJson(json);
 
   Map<String, dynamic> toJson() => _$ChatListToJson(this);
 }
@@ -67,8 +66,7 @@ class Chat {
 
   static int _toDateJson(DateTime date) => date.millisecondsSinceEpoch;
 
-  String getModifiedDateToString() =>
-      DateFormat('yyyy-MM-dd').format(modifiedDate);
+  String getModifiedDateToString() => DateFormat('yyyy-MM-dd').format(modifiedDate);
 
   /// 해당 단톡방에서 내가 아닌 친구의 사진 경로를 가져온다.
   /// 그렇기 때문에 항상 같은 친구의 사진을 가져오는게 아님.
@@ -97,10 +95,7 @@ class Chat {
     }
 
     return Chat(
-        title: initTitle,
-        messageList: null,
-        chatMember: chatMember,
-        modifiedDate: DateTime.now());
+        title: initTitle, messageList: null, chatMember: chatMember, modifiedDate: DateTime.now());
   }
 
   String? getFriendName(String friendId) {
@@ -117,20 +112,22 @@ class Chat {
     DateFormat formatter = DateFormat('yyyy.MM.dd-HH:mm');
 
     // 채팅 내역의 마지막 메시지면 무조건 날짜를 표시
-    if (messageList?.isNotEmpty == true &&
-        targetIndex == messageList!.length - 1) return true;
+    if (messageList?.isNotEmpty == true && targetIndex == messageList!.length - 1) return true;
 
     // 다음 채팅의 사람이 서로 다르면 날짜 표시하기
     if (messageList![targetIndex + 1].friendId != messageList![targetIndex].friendId) return true;
 
-
-    if (messageList?.isNotEmpty == true && targetIndex + 1 <= messageList!.length - 1 && targetIndex - 1 >= 0) {
+    if (messageList?.isNotEmpty == true &&
+        targetIndex + 1 <= messageList!.length - 1 &&
+        targetIndex - 1 >= 0) {
       // 직적 메시지와 날짜 같음 && 다음 메시지와 날짜 다름 = true
-      if (formatter.format(messageList![targetIndex - 1].messageTime) == formatter.format(messageList![targetIndex].messageTime) && formatter.format(messageList![targetIndex + 1].messageTime) != formatter.format(messageList![targetIndex].messageTime)) return true;
+      if (formatter.format(messageList![targetIndex - 1].messageTime) ==
+              formatter.format(messageList![targetIndex].messageTime) &&
+          formatter.format(messageList![targetIndex + 1].messageTime) !=
+              formatter.format(messageList![targetIndex].messageTime)) return true;
     }
 
-    if (messageList?.isNotEmpty == true &&
-        targetIndex + 1 <= messageList!.length - 1) {
+    if (messageList?.isNotEmpty == true && targetIndex + 1 <= messageList!.length - 1) {
       // 다음 메시지를 보고 날짜가 같으면 false
       if (formatter.format(messageList![targetIndex + 1].messageTime) ==
           formatter.format(messageList![targetIndex].messageTime)) return false;
@@ -140,8 +137,7 @@ class Chat {
       // 직전 메시지와 날짜가 다르거나 보내는 사람이 다르면 true를 반환한다.
       return formatter.format(messageList![targetIndex].messageTime) !=
               formatter.format(messageList![targetIndex - 1].messageTime) ||
-          messageList![targetIndex - 1].friendId !=
-              messageList![targetIndex].friendId;
+          messageList![targetIndex - 1].friendId != messageList![targetIndex].friendId;
     }
 
     /// 첫 메시지 같은 경우에 무조건 시간을 표시해야하니 true
@@ -155,8 +151,7 @@ class Chat {
       // 직전 메시지와 날짜가 다르거나 보내는 사람이 다르면 true를 반환한다.
       return formatter.format(messageList![targetIndex].messageTime) !=
               formatter.format(messageList![targetIndex - 1].messageTime) ||
-          messageList![targetIndex - 1].friendId !=
-              messageList![targetIndex].friendId;
+          messageList![targetIndex - 1].friendId != messageList![targetIndex].friendId;
     }
 
     /// 첫 메시지 같은 경우에 무조건 시간을 표시해야하니 true
@@ -164,18 +159,38 @@ class Chat {
   }
 
   /// 현재 채팅방의 공지를 업데이트 한다.
-  void updateChatRoomNoti(String message) {
+  void updateChatRoomNoti(String message, String userName) {
     final id = const Uuid().v4();
-    notification = Noti(id: id, message: message);
+    notification = Noti(id: id, message: message, userName: userName);
+  }
+
+  /// Noti의 접음 / 펼침 상태를 변경한다.
+  void changeNotiFoldStatus() {
+    if (notification != null) notification!.folded = !notification!.folded;
+  }
+
+  /// Noti를 최소화 상태를 변경한다.
+  void changeMinimize() {
+    if (notification != null) {
+      notification!.isMinimize = !notification!.isMinimize;
+    }
   }
 }
 
 @JsonSerializable()
 class Noti {
+  bool folded;
+  bool isMinimize;
   final String id;
+  final String userName;
   final String message;
 
-  Noti({required this.id, required this.message});
+  Noti(
+      {this.folded = true,
+      this.isMinimize = false,
+      required this.userName,
+      required this.id,
+      required this.message});
 
   factory Noti.fromJson(Map<String, dynamic> json) => _$NotiFromJson(json);
 
@@ -214,18 +229,16 @@ class Message {
     String? imagePath,
   }) {
     return Message(
-      friendId: friendId ?? this.friendId,
-      messageTime: messageTime ?? this.messageTime,
-      message: message ?? this.message,
-      messageType: messageType ?? this.messageType,
-      isMe: isMe ?? this.isMe,
-      notSeenMemberNumber: notSeenMemberNumber ?? this.notSeenMemberNumber,
-      imagePath: imagePath ?? this.imagePath
-    );
+        friendId: friendId ?? this.friendId,
+        messageTime: messageTime ?? this.messageTime,
+        message: message ?? this.message,
+        messageType: messageType ?? this.messageType,
+        isMe: isMe ?? this.isMe,
+        notSeenMemberNumber: notSeenMemberNumber ?? this.notSeenMemberNumber,
+        imagePath: imagePath ?? this.imagePath);
   }
 
-  factory Message.fromJson(Map<String, dynamic> json) =>
-      _$MessageFromJson(json);
+  factory Message.fromJson(Map<String, dynamic> json) => _$MessageFromJson(json);
 
   Map<String, dynamic> toJson() => _$MessageToJson(this);
 }

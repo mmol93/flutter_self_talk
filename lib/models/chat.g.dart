@@ -45,12 +45,18 @@ Map<String, dynamic> _$ChatToJson(Chat instance) => <String, dynamic>{
     };
 
 Noti _$NotiFromJson(Map<String, dynamic> json) => Noti(
+      folded: json['folded'] as bool? ?? true,
+      isMinimize: json['isMinimize'] as bool? ?? false,
+      userName: json['userName'] as String,
       id: json['id'] as String,
       message: json['message'] as String,
     );
 
 Map<String, dynamic> _$NotiToJson(Noti instance) => <String, dynamic>{
+      'folded': instance.folded,
+      'isMinimize': instance.isMinimize,
       'id': instance.id,
+      'userName': instance.userName,
       'message': instance.message,
     };
 

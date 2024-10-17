@@ -10,6 +10,7 @@ import 'package:self_talk/models/chat.dart';
 import 'package:self_talk/models/friend.dart';
 import 'package:self_talk/models/list_item_model.dart';
 import 'package:self_talk/viewModel/chat_viewModel.dart';
+import 'package:self_talk/widgets/chat/announce_icon.dart';
 import 'package:self_talk/widgets/chat/merged_message.dart';
 import 'package:self_talk/widgets/common/utils.dart';
 import 'package:self_talk/widgets/dialog/common_time_picker_dialog.dart';
@@ -134,7 +135,8 @@ class _ChatScreenState extends ConsumerState<ChatScreen> {
             itemTitle: "공지로 추가하기",
             clickEvent: () {
               setState(() {
-                currentTargetChatData.updateChatRoomNoti(message.message);
+                currentTargetChatData.updateChatRoomNoti(message.message,
+                    currentTargetChatData.getFriendName(message.friendId) ?? "알 수 없음");
               });
             })
       ],
@@ -518,47 +520,141 @@ class _ChatScreenState extends ConsumerState<ChatScreen> {
               ),
             ],
           ),
-          if (targetChatData.notification?.message != null) Align(
-            alignment: Alignment.topCenter,
-            child: Padding(
-              padding: const EdgeInsets.symmetric(horizontal: 4),
-              child: Container(
-                padding: const EdgeInsets.symmetric(vertical: 6, horizontal: 8),
-                decoration:
-                    BoxDecoration(color: Colors.white, borderRadius: BorderRadius.circular(5)),
-                child: Row(
-                  mainAxisSize: MainAxisSize.max, // 최대 너비 사용
-                  children: [
-                    Padding(
-                      padding: const EdgeInsets.all(8.0),
-                      child: SvgPicture.asset(
-                        'assets/images/announcement.svg',
-                        height: 24,
-                        colorFilter: const ColorFilter.mode(Colors.black, BlendMode.srcIn),
-                      ),
-                    ),
-                    const SizedBox(width: 4),
-                    Expanded(
-                      child: Text(
-                        targetChatData.notification!.message,
-                        style: TextStyle(fontSize: 16),
-                        maxLines: 1,
-                        overflow: TextOverflow.ellipsis,
-                      ),
-                    ),
-                    const Padding(
-                      padding: EdgeInsets.all(4.0),
-                      child: Icon(
-                        Icons.keyboard_arrow_down_outlined,
-                        color: Colors.grey,
-                        size: 32,
-                      ),
-                    ),
-                  ],
+          // TODO: 공지 삭제 기능 추가하기
+          /// 공지 부분
+          if (targetChatData.notification?.isMinimize == true)
+            /// Announce를 완전히 접었을 때
+            Align(
+              alignment: Alignment.topRight,
+              child: GestureDetector(
+                onTap: () {
+                  setState(() {
+                    targetChatData.changeMinimize();
+                  });
+                },
+                child: Container(
+                  margin: const EdgeInsets.symmetric(horizontal: 8),
+                  width: 40,
+                  height: 40,
+                  padding: const EdgeInsets.all(8),
+                  decoration: BoxDecoration(
+                    color: Colors.white.withOpacity(0.9), // 배경 색상
+                    shape: BoxShape.circle,  // 둥근 배경 모양
+                  ),
+                  child: getAnnounceIcon(),
                 ),
               ),
-            ),
-          )
+            )
+          else if (targetChatData.notification?.message != null)
+            Align(
+              alignment: Alignment.topCenter,
+              child: Padding(
+                padding: const EdgeInsets.all(4),
+                child: Container(
+                  padding: const EdgeInsets.symmetric(vertical: 6, horizontal: 8),
+                  decoration:
+                      BoxDecoration(color: Colors.white, borderRadius: BorderRadius.circular(5)),
+                  child: Column(
+                    mainAxisSize: MainAxisSize.min,
+                    children: [
+                      Row(
+                        mainAxisSize: MainAxisSize.max, // 최대 너비 사용
+                        crossAxisAlignment: CrossAxisAlignment.start,
+                        children: [
+                          Padding(
+                            padding: const EdgeInsets.all(8.0),
+                            child: getAnnounceIcon(),
+                          ),
+                          const SizedBox(width: 4),
+                          Expanded(
+                            child: Column(
+                              crossAxisAlignment: CrossAxisAlignment.start,
+                              children: [
+                                Text(
+                                  targetChatData.notification!.message,
+                                  style: const TextStyle(fontSize: 16),
+                                  maxLines: targetChatData.notification!.folded ? 1 : 2,
+                                  overflow: TextOverflow.ellipsis,
+                                ),
+                                Visibility(
+                                  visible: !targetChatData.notification!.folded,
+                                  child: Text(
+                                    targetChatData.notification!.userName,
+                                    style: const TextStyle(
+                                      color: Colors.grey,
+                                    ),
+                                  ),
+                                ),
+                              ],
+                            ),
+                          ),
+                          GestureDetector(
+                            onTap: () {
+                              setState(() {
+                                targetChatData.changeNotiFoldStatus();
+                              });
+                            },
+                            child: Padding(
+                              padding: const EdgeInsets.all(4.0),
+                              child: Icon(
+                                targetChatData.notification!.folded
+                                    ? Icons.keyboard_arrow_down_outlined
+                                    : Icons.keyboard_arrow_up_outlined,
+                                color: Colors.grey,
+                                size: 32,
+                              ),
+                            ),
+                          ),
+                        ],
+                      ),
+                      Visibility(
+                        visible: !targetChatData.notification!.folded,
+                        child: Row(
+                          children: [
+                            Expanded(
+                              child: Container(
+                                margin: const EdgeInsets.symmetric(horizontal: 4, vertical: 4),
+                                child: ElevatedButton(
+                                  onPressed: () {},
+                                  style: ElevatedButton.styleFrom(
+                                      backgroundColor: Colors.grey.shade300,
+                                      shape: RoundedRectangleBorder(
+                                          borderRadius: BorderRadius.circular(8))),
+                                  child: const Text(
+                                    "다시 열지 않음",
+                                    style: TextStyle(color: Colors.black),
+                                  ),
+                                ),
+                              ),
+                            ),
+                            Expanded(
+                              child: Container(
+                                margin: const EdgeInsets.symmetric(horizontal: 4),
+                                child: ElevatedButton(
+                                  onPressed: () {
+                                    setState(() {
+                                      targetChatData.changeMinimize();
+                                    });
+                                  },
+                                  style: ElevatedButton.styleFrom(
+                                      backgroundColor: Colors.grey.shade300,
+                                      shape: RoundedRectangleBorder(
+                                          borderRadius: BorderRadius.circular(8))),
+                                  child: const Text(
+                                    "접어두기",
+                                    style: TextStyle(color: Colors.black),
+                                  ),
+                                ),
+                              ),
+                            ),
+                          ],
+                        ),
+                      )
+                    ],
+                  ),
+                ),
+              ),
+            )
         ]),
       ),
     );
