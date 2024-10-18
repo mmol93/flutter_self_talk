@@ -566,6 +566,7 @@ class _ChatScreenState extends ConsumerState<ChatScreen> {
                     children: [
                       Row(
                         mainAxisSize: MainAxisSize.max, // 최대 너비 사용
+                        mainAxisAlignment: MainAxisAlignment.start,
                         crossAxisAlignment: CrossAxisAlignment.start,
                         children: [
                           Padding(
@@ -577,6 +578,7 @@ class _ChatScreenState extends ConsumerState<ChatScreen> {
                             child: Column(
                               crossAxisAlignment: CrossAxisAlignment.start,
                               children: [
+                                const SizedBox(height: 6,),
                                 Text(
                                   targetChatData.notification!.message,
                                   style: const TextStyle(fontSize: 16),
