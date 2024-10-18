@@ -5,7 +5,7 @@ import 'package:self_talk/repository/chat_repository.dart';
 import 'package:self_talk/utils/Typedefs.dart';
 
 final chatViewModelProvider = StateNotifierProvider<ChatViewModel, ChatList?>(
-    (ref) => ChatViewModel(ChatRepository()));
+        (ref) => ChatViewModel(ChatRepository()));
 
 // ChatList 예시
 ChatList dummyChatList = ChatList(chatRoom: {
@@ -319,5 +319,10 @@ class ChatViewModel extends StateNotifier<ChatList?> {
     _chatRepository
         .updateMessage(chatId, messageIndex, message)
         .then((value) => getChatList());
+  }
+
+  /// 해당 채팅방의 공지 업데이트 하기
+  void updateChatNoti({required String chatId, required Noti? chatNoti}) async {
+    _chatRepository.updateNoti(chatId, chatNoti).then((value) => getChatList());
   }
 }

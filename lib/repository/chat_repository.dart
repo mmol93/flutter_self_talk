@@ -31,8 +31,7 @@ class ChatRepository {
 
       // 변경한게 마지막 메시지 + 일반 메시지 타입이면 채팅방의 마지막 메시지도 바꿔야한다.
       if (messages != null) {
-        if (messages.length - 1 == messageIndex &&
-            MessageType.message == message.messageType) {
+        if (messages.length - 1 == messageIndex && MessageType.message == message.messageType) {
           chatData.chatRoom![chatId]?.lastMessage = message.message;
         }
       }
@@ -59,6 +58,17 @@ class ChatRepository {
           }
         }
       }
+    }
+  }
+
+  /// Chat에서 Noti(=공지) 부분을 업데이트 한다.
+  Future<void> updateNoti(String chatId, Noti? chatNoti) async {
+    final prefs = await _initPrefs();
+    final chatListJson = prefs.getString('chatList');
+    if (chatListJson != null) {
+      final chatData = ChatList.fromJson(jsonDecode(chatListJson));
+      chatData.chatRoom![chatId]?.notification = chatNoti;
+      await updateChatList(chatData);
     }
   }
 
@@ -145,8 +155,7 @@ class ChatRepository {
     }
 
     if (currentChatListJson != null) {
-      final currentChatList =
-          ChatList.fromJson(jsonDecode(currentChatListJson));
+      final currentChatList = ChatList.fromJson(jsonDecode(currentChatListJson));
       // 새롭게 생성되는 단톡방은 무조건 한 번에 하나만 생성하기 때문에 전부 first로 해도 상관없다.
       currentChatList.chatRoom![chatRoom.keys.first] = chatRoom.values.first;
       final chatListJson = jsonEncode(currentChatList.toJson());

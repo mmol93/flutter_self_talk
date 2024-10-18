@@ -159,21 +159,24 @@ class Chat {
   }
 
   /// 현재 채팅방의 공지를 업데이트 한다.
-  void updateChatRoomNoti(String message, String userName) {
+  Noti? createChatRoomNoti(String message, String userName) {
     final id = const Uuid().v4();
     notification = Noti(id: id, message: message, userName: userName);
+    return notification;
   }
 
   /// Noti의 접음 / 펼침 상태를 변경한다.
-  void changeNotiFoldStatus() {
+  Noti? changeNotiFoldStatus() {
     if (notification != null) notification!.folded = !notification!.folded;
+    return notification;
   }
 
   /// Noti를 최소화 상태를 변경한다.
-  void changeMinimize() {
+  Noti? changeMinimize() {
     if (notification != null) {
       notification!.isMinimize = !notification!.isMinimize;
     }
+    return notification;
   }
 }
 

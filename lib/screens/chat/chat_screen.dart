@@ -132,13 +132,17 @@ class _ChatScreenState extends ConsumerState<ChatScreen> {
           clickEvent: () => _showNoWatchMemberNumber(viewModel, message, index),
         ),
         ListItemModel(
-            itemTitle: "공지로 추가하기",
-            clickEvent: () {
-              setState(() {
-                currentTargetChatData.updateChatRoomNoti(message.message,
-                    currentTargetChatData.getFriendName(message.friendId) ?? "알 수 없음");
-              });
-            })
+          itemTitle: "공지로 추가하기",
+          clickEvent: () {
+            viewModel.updateChatNoti(
+              chatId: currentChatRoomId!,
+              chatNoti: currentTargetChatData.createChatRoomNoti(
+                message.message,
+                currentTargetChatData.getFriendName(message.friendId) ?? "알 수 없음",
+              ),
+            );
+          },
+        )
       ],
     );
   }
@@ -297,13 +301,14 @@ class _ChatScreenState extends ConsumerState<ChatScreen> {
       chatId: currentChatRoomId!,
       messageIndex: index,
       message: Message(
-          friendId: message.friendId,
-          messageTime: message.messageTime,
-          message: message.message,
-          secondMessage: message.secondMessage,
-          messageType: message.messageType,
-          isMe: message.isMe,
-          notSeenMemberNumber: message.notSeenMemberNumber),
+        friendId: message.friendId,
+        messageTime: message.messageTime,
+        message: message.message,
+        secondMessage: message.secondMessage,
+        messageType: message.messageType,
+        isMe: message.isMe,
+        notSeenMemberNumber: message.notSeenMemberNumber,
+      ),
     );
   }
 
@@ -520,17 +525,19 @@ class _ChatScreenState extends ConsumerState<ChatScreen> {
               ),
             ],
           ),
-          // TODO: 공지 삭제 기능 추가하기
+
           /// 공지 부분
           if (targetChatData.notification?.isMinimize == true)
+
             /// Announce를 완전히 접었을 때
             Align(
               alignment: Alignment.topRight,
               child: GestureDetector(
                 onTap: () {
-                  setState(() {
-                    targetChatData.changeMinimize();
-                  });
+                  viewModel.updateChatNoti(
+                    chatId: currentChatRoomId!,
+                    chatNoti: targetChatData.changeMinimize(),
+                  );
                 },
                 child: Container(
                   margin: const EdgeInsets.symmetric(horizontal: 8),
@@ -539,7 +546,7 @@ class _ChatScreenState extends ConsumerState<ChatScreen> {
                   padding: const EdgeInsets.all(8),
                   decoration: BoxDecoration(
                     color: Colors.white.withOpacity(0.9), // 배경 색상
-                    shape: BoxShape.circle,  // 둥근 배경 모양
+                    shape: BoxShape.circle, // 둥근 배경 모양
                   ),
                   child: getAnnounceIcon(),
                 ),
@@ -590,9 +597,10 @@ class _ChatScreenState extends ConsumerState<ChatScreen> {
                           ),
                           GestureDetector(
                             onTap: () {
-                              setState(() {
-                                targetChatData.changeNotiFoldStatus();
-                              });
+                              viewModel.updateChatNoti(
+                                chatId: currentChatRoomId!,
+                                chatNoti: targetChatData.changeNotiFoldStatus(),
+                              );
                             },
                             child: Padding(
                               padding: const EdgeInsets.all(4.0),
@@ -615,11 +623,17 @@ class _ChatScreenState extends ConsumerState<ChatScreen> {
                               child: Container(
                                 margin: const EdgeInsets.symmetric(horizontal: 4, vertical: 4),
                                 child: ElevatedButton(
-                                  onPressed: () {},
+                                  onPressed: () {
+                                    viewModel.updateChatNoti(
+                                      chatId: currentChatRoomId!,
+                                      chatNoti: null,
+                                    );
+                                  },
                                   style: ElevatedButton.styleFrom(
-                                      backgroundColor: Colors.grey.shade300,
-                                      shape: RoundedRectangleBorder(
-                                          borderRadius: BorderRadius.circular(8))),
+                                    backgroundColor: Colors.grey.shade300,
+                                    shape: RoundedRectangleBorder(
+                                        borderRadius: BorderRadius.circular(8)),
+                                  ),
                                   child: const Text(
                                     "다시 열지 않음",
                                     style: TextStyle(color: Colors.black),
@@ -632,9 +646,10 @@ class _ChatScreenState extends ConsumerState<ChatScreen> {
                                 margin: const EdgeInsets.symmetric(horizontal: 4),
                                 child: ElevatedButton(
                                   onPressed: () {
-                                    setState(() {
-                                      targetChatData.changeMinimize();
-                                    });
+                                    viewModel.updateChatNoti(
+                                      chatId: currentChatRoomId!,
+                                      chatNoti: targetChatData.changeMinimize(),
+                                    );
                                   },
                                   style: ElevatedButton.styleFrom(
                                       backgroundColor: Colors.grey.shade300,
