@@ -406,14 +406,14 @@ class _ChatScreenState extends ConsumerState<ChatScreen> {
                             _showMessageOptions(viewModel, targetChatData, reversedChatIndex);
                           },
                           child: getMergedMessage(
-                              targetChatData.shouldShowDate(reversedChatIndex),
-                              targetChatData.messageList![reversedChatIndex].isMe,
-                              targetChatData.shouldUseTailBubble(reversedChatIndex),
-                              targetChatData.messageList![reversedChatIndex],
-                              targetChatData.getFriendName(
+                              showDate: targetChatData.shouldShowDate(reversedChatIndex),
+                              isMe: targetChatData.messageList![reversedChatIndex].isMe,
+                              shouldUseTailBubble: targetChatData.shouldUseTailBubble(reversedChatIndex),
+                              message: targetChatData.messageList![reversedChatIndex],
+                              friendName: targetChatData.getFriendName(
                                       targetChatData.messageList![reversedChatIndex].friendId) ??
                                   "(알 수 없음)",
-                              targetChatData.getaFriendProfilePath(),
+                              profilePicturePath: targetChatData.getaFriendProfilePath(),
                               messageType:
                                   targetChatData.messageList![reversedChatIndex].messageType,
                               pickedDate:

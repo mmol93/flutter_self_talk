@@ -26,6 +26,8 @@ class MessageFromOthers extends StatelessWidget {
 
   @override
   Widget build(BuildContext context) {
+    final double screenWidth = MediaQuery.of(context).size.width;
+
     return Padding(
       padding: shouldUseTailBubble
           ? const EdgeInsets.fromLTRB(0, 2, 0, 0)
@@ -64,7 +66,11 @@ class MessageFromOthers extends StatelessWidget {
                                       ? const EdgeInsets.fromLTRB(0, 2, 0, 0)
                                       : const EdgeInsets.fromLTRB(4, 2, 0, 0),
                                   padding: const EdgeInsets.symmetric(horizontal: 12, vertical: 10),
-                                  child: Text(message.message))
+                                  child: ConstrainedBox(
+                                    constraints: BoxConstraints(maxWidth: screenWidth * 0.65),
+                                    child: Text(message.message),
+                                  ),
+                                )
                               : Container(
                                   padding: const EdgeInsets.symmetric(horizontal: 4, vertical: 3),
                                   // TODO: 작은 단말기에서 어떻게 나오는지 확인 필요

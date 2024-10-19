@@ -5,13 +5,13 @@ import 'package:self_talk/widgets/chat/message_from_others.dart';
 
 import '../../models/chat.dart';
 
-Widget getMergedMessage(
-  bool showDate,
-  bool isMe,
-  bool shouldUseTailBubble,
-  Message message,
-  String friendName,
-  String profilePicturePath, {
+Widget getMergedMessage({
+  required bool showDate,
+  required bool isMe,
+  required bool shouldUseTailBubble,
+  required Message message,
+  required String friendName,
+  required String profilePicturePath,
   MessageType messageType = MessageType.message,
   DateTime? pickedDate,
 }) {
