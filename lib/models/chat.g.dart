@@ -27,7 +27,7 @@ Chat _$ChatFromJson(Map<String, dynamic> json) => Chat(
       messageList: (json['messageList'] as List<dynamic>?)
           ?.map((e) => Message.fromJson(e as Map<String, dynamic>))
           .toList(),
-      chatMember: (json['chatMember'] as List<dynamic>)
+      chatMembers: (json['chatMember'] as List<dynamic>)
           .map((e) => Friend.fromJson(e as Map<String, dynamic>))
           .toList(),
       modifiedDate: Chat._fromDateJson((json['modifiedDate'] as num).toInt()),
@@ -36,7 +36,7 @@ Chat _$ChatFromJson(Map<String, dynamic> json) => Chat(
 Map<String, dynamic> _$ChatToJson(Chat instance) => <String, dynamic>{
       'title': instance.title,
       'messageList': instance.messageList,
-      'chatMember': instance.chatMember,
+      'chatMember': instance.chatMembers,
       'notification': instance.notification,
       'lastMessage': instance.lastMessage,
       'modifiedDate': Chat._toDateJson(instance.modifiedDate),

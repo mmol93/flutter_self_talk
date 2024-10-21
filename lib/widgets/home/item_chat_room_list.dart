@@ -12,7 +12,7 @@ class ChatRoomListItem extends StatelessWidget {
 
   @override
   Widget build(BuildContext context) {
-    final chatMembers = chat.chatMember;
+    final chatMembers = chat.chatMembers;
 
     return GestureDetector(
       behavior: HitTestBehavior.opaque,

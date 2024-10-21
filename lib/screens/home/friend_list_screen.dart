@@ -9,6 +9,7 @@ import 'package:self_talk/screens/friend/update_friend_screen.dart';
 import 'package:self_talk/viewModel/chat_viewModel.dart';
 import 'package:self_talk/viewModel/friend_viewModel.dart';
 import 'package:uuid/uuid.dart';
+
 import '../../widgets/home/item_friend.dart';
 
 class FriendListScreen extends ConsumerStatefulWidget {
@@ -121,7 +122,7 @@ class _FriendListScreen extends ConsumerState<FriendListScreen> {
                               final initChat = Chat(
                                 title: null,
                                 messageList: null,
-                                chatMember: [friend, myProfile.first],
+                                chatMembers: [friend, myProfile.first],
                                 modifiedDate: DateTime.now(),
                               ).createEmptyChatRoom();
                               chatViewModel.createChatRoom({uuid: initChat});

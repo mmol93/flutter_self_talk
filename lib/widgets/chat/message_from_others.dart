@@ -67,6 +67,7 @@ class MessageFromOthers extends StatelessWidget {
                                       : const EdgeInsets.fromLTRB(4, 2, 0, 0),
                                   padding: const EdgeInsets.symmetric(horizontal: 12, vertical: 10),
                                   child: ConstrainedBox(
+                                    // TODO: 작은 단말기에서 어떻게 나오는지 확인 필요
                                     constraints: BoxConstraints(maxWidth: screenWidth * 0.65),
                                     child: Text(message.message),
                                   ),

@@ -1,6 +1,7 @@
 import 'package:flutter/material.dart';
 import 'package:flutter/services.dart';
 
+/// 숫자 1개의 입력을 받고 입력 받은 숫자를 반환하는 Dialog
 Future<int?> showNumericInputDialog(BuildContext context) async {
   final TextEditingController controller = TextEditingController();
 

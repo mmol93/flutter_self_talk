@@ -30,7 +30,7 @@ ChatList dummyChatList = ChatList(chatRoom: {
         notSeenMemberNumber: 0,
       ),
     ],
-    chatMember: [
+    chatMembers: [
       Friend(
         id: '1',
         name: '철수',
@@ -77,7 +77,7 @@ ChatList dummyChatList = ChatList(chatRoom: {
         notSeenMemberNumber: 0,
       ),
     ],
-    chatMember: [
+    chatMembers: [
       Friend(
         id: '1',
         name: '철수',
@@ -117,7 +117,7 @@ ChatList dummyChatList = ChatList(chatRoom: {
         notSeenMemberNumber: 0,
       ),
     ],
-    chatMember: [
+    chatMembers: [
       Friend(
         id: '1',
         name: '철수',
@@ -172,7 +172,7 @@ ChatList dummyChatList = ChatList(chatRoom: {
         notSeenMemberNumber: 0,
       ),
     ],
-    chatMember: [
+    chatMembers: [
       Friend(
         id: '1',
         name: '철수',
@@ -226,7 +226,7 @@ ChatList dummyChatList = ChatList(chatRoom: {
         notSeenMemberNumber: 0,
       ),
     ],
-    chatMember: [
+    chatMembers: [
       Friend(
         id: '1',
         name: '철수',

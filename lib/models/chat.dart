@@ -27,7 +27,7 @@ class Chat {
   List<Message>? messageList;
 
   /// 채팅하고 있는 멤버
-  final List<Friend> chatMember;
+  final List<Friend> chatMembers;
 
   /// 채팅에 있는 공지 사항 내용
   Noti? notification;
@@ -53,7 +53,7 @@ class Chat {
     this.notification,
     required this.title,
     required this.messageList,
-    required this.chatMember,
+    required this.chatMembers,
     required this.modifiedDate,
   });
 
@@ -72,7 +72,7 @@ class Chat {
   /// 그렇기 때문에 항상 같은 친구의 사진을 가져오는게 아님.
   String getaFriendProfilePath() {
     try {
-      return chatMember.firstWhere((friend) => friend.me == 0).profileImgPath;
+      return chatMembers.firstWhere((friend) => friend.me == 0).profileImgPath;
     } catch (e) {
       return Strings.defaultProfileImgPath;
     }
@@ -81,10 +81,10 @@ class Chat {
   /// 빈 채팅방을 만든다.
   Chat createEmptyChatRoom() {
     String initTitle = "";
-    for (var indexedValue in chatMember.indexed) {
+    for (var indexedValue in chatMembers.indexed) {
       if (indexedValue.$2.me == 0) {
         // 자기 자신을 이미 제외했기 때문에 -2로 한다.
-        if (indexedValue.$1 != chatMember.length - 1) {
+        if (indexedValue.$1 != chatMembers.length - 1) {
           // 마지막 요소가 아닐 때
           initTitle = "$initTitle${indexedValue.$2.name}, ";
         } else {
@@ -95,12 +95,12 @@ class Chat {
     }
 
     return Chat(
-        title: initTitle, messageList: null, chatMember: chatMember, modifiedDate: DateTime.now());
+        title: initTitle, messageList: null, chatMembers: chatMembers, modifiedDate: DateTime.now());
   }
 
   String? getFriendName(String friendId) {
     try {
-      return chatMember.firstWhere((friend) => friend.id == friendId).name;
+      return chatMembers.firstWhere((friend) => friend.id == friendId).name;
     } catch (e) {
       return null;
     }
@@ -172,7 +172,7 @@ class Chat {
   }
 
   /// Noti를 최소화 상태를 변경한다.
-  Noti? changeMinimize() {
+  Noti? changeNotiMinimizeStatus() {
     if (notification != null) {
       notification!.isMinimize = !notification!.isMinimize;
     }

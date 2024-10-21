@@ -10,12 +10,13 @@ import 'package:self_talk/models/chat.dart';
 import 'package:self_talk/models/friend.dart';
 import 'package:self_talk/models/list_item_model.dart';
 import 'package:self_talk/viewModel/chat_viewModel.dart';
+import 'package:self_talk/viewModel/friend_viewModel.dart';
 import 'package:self_talk/widgets/chat/announce_icon.dart';
+import 'package:self_talk/widgets/chat/dialog/modify_message_dialog.dart';
 import 'package:self_talk/widgets/chat/merged_message.dart';
 import 'package:self_talk/widgets/common/utils.dart';
 import 'package:self_talk/widgets/dialog/common_time_picker_dialog.dart';
 import 'package:self_talk/widgets/dialog/list_dialog.dart';
-import 'package:self_talk/widgets/dialog/modify_message_dialog.dart';
 
 import '../../widgets/dialog/number_modify_dialog.dart';
 
@@ -164,7 +165,7 @@ class _ChatScreenState extends ConsumerState<ChatScreen> {
                 imagePath: pickedImage.path,
                 viewModel: viewModel,
                 me: me,
-                currentMemberNumber: currentTargetChatData.chatMember.length,
+                currentMemberNumber: currentTargetChatData.chatMembers.length,
               );
             }
           },
@@ -178,7 +179,7 @@ class _ChatScreenState extends ConsumerState<ChatScreen> {
               _sendMessage(
                   viewModel: viewModel,
                   me: me,
-                  currentMemberNumber: currentTargetChatData.chatMember.length,
+                  currentMemberNumber: currentTargetChatData.chatMembers.length,
                   messageType: MessageType.date,
                   pickedDate: pickedTime);
             }
@@ -191,7 +192,7 @@ class _ChatScreenState extends ConsumerState<ChatScreen> {
   /// 채팅을 시작할 친구 선택
   void _showFriendSelectionDialog(Friend me, Chat targetChatData) {
     showListDialog(context: context, listItemModel: [
-      for (var friend in targetChatData.chatMember)
+      for (var friend in targetChatData.chatMembers)
         ListItemModel(
           itemTitle: friend.name == me.name ? "(자신)${friend.name}" : friend.name,
           clickEvent: () {
@@ -204,15 +205,27 @@ class _ChatScreenState extends ConsumerState<ChatScreen> {
   }
 
   /// 채팅방의 햄버거 버튼 눌렀을 때 Dialog 띄우기
-  void _showChatRoomOptionDialog() {
+  void _showChatRoomOptionDialog({
+    required ChatViewModel viewModel,
+    required Chat targetChatData,
+    required FriendViewModel friendViewModel,
+    required List<Friend> wholeFriendList,
+  }) {
     // TODO: 넣지 않은 기능들 추가하기
     showListDialog(
       title: "채팅방 설정 변경",
       context: context,
       listItemModel: [
         ListItemModel(
-          itemTitle: "친구 초대하기",
-        ),
+            itemTitle: "친구 초대하기",
+            clickEvent: () {
+              _inviteNewFriend(
+                viewModel: viewModel,
+                targetChatData: targetChatData,
+                friendViewModel: friendViewModel,
+                wholeFriendList: wholeFriendList,
+              );
+            }),
         ListItemModel(
           itemTitle: "친구 강퇴하기",
         ),
@@ -312,6 +325,7 @@ class _ChatScreenState extends ConsumerState<ChatScreen> {
     );
   }
 
+  /// 신규 채팅 메시지를 보낸다.
   void _sendMessage({
     String? message,
     String? imagePath,
@@ -349,12 +363,29 @@ class _ChatScreenState extends ConsumerState<ChatScreen> {
     }
   }
 
+  /// 새로운 멤버를 채팅방에 초대한다.
+  void _inviteNewFriend({
+    required ChatViewModel viewModel,
+    required Chat targetChatData,
+    required FriendViewModel friendViewModel,
+    required List<Friend> wholeFriendList,
+  }) async {
+    // 현재 채팅방에 초대되어있지 않은 멤버들
+    final notIncludedMemberList = wholeFriendList
+        .where(
+          (wholeFriend) => !targetChatData.chatMembers.any((member) => wholeFriend.id == member.id),
+        )
+        .toList();
+  }
+
   @override
   Widget build(BuildContext context) {
     final viewModel = ref.watch(chatViewModelProvider.notifier);
+    final friendViewModel = ref.watch(friendViewModelProvider.notifier);
+    final wholeFriendList = ref.watch(friendViewModelProvider);
     final wholeChatList = ref.watch(chatViewModelProvider);
     final Chat targetChatData = wholeChatList!.chatRoom![currentChatRoomId]!;
-    final me = targetChatData.chatMember.firstWhere((friend) => friend.me == 1);
+    final me = targetChatData.chatMembers.firstWhere((friend) => friend.me == 1);
 
     return Scaffold(
       backgroundColor: defaultBackground,
@@ -368,7 +399,7 @@ class _ChatScreenState extends ConsumerState<ChatScreen> {
             ),
             const SizedBox(width: 5),
             Text(
-              targetChatData.chatMember.length.toString(),
+              targetChatData.chatMembers.length.toString(),
               style: const TextStyle(color: Colors.grey, fontWeight: FontWeight.w600),
             )
           ],
@@ -378,7 +409,11 @@ class _ChatScreenState extends ConsumerState<ChatScreen> {
           // TODO: 메뉴 버튼 기능(대화상대 초대, 캡처용으로 전환 등) 추가 필요
           IconButton(
               onPressed: () {
-                _showChatRoomOptionDialog();
+                _showChatRoomOptionDialog(
+                    viewModel: viewModel,
+                    targetChatData: targetChatData,
+                    friendViewModel: friendViewModel,
+                    wholeFriendList: wholeFriendList);
               },
               icon: const Icon(Icons.menu)),
         ],
@@ -408,7 +443,8 @@ class _ChatScreenState extends ConsumerState<ChatScreen> {
                           child: getMergedMessage(
                               showDate: targetChatData.shouldShowDate(reversedChatIndex),
                               isMe: targetChatData.messageList![reversedChatIndex].isMe,
-                              shouldUseTailBubble: targetChatData.shouldUseTailBubble(reversedChatIndex),
+                              shouldUseTailBubble:
+                                  targetChatData.shouldUseTailBubble(reversedChatIndex),
                               message: targetChatData.messageList![reversedChatIndex],
                               friendName: targetChatData.getFriendName(
                                       targetChatData.messageList![reversedChatIndex].friendId) ??
@@ -502,7 +538,7 @@ class _ChatScreenState extends ConsumerState<ChatScreen> {
                                         viewModel: viewModel,
                                         message: messageText,
                                         me: me,
-                                        currentMemberNumber: targetChatData.chatMember.length);
+                                        currentMemberNumber: targetChatData.chatMembers.length);
                                     // 보낸 후 TextInput 초기화
                                     ref.read(_messageInputProvider.notifier).state = "";
                                     _inputTextController.text = "";
@@ -536,7 +572,7 @@ class _ChatScreenState extends ConsumerState<ChatScreen> {
                 onTap: () {
                   viewModel.updateChatNoti(
                     chatId: currentChatRoomId!,
-                    chatNoti: targetChatData.changeMinimize(),
+                    chatNoti: targetChatData.changeNotiMinimizeStatus(),
                   );
                 },
                 child: Container(
@@ -578,7 +614,9 @@ class _ChatScreenState extends ConsumerState<ChatScreen> {
                             child: Column(
                               crossAxisAlignment: CrossAxisAlignment.start,
                               children: [
-                                const SizedBox(height: 6,),
+                                const SizedBox(
+                                  height: 6,
+                                ),
                                 Text(
                                   targetChatData.notification!.message,
                                   style: const TextStyle(fontSize: 16),
@@ -650,7 +688,7 @@ class _ChatScreenState extends ConsumerState<ChatScreen> {
                                   onPressed: () {
                                     viewModel.updateChatNoti(
                                       chatId: currentChatRoomId!,
-                                      chatNoti: targetChatData.changeMinimize(),
+                                      chatNoti: targetChatData.changeNotiMinimizeStatus(),
                                     );
                                   },
                                   style: ElevatedButton.styleFrom(

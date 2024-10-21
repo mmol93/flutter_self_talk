@@ -1,8 +1,10 @@
 import 'dart:io';
+
 import 'package:flutter/cupertino.dart';
 import 'package:flutter/material.dart';
 import 'package:self_talk/models/list_item_model.dart';
 
+/// 1개의 텍스트 위젯으로 이루어진 리스트 Dialog
 void showListDialog({
   String? title,
   required BuildContext context,

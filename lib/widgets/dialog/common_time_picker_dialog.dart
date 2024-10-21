@@ -1,5 +1,6 @@
 import 'package:flutter/material.dart';
 
+/// 시간을 선택하고 선택된 시간을 반환하는 Dialog
 Future<DateTime?> showMyTimePickerDialog(
   BuildContext context, {
   TimeOfDay? initTime,

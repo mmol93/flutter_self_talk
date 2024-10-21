@@ -1,7 +1,9 @@
 import 'dart:io';
+
 import 'package:flutter/cupertino.dart';
 import 'package:flutter/material.dart';
 
+/// Title, Description, 1개의 버튼으로 이루어져 있는 Dialog
 void showTextDialog({
   required String title,
   required String okText,
