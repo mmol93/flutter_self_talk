@@ -1,6 +1,7 @@
 import 'dart:convert';
 
 import 'package:self_talk/models/chat.dart';
+import 'package:self_talk/models/friend.dart';
 import 'package:self_talk/utils/Typedefs.dart';
 import 'package:shared_preferences/shared_preferences.dart';
 
@@ -129,6 +130,25 @@ class ChatRepository {
       return chatList;
     }
     return null;
+  }
+
+  /// 채팅방에 새로운 멤버 초대하기
+  Future<void> inviteNewMember({
+    required String chatId,
+    required List<Friend> invitedFriendList,
+  }) async {
+    final prefs = await _initPrefs();
+    final chatListJson = prefs.getString('chatList');
+
+    if (chatListJson != null) {
+      final chatData = ChatList.fromJson(jsonDecode(chatListJson));
+      final targetChatRoom = chatData.chatRoom![chatId]!;
+      for (Friend invitedFriend in invitedFriendList) {
+        targetChatRoom.chatMembers.add(invitedFriend);
+      }
+
+      updateChatList(chatData);
+    }
   }
 
   /// 모든 채팅 리스트 업데이트

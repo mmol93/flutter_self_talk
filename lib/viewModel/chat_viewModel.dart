@@ -299,6 +299,11 @@ class ChatViewModel extends StateNotifier<ChatList?> {
     _chatRepository.addMessage(chatId, message, notSameSpeaker).then((value) => getChatList());
   }
 
+  /// 해당 채팅방에 새 멤버 초대하기
+  void inviteNewMember({required String chatId, required List<Friend> invitedFriendList}) async {
+    _chatRepository.inviteNewMember(chatId: chatId, invitedFriendList: invitedFriendList).then((value) => getChatList());
+  }
+
   /// 해당 채팅방에서 특정 메시지 삭제하기
   void deleteMessage({
     required String chatId,

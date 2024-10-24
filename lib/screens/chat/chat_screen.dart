@@ -12,6 +12,7 @@ import 'package:self_talk/models/list_item_model.dart';
 import 'package:self_talk/viewModel/chat_viewModel.dart';
 import 'package:self_talk/viewModel/friend_viewModel.dart';
 import 'package:self_talk/widgets/chat/announce_icon.dart';
+import 'package:self_talk/widgets/chat/dialog/chat_invite_friends_dialog.dart';
 import 'package:self_talk/widgets/chat/dialog/modify_message_dialog.dart';
 import 'package:self_talk/widgets/chat/merged_message.dart';
 import 'package:self_talk/widgets/common/utils.dart';
@@ -376,6 +377,23 @@ class _ChatScreenState extends ConsumerState<ChatScreen> {
           (wholeFriend) => !targetChatData.chatMembers.any((member) => wholeFriend.id == member.id),
         )
         .toList();
+    if (notIncludedMemberList.isEmpty) {
+      showToast("초대할 수 있는 친구가 없습니다.");
+    } else {
+      showInviteFriendsDialog(
+          notInvitedFriendList: notIncludedMemberList,
+          context: context,
+          clickEvent: (invitedFriendList) {
+            setState(() {
+              viewModel.inviteNewMember(
+                chatId: currentChatRoomId!,
+                invitedFriendList: invitedFriendList,
+              );
+              // TODO: 친구 초대 후 초대 메시지 띄워야함
+            });
+          });
+      showToast("현재 채팅 유저가 '초대하는 사람'이 됩니다.");
+    }
   }
 
   @override
@@ -410,10 +428,11 @@ class _ChatScreenState extends ConsumerState<ChatScreen> {
           IconButton(
               onPressed: () {
                 _showChatRoomOptionDialog(
-                    viewModel: viewModel,
-                    targetChatData: targetChatData,
-                    friendViewModel: friendViewModel,
-                    wholeFriendList: wholeFriendList);
+                  viewModel: viewModel,
+                  targetChatData: targetChatData,
+                  friendViewModel: friendViewModel,
+                  wholeFriendList: wholeFriendList,
+                );
               },
               icon: const Icon(Icons.menu)),
         ],
