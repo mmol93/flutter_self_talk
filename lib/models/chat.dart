@@ -247,6 +247,7 @@ class Message {
 }
 
 /// message: 일반적인 메시지
+/// call: 그룹콜, 개인콜에 대한 메시지
 /// date: 날짜 구분선
 /// state: 초대, 나가기 등 상태에 관한 메시지
-enum MessageType { message, date, state }
+enum MessageType { message, call, date, state }

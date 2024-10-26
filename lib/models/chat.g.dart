@@ -27,7 +27,7 @@ Chat _$ChatFromJson(Map<String, dynamic> json) => Chat(
       messageList: (json['messageList'] as List<dynamic>?)
           ?.map((e) => Message.fromJson(e as Map<String, dynamic>))
           .toList(),
-      chatMembers: (json['chatMember'] as List<dynamic>)
+      chatMembers: (json['chatMembers'] as List<dynamic>)
           .map((e) => Friend.fromJson(e as Map<String, dynamic>))
           .toList(),
       modifiedDate: Chat._fromDateJson((json['modifiedDate'] as num).toInt()),
@@ -36,7 +36,7 @@ Chat _$ChatFromJson(Map<String, dynamic> json) => Chat(
 Map<String, dynamic> _$ChatToJson(Chat instance) => <String, dynamic>{
       'title': instance.title,
       'messageList': instance.messageList,
-      'chatMember': instance.chatMembers,
+      'chatMembers': instance.chatMembers,
       'notification': instance.notification,
       'lastMessage': instance.lastMessage,
       'modifiedDate': Chat._toDateJson(instance.modifiedDate),
@@ -84,6 +84,7 @@ Map<String, dynamic> _$MessageToJson(Message instance) => <String, dynamic>{
 
 const _$MessageTypeEnumMap = {
   MessageType.message: 'message',
+  MessageType.call: 'call',
   MessageType.date: 'date',
   MessageType.state: 'state',
 };
