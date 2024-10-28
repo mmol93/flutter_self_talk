@@ -222,7 +222,7 @@ class _ChatScreenState extends ConsumerState<ChatScreen> {
             clickEvent: () {
               _inviteNewFriend(
                 viewModel: viewModel,
-                targetChatData: targetChatData,
+                currentTargetChatData: targetChatData,
                 friendViewModel: friendViewModel,
                 wholeFriendList: wholeFriendList,
               );
@@ -329,6 +329,7 @@ class _ChatScreenState extends ConsumerState<ChatScreen> {
   /// 신규 채팅 메시지를 보낸다.
   void _sendMessage({
     String? message,
+    String? secondMessage,
     String? imagePath,
     MessageType messageType = MessageType.message,
     DateTime? pickedDate,
@@ -351,6 +352,7 @@ class _ChatScreenState extends ConsumerState<ChatScreen> {
               friendId: currentSelectedFriend!.id,
               messageTime: pickedDate ?? DateTime.now(),
               message: message ?? "",
+              secondMessage: secondMessage,
               messageType: messageType,
               isMe: me.name == currentSelectedFriend!.name ? true : false,
               notSeenMemberNumber: currentMemberNumber - 1,
@@ -367,32 +369,51 @@ class _ChatScreenState extends ConsumerState<ChatScreen> {
   /// 새로운 멤버를 채팅방에 초대한다.
   void _inviteNewFriend({
     required ChatViewModel viewModel,
-    required Chat targetChatData,
+    required Chat currentTargetChatData,
     required FriendViewModel friendViewModel,
     required List<Friend> wholeFriendList,
   }) async {
-    // 현재 채팅방에 초대되어있지 않은 멤버들
-    final notIncludedMemberList = wholeFriendList
-        .where(
-          (wholeFriend) => !targetChatData.chatMembers.any((member) => wholeFriend.id == member.id),
-        )
-        .toList();
-    if (notIncludedMemberList.isEmpty) {
-      showToast("초대할 수 있는 친구가 없습니다.");
+    if (currentSelectedFriend == null) {
+      showToast("\"현재 채팅 유저\"를 먼저 선택해야 합니다.");
     } else {
-      showInviteFriendsDialog(
-          notInvitedFriendList: notIncludedMemberList,
-          context: context,
-          clickEvent: (invitedFriendList) {
-            setState(() {
-              viewModel.inviteNewMember(
-                chatId: currentChatRoomId!,
-                invitedFriendList: invitedFriendList,
-              );
-              // TODO: 친구 초대 후 초대 메시지 띄워야함
+      // 현재 채팅방에 초대되어있지 않은 멤버들
+      final notIncludedMemberList = wholeFriendList
+          .where(
+            (wholeFriend) =>
+                !currentTargetChatData.chatMembers.any((member) => wholeFriend.id == member.id),
+          )
+          .toList();
+      if (notIncludedMemberList.isEmpty) {
+        showToast("초대할 수 있는 친구가 없습니다.");
+      } else {
+        showInviteFriendsDialog(
+            notInvitedFriendList: notIncludedMemberList,
+            context: context,
+            clickEvent: (invitedFriendList) {
+              setState(() {
+                viewModel.inviteNewMember(
+                  chatId: currentChatRoomId!,
+                  invitedFriendList: invitedFriendList,
+                );
+                String invitedFriendText = invitedFriendList.asMap().entries.map((entry){
+                  int index = entry.key;
+                  String friendName = "<u>${entry.value.name}</u>";
+
+                  if (index == invitedFriendList.length-1) "님과 $friendName";
+                  return friendName;
+                }).join(", ");
+
+                _sendMessage(
+                  message: "${currentSelectedFriend!.name}님이 $invitedFriendText님을 초대했습니다.",
+                  messageType: MessageType.state,
+                  viewModel: viewModel,
+                  me: currentSelectedFriend!,
+                  currentMemberNumber: currentTargetChatData.chatMembers.length,
+                );
+              });
             });
-          });
-      showToast("현재 채팅 유저가 '초대하는 사람'이 됩니다.");
+        showToast("현재 채팅 유저가 '초대하는 사람'이 됩니다.");
+      }
     }
   }
 

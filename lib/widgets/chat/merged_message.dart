@@ -2,6 +2,8 @@ import 'package:flutter/material.dart';
 import 'package:self_talk/widgets/chat/message_date.dart';
 import 'package:self_talk/widgets/chat/message_from_me.dart';
 import 'package:self_talk/widgets/chat/message_from_others.dart';
+import 'package:self_talk/widgets/chat/message_state_html_line.dart';
+import 'package:self_talk/widgets/chat/message_state_two_line.dart';
 
 import '../../models/chat.dart';
 
@@ -16,8 +18,18 @@ Widget getMergedMessage({
   DateTime? pickedDate,
 }) {
   switch (messageType) {
-    case MessageType.date || MessageType.state:
+    case MessageType.date:
       return MessageDate(pickedDate: pickedDate ?? DateTime.now());
+
+    case MessageType.state:
+      if (message.secondMessage != null) {
+        return MessageStateTwoLine(firstLineText: message.message, secondLineText: message.secondMessage);
+      } else {
+        return MessageStateHtmlLine(firstLineHtmlText: message.message);
+      }
+
+    case MessageType.call:
+    // TODO: Handle this case.
 
     case MessageType.message:
       if (isMe) {

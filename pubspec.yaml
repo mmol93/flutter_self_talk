@@ -88,6 +88,9 @@ dependencies:
   # flutter_localization - https://pub.dev/packages/flutter_localization/install
   flutter_localization: ^0.2.2
 
+  # flutter_html - https://pub.dev/packages/flutter_html/install
+  flutter_html: ^3.0.0-beta.2
+
 dev_dependencies:
   flutter_test:
     sdk: flutter
