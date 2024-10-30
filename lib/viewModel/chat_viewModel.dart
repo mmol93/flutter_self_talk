@@ -4,8 +4,8 @@ import 'package:self_talk/models/friend.dart';
 import 'package:self_talk/repository/chat_repository.dart';
 import 'package:self_talk/utils/Typedefs.dart';
 
-final chatViewModelProvider = StateNotifierProvider<ChatViewModel, ChatList?>(
-        (ref) => ChatViewModel(ChatRepository()));
+final chatViewModelProvider =
+    StateNotifierProvider<ChatViewModel, ChatList?>((ref) => ChatViewModel(ChatRepository()));
 
 // ChatList 예시
 ChatList dummyChatList = ChatList(chatRoom: {
@@ -280,9 +280,7 @@ class ChatViewModel extends StateNotifier<ChatList?> {
 
   /// 채팅 리스트 양식 만들기 = 채팅 초기화
   void createChatList() async {
-    _chatRepository
-        .createChatList(dummyChatList)
-        .then((value) => getChatList());
+    _chatRepository.createChatList(dummyChatList).then((value) => getChatList());
   }
 
   /// 채팅방 자체를 만듬(새로운 채팅방 만들기 등...)
@@ -300,8 +298,13 @@ class ChatViewModel extends StateNotifier<ChatList?> {
   }
 
   /// 해당 채팅방에 새 멤버 초대하기
-  void inviteNewMember({required String chatId, required List<Friend> invitedFriendList}) async {
-    _chatRepository.inviteNewMember(chatId: chatId, invitedFriendList: invitedFriendList).then((value) => getChatList());
+  void inviteNewMember(
+      {required String chatId,
+      required List<Friend> invitedFriendList,
+      required Message inviteMessage}) async {
+    _chatRepository
+        .inviteNewMember(chatId: chatId, invitedFriendList: invitedFriendList, inviteMessage: inviteMessage)
+        .then((value) => getChatList());
   }
 
   /// 해당 채팅방에서 특정 메시지 삭제하기
@@ -310,9 +313,7 @@ class ChatViewModel extends StateNotifier<ChatList?> {
     required int messageIndex,
     required Message message,
   }) async {
-    _chatRepository
-        .deleteMessage(chatId, messageIndex, message)
-        .then((value) => getChatList());
+    _chatRepository.deleteMessage(chatId, messageIndex, message).then((value) => getChatList());
   }
 
   /// 특정 채팅방의 특정 채팅 수정하기
@@ -321,9 +322,7 @@ class ChatViewModel extends StateNotifier<ChatList?> {
     required int messageIndex,
     required Message message,
   }) async {
-    _chatRepository
-        .updateMessage(chatId, messageIndex, message)
-        .then((value) => getChatList());
+    _chatRepository.updateMessage(chatId, messageIndex, message).then((value) => getChatList());
   }
 
   /// 해당 채팅방의 공지 업데이트 하기

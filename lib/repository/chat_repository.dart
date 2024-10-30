@@ -136,6 +136,7 @@ class ChatRepository {
   Future<void> inviteNewMember({
     required String chatId,
     required List<Friend> invitedFriendList,
+    required Message inviteMessage,
   }) async {
     final prefs = await _initPrefs();
     final chatListJson = prefs.getString('chatList');
@@ -145,6 +146,12 @@ class ChatRepository {
       final targetChatRoom = chatData.chatRoom![chatId]!;
       for (Friend invitedFriend in invitedFriendList) {
         targetChatRoom.chatMembers.add(invitedFriend);
+      }
+      // 초대 이후 초대되었다는 메시지를 업데이트 한다.
+      if (targetChatRoom.messageList == null) {
+        targetChatRoom.messageList = [inviteMessage];
+      } else {
+        targetChatRoom.messageList?.add(inviteMessage);
       }
 
       updateChatList(chatData);

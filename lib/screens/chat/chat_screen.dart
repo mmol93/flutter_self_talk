@@ -391,24 +391,28 @@ class _ChatScreenState extends ConsumerState<ChatScreen> {
             context: context,
             clickEvent: (invitedFriendList) {
               setState(() {
-                viewModel.inviteNewMember(
-                  chatId: currentChatRoomId!,
-                  invitedFriendList: invitedFriendList,
-                );
-                String invitedFriendText = invitedFriendList.asMap().entries.map((entry){
+                String invitedFriendText = invitedFriendList.asMap().entries.map((entry) {
                   int index = entry.key;
                   String friendName = "<u>${entry.value.name}</u>";
 
-                  if (index == invitedFriendList.length-1) "님과 $friendName";
+                  if (index == invitedFriendList.length - 1) "님과 $friendName";
                   return friendName;
                 }).join(", ");
 
-                _sendMessage(
-                  message: "${currentSelectedFriend!.name}님이 $invitedFriendText님을 초대했습니다.",
-                  messageType: MessageType.state,
-                  viewModel: viewModel,
-                  me: currentSelectedFriend!,
-                  currentMemberNumber: currentTargetChatData.chatMembers.length,
+                final invitedFriendMessageText =
+                    "${currentSelectedFriend!.name}님이 $invitedFriendText님을 초대했습니다.";
+
+                viewModel.inviteNewMember(
+                  chatId: currentChatRoomId!,
+                  invitedFriendList: invitedFriendList,
+                  inviteMessage: Message(
+                    friendId: currentSelectedFriend!.id,
+                    messageTime: DateTime.now(),
+                    message: invitedFriendMessageText,
+                    messageType: MessageType.state,
+                    isMe: false,
+                    notSeenMemberNumber: 0,
+                  ),
                 );
               });
             });
