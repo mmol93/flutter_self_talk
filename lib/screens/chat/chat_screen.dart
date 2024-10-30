@@ -33,6 +33,7 @@ class ChatScreen extends ConsumerStatefulWidget {
 class _ChatScreenState extends ConsumerState<ChatScreen> {
   late final String? currentChatRoomId;
   Friend? currentSelectedFriend;
+  Friend? me;
   final _messageInputProvider = StateProvider<String>((ref) => '');
   final _inputTextController = TextEditingController();
   final ScrollController _scrollController = ScrollController();
@@ -384,7 +385,7 @@ class _ChatScreenState extends ConsumerState<ChatScreen> {
           )
           .toList();
       if (notIncludedMemberList.isEmpty) {
-        showToast("초대할 수 있는 친구가 없습니다.");
+        showToast("초대할 수 있는 친구가 없습니다.\n새로운 친구를 생성하세요.");
       } else {
         showInviteFriendsDialog(
             notInvitedFriendList: notIncludedMemberList,
@@ -399,8 +400,9 @@ class _ChatScreenState extends ConsumerState<ChatScreen> {
                   return friendName;
                 }).join(", ");
 
-                final invitedFriendMessageText =
-                    "${currentSelectedFriend!.name}님이 $invitedFriendText님을 초대했습니다.";
+                final invitedFriendMessageText = currentSelectedFriend == me
+                    ? "$invitedFriendText님을 초대했습니다."
+                    : "${currentSelectedFriend!.name}님이 $invitedFriendText님을 초대했습니다.";
 
                 viewModel.inviteNewMember(
                   chatId: currentChatRoomId!,
@@ -428,7 +430,7 @@ class _ChatScreenState extends ConsumerState<ChatScreen> {
     final wholeFriendList = ref.watch(friendViewModelProvider);
     final wholeChatList = ref.watch(chatViewModelProvider);
     final Chat targetChatData = wholeChatList!.chatRoom![currentChatRoomId]!;
-    final me = targetChatData.chatMembers.firstWhere((friend) => friend.me == 1);
+    me = targetChatData.chatMembers.firstWhere((friend) => friend.me == 1);
 
     return Scaffold(
       backgroundColor: defaultBackground,
@@ -509,11 +511,11 @@ class _ChatScreenState extends ConsumerState<ChatScreen> {
                       const Text("현재 채팅 유저: "),
                       TextButton(
                         onPressed: () {
-                          _showFriendSelectionDialog(me, targetChatData);
+                          _showFriendSelectionDialog(me!, targetChatData);
                         },
                         child: Text(
                           currentSelectedFriend != null
-                              ? me.id == currentSelectedFriend?.id
+                              ? me!.id == currentSelectedFriend?.id
                                   ? "(자신)${currentSelectedFriend!.name}"
                                   : currentSelectedFriend!.name
                               : "선택된 친구 없음",
@@ -534,10 +536,14 @@ class _ChatScreenState extends ConsumerState<ChatScreen> {
                           children: [
                             IconButton(
                               onPressed: () {
-                                _showAttachmentOptions(
-                                    viewModel: viewModel,
-                                    me: me,
-                                    currentTargetChatData: targetChatData);
+                                if (me == null) {
+                                  showToast("\"현재 채팅 유저\"를 먼저 선택해야 합니다.");
+                                } else {
+                                  _showAttachmentOptions(
+                                      viewModel: viewModel,
+                                      me: me!,
+                                      currentTargetChatData: targetChatData);
+                                }
                               },
                               icon: const Icon(Icons.add),
                               color: Colors.grey,
@@ -581,7 +587,7 @@ class _ChatScreenState extends ConsumerState<ChatScreen> {
                                     _sendMessage(
                                         viewModel: viewModel,
                                         message: messageText,
-                                        me: me,
+                                        me: me!,
                                         currentMemberNumber: targetChatData.chatMembers.length);
                                     // 보낸 후 TextInput 초기화
                                     ref.read(_messageInputProvider.notifier).state = "";
