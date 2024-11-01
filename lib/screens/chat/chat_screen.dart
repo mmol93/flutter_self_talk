@@ -163,6 +163,7 @@ class _ChatScreenState extends ConsumerState<ChatScreen> {
             final File? pickedImage = await _pickImage();
 
             if (pickedImage != null) {
+              // TODO: 채팅방 마지막 메시지 업데이트 하기("사진을 보냈습니다.")
               _sendMessage(
                 imagePath: pickedImage.path,
                 viewModel: viewModel,
@@ -230,6 +231,12 @@ class _ChatScreenState extends ConsumerState<ChatScreen> {
             }),
         ListItemModel(
           itemTitle: "친구 강퇴하기",
+          clickEvent: () {
+            _leaveFriend(
+              viewModel: viewModel,
+              currentTargetChatData: targetChatData,
+            );
+          }
         ),
         ListItemModel(
           itemTitle: "채팅방 이름 변경",
@@ -374,6 +381,7 @@ class _ChatScreenState extends ConsumerState<ChatScreen> {
     required FriendViewModel friendViewModel,
     required List<Friend> wholeFriendList,
   }) async {
+    // TODO: 나간 이후 해당 채팅방의 마지막 메시지는 바뀌지 않게 하기
     if (currentSelectedFriend == null) {
       showToast("\"현재 채팅 유저\"를 먼저 선택해야 합니다.");
     } else {
@@ -421,6 +429,40 @@ class _ChatScreenState extends ConsumerState<ChatScreen> {
         showToast("현재 채팅 유저가 '초대하는 사람'이 됩니다.");
       }
     }
+  }
+
+  void _leaveFriend({
+    required ChatViewModel viewModel,
+    required Chat currentTargetChatData,
+  }) {
+    List<Friend> targetFriends = currentTargetChatData.chatMembers;
+
+    // TODO: 나간 이후 해당 채팅방의 마지막 메시지는 바뀌지 않게 하기
+    showListDialog(
+        title: "이 방을 나갈 친구 선택",
+        context: context,
+        listItemModel: targetFriends
+            .map((friend) => ListItemModel(
+                  itemTitle: friend.name,
+                  clickEvent: () {
+                    setState(() {
+                      viewModel.leaveFriend(
+                        chatId: currentChatRoomId!,
+                        leaveFriend: friend,
+                        inviteMessage: Message(
+                          friendId: friend.id,
+                          messageTime: DateTime.now(),
+                          message: "${friend.name}님이 나갔습니다.",
+                          secondMessage: "채팅방으로 초대하기",
+                          messageType: MessageType.state,
+                          isMe: false,
+                          notSeenMemberNumber: 0,
+                        ),
+                      );
+                    });
+                  },
+                ))
+            .toList());
   }
 
   @override

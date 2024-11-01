@@ -27,7 +27,11 @@ class MessageStateTwoLine extends StatelessWidget {
               Text(
                 secondLineText ?? "",
                 style: const TextStyle(
-                    fontSize: 12.0, color: Colors.white, decoration: TextDecoration.underline),
+                  fontSize: 12.0,
+                  color: Colors.white,
+                  decoration: TextDecoration.underline,
+                  decorationColor: Colors.white,
+                ),
               ),
             ],
           ),

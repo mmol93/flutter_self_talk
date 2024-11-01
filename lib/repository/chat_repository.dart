@@ -144,9 +144,11 @@ class ChatRepository {
     if (chatListJson != null) {
       final chatData = ChatList.fromJson(jsonDecode(chatListJson));
       final targetChatRoom = chatData.chatRoom![chatId]!;
+
       for (Friend invitedFriend in invitedFriendList) {
         targetChatRoom.chatMembers.add(invitedFriend);
       }
+
       // 초대 이후 초대되었다는 메시지를 업데이트 한다.
       if (targetChatRoom.messageList == null) {
         targetChatRoom.messageList = [inviteMessage];
@@ -154,6 +156,31 @@ class ChatRepository {
         targetChatRoom.messageList?.add(inviteMessage);
       }
 
+      updateChatList(chatData);
+    }
+  }
+
+  /// 채팅방의 멤버 1명을 나간 처리 한다.
+  Future<void> leaveChatRoom({
+    required String chatId,
+    required Friend leaveFriend,
+    required Message inviteMessage,
+  }) async {
+    final prefs = await _initPrefs();
+    final chatListJson = prefs.getString('chatList');
+
+    if (chatListJson != null) {
+      final chatData = ChatList.fromJson(jsonDecode(chatListJson));
+      final targetChatRoom = chatData.chatRoom![chatId]!;
+
+      targetChatRoom.chatMembers.removeWhere((friend) => friend.id == leaveFriend.id);
+
+      // 초대 이후 나갔다는 메시지를 업데이트 한다.
+      if (targetChatRoom.messageList == null) {
+        targetChatRoom.messageList = [inviteMessage];
+      } else {
+        targetChatRoom.messageList?.add(inviteMessage);
+      }
       updateChatList(chatData);
     }
   }

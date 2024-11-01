@@ -298,12 +298,32 @@ class ChatViewModel extends StateNotifier<ChatList?> {
   }
 
   /// 해당 채팅방에 새 멤버 초대하기
-  void inviteNewMember(
-      {required String chatId,
-      required List<Friend> invitedFriendList,
-      required Message inviteMessage}) async {
+  void inviteNewMember({
+    required String chatId,
+    required List<Friend> invitedFriendList,
+    required Message inviteMessage,
+  }) async {
     _chatRepository
-        .inviteNewMember(chatId: chatId, invitedFriendList: invitedFriendList, inviteMessage: inviteMessage)
+        .inviteNewMember(
+          chatId: chatId,
+          invitedFriendList: invitedFriendList,
+          inviteMessage: inviteMessage,
+        )
+        .then((value) => getChatList());
+  }
+
+  /// 해당 채팅방에서 친구가 나감
+  void leaveFriend({
+    required String chatId,
+    required Friend leaveFriend,
+    required Message inviteMessage,
+  }) async {
+    _chatRepository
+        .leaveChatRoom(
+          chatId: chatId,
+          leaveFriend: leaveFriend,
+          inviteMessage: inviteMessage,
+        )
         .then((value) => getChatList());
   }
 
