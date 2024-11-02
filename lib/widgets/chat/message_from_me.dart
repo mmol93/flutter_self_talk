@@ -73,7 +73,7 @@ class MessageFromMe extends StatelessWidget {
                   : Container(
                       padding: const EdgeInsets.symmetric(horizontal: 4, vertical: 3),
                       // TODO: 작은 단말기에서 어떻게 나오는지 확인 필요
-                      constraints: const BoxConstraints(maxWidth: 230),
+                      constraints: const BoxConstraints(maxWidth: 240),
                       child: ClipRRect(
                         borderRadius: BorderRadius.circular(10),
                         child: Image.file(
