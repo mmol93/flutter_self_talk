@@ -114,7 +114,13 @@ class ChatRepository {
         targetChatRoom.messageList?.add(message);
       }
       if (message.messageType == MessageType.message) {
-        targetChatRoom.lastMessage = message.message;
+        // 이미지면 마지막 메시지에 사진에 대한 메시지를 넣는다.
+        if (message.imagePath != null) {
+          targetChatRoom.lastMessage = "사진을 보냈습니다.";
+        } else {
+          // 마지막 메시지를 업데이트 해준다.
+          targetChatRoom.lastMessage = message.message;
+        }
         targetChatRoom.modifiedDate = DateTime.now();
       }
       await updateChatList(chatData);

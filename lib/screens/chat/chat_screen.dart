@@ -163,7 +163,6 @@ class _ChatScreenState extends ConsumerState<ChatScreen> {
             final File? pickedImage = await _pickImage();
 
             if (pickedImage != null) {
-              // TODO: 채팅방 마지막 메시지 업데이트 하기("사진을 보냈습니다.")
               _sendMessage(
                 imagePath: pickedImage.path,
                 viewModel: viewModel,
@@ -381,7 +380,6 @@ class _ChatScreenState extends ConsumerState<ChatScreen> {
     required FriendViewModel friendViewModel,
     required List<Friend> wholeFriendList,
   }) async {
-    // TODO: 나간 이후 해당 채팅방의 마지막 메시지는 바뀌지 않게 하기
     if (currentSelectedFriend == null) {
       showToast("\"현재 채팅 유저\"를 먼저 선택해야 합니다.");
     } else {
@@ -436,8 +434,6 @@ class _ChatScreenState extends ConsumerState<ChatScreen> {
     required Chat currentTargetChatData,
   }) {
     List<Friend> targetFriends = currentTargetChatData.chatMembers;
-
-    // TODO: 나간 이후 해당 채팅방의 마지막 메시지는 바뀌지 않게 하기
     showListDialog(
         title: "이 방을 나갈 친구 선택",
         context: context,
