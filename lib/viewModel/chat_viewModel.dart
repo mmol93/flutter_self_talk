@@ -11,7 +11,7 @@ final chatViewModelProvider =
 ChatList dummyChatList = ChatList(chatRoom: {
   "abcd1": Chat(
     lastMessage: "마지막 메시지",
-    title: '친구들과의 채팅1',
+    chatRoomName: '친구들과의 채팅1',
     messageList: [
       Message(
         friendId: '3',
@@ -58,7 +58,7 @@ ChatList dummyChatList = ChatList(chatRoom: {
   "abcd2": Chat(
     lastMessage: "마지막 메시지",
     alarmOnOff: 1,
-    title: '친구들과의 채팅2',
+    chatRoomName: '친구들과의 채팅2',
     messageList: [
       Message(
         friendId: '1',
@@ -98,7 +98,7 @@ ChatList dummyChatList = ChatList(chatRoom: {
   "abcd3": Chat(
     lastMessage: "마지막 메시지3",
     alarmOnOff: 0,
-    title: '친구들과의 채팅3',
+    chatRoomName: '친구들과의 채팅3',
     messageList: [
       Message(
         friendId: '1',
@@ -152,7 +152,7 @@ ChatList dummyChatList = ChatList(chatRoom: {
   "abcd4": Chat(
     lastMessage: "마지막 메시지4",
     alarmOnOff: 0,
-    title: '친구들과의 채팅4',
+    chatRoomName: '친구들과의 채팅4',
     modifiedChatRoomImg: "",
     messageList: [
       Message(
@@ -207,7 +207,7 @@ ChatList dummyChatList = ChatList(chatRoom: {
   "abcd5": Chat(
     lastMessage: "마지막 메시지3",
     alarmOnOff: 0,
-    title: '친구들과의 채팅5',
+    chatRoomName: '친구들과의 채팅5',
     messageList: [
       Message(
         friendId: '1',
@@ -309,6 +309,16 @@ class ChatViewModel extends StateNotifier<ChatList?> {
           invitedFriendList: invitedFriendList,
           inviteMessage: inviteMessage,
         )
+        .then((value) => getChatList());
+  }
+
+  /// 해당 채팅방의 이름을 변경
+  void changeChatRoomName({
+    required String chatId,
+    required String newChatRoomName,
+  }) {
+    _chatRepository
+        .changeChatRoomName(chatId: chatId, newChatRoomName: newChatRoomName)
         .then((value) => getChatList());
   }
 

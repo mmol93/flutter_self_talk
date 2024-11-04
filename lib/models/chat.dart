@@ -21,7 +21,7 @@ class ChatList {
 @JsonSerializable()
 class Chat {
   /// 채팅 타이틀
-  final String? title;
+  String? chatRoomName;
 
   /// 채팅 내용
   List<Message>? messageList;
@@ -51,7 +51,7 @@ class Chat {
     this.alarmOnOff = 1,
     this.modifiedChatRoomImg,
     this.notification,
-    required this.title,
+    required this.chatRoomName,
     required this.messageList,
     required this.chatMembers,
     required this.modifiedDate,
@@ -95,7 +95,7 @@ class Chat {
     }
 
     return Chat(
-        title: initTitle, messageList: null, chatMembers: chatMembers, modifiedDate: DateTime.now());
+        chatRoomName: initTitle, messageList: null, chatMembers: chatMembers, modifiedDate: DateTime.now());
   }
 
   String? getFriendName(String friendId) {

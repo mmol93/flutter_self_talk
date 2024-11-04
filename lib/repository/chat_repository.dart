@@ -18,11 +18,9 @@ class ChatRepository {
   }
 
   /// 특정 채팅방의 특정 채팅 수정하기
-  Future<void> updateMessage(
-    String chatId,
-    int messageIndex,
-    Message message,
-  ) async {
+  Future<void> updateMessage(String chatId,
+      int messageIndex,
+      Message message,) async {
     final prefs = await _initPrefs();
     final chatListJson = prefs.getString('chatList');
     if (chatListJson != null) {
@@ -74,11 +72,9 @@ class ChatRepository {
   }
 
   /// 해당 채팅방에서 특정 메시지 삭제하기
-  Future<void> deleteMessage(
-    String chatId,
-    int messageIndex,
-    Message message,
-  ) async {
+  Future<void> deleteMessage(String chatId,
+      int messageIndex,
+      Message message,) async {
     final prefs = await _initPrefs();
     final chatListJson = prefs.getString('chatList');
     if (chatListJson != null) {
@@ -91,11 +87,9 @@ class ChatRepository {
   }
 
   /// 해당 채팅방에 메시지 추가하기
-  Future<void> addMessage(
-    String chatId,
-    Message message,
-    bool notSameSpeaker,
-  ) async {
+  Future<void> addMessage(String chatId,
+      Message message,
+      bool notSameSpeaker,) async {
     final prefs = await _initPrefs();
     final chatListJson = prefs.getString('chatList');
     if (chatListJson != null) {
@@ -124,6 +118,19 @@ class ChatRepository {
         targetChatRoom.modifiedDate = DateTime.now();
       }
       await updateChatList(chatData);
+    }
+  }
+
+  /// 채팅방 이름 바꾸기
+  Future<void> changeChatRoomName({required String chatId, required String newChatRoomName}) async {
+    final prefs = await _initPrefs();
+    final chatListJson = prefs.getString('chatList');
+    if (chatListJson != null) {
+      final chatList = ChatList.fromJson(jsonDecode(chatListJson));
+      final targetChatRoom = chatList.chatRoom![chatId];
+      targetChatRoom?.chatRoomName = newChatRoomName;
+
+      updateChatList(chatList);
     }
   }
 

@@ -20,6 +20,7 @@ import 'package:self_talk/widgets/dialog/common_time_picker_dialog.dart';
 import 'package:self_talk/widgets/dialog/list_dialog.dart';
 
 import '../../widgets/dialog/number_modify_dialog.dart';
+import '../../widgets/dialog/text_modify_dialog.dart';
 
 class ChatScreen extends ConsumerStatefulWidget {
   final String? chatId;
@@ -229,17 +230,23 @@ class _ChatScreenState extends ConsumerState<ChatScreen> {
               );
             }),
         ListItemModel(
-          itemTitle: "친구 강퇴하기",
-          clickEvent: () {
-            _leaveFriend(
-              viewModel: viewModel,
-              currentTargetChatData: targetChatData,
-            );
-          }
-        ),
+            itemTitle: "친구 강퇴하기",
+            clickEvent: () {
+              _leaveFriend(
+                viewModel: viewModel,
+                currentTargetChatData: targetChatData,
+              );
+            }),
         ListItemModel(
-          itemTitle: "채팅방 이름 변경",
-        ),
+            itemTitle: "채팅방 이름 변경",
+            clickEvent: () async {
+              final String? enteredText = await showTextInputDialog(context);
+              if (enteredText?.isEmpty != null) {
+                setState(() {
+                  viewModel.changeChatRoomName(chatId: currentChatRoomId!, newChatRoomName: enteredText!);
+                });
+              }
+            }),
         ListItemModel(
           itemTitle: "배경색 변경",
         ),
@@ -477,7 +484,7 @@ class _ChatScreenState extends ConsumerState<ChatScreen> {
         title: Row(
           children: [
             Text(
-              targetChatData.title ?? "",
+              targetChatData.chatRoomName ?? "",
               style: const TextStyle(fontWeight: FontWeight.bold),
             ),
             const SizedBox(width: 5),
@@ -489,17 +496,17 @@ class _ChatScreenState extends ConsumerState<ChatScreen> {
         ),
         actions: [
           IconButton(onPressed: () {}, icon: const Icon(Icons.search_outlined)),
-          // TODO: 메뉴 버튼 기능(대화상대 초대, 캡처용으로 전환 등) 추가 필요
           IconButton(
-              onPressed: () {
-                _showChatRoomOptionDialog(
-                  viewModel: viewModel,
-                  targetChatData: targetChatData,
-                  friendViewModel: friendViewModel,
-                  wholeFriendList: wholeFriendList,
-                );
-              },
-              icon: const Icon(Icons.menu)),
+            onPressed: () {
+              _showChatRoomOptionDialog(
+                viewModel: viewModel,
+                targetChatData: targetChatData,
+                friendViewModel: friendViewModel,
+                wholeFriendList: wholeFriendList,
+              );
+            },
+            icon: const Icon(Icons.menu),
+          ),
         ],
       ),
       body: GestureDetector(

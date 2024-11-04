@@ -120,7 +120,7 @@ class _FriendListScreen extends ConsumerState<FriendListScreen> {
                             case FriendControl.chat1on1:
                               final uuid = const Uuid().v4();
                               final initChat = Chat(
-                                title: null,
+                                chatRoomName: null,
                                 messageList: null,
                                 chatMembers: [friend, myProfile.first],
                                 modifiedDate: DateTime.now(),
