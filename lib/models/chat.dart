@@ -95,7 +95,10 @@ class Chat {
     }
 
     return Chat(
-        chatRoomName: initTitle, messageList: null, chatMembers: chatMembers, modifiedDate: DateTime.now());
+        chatRoomName: initTitle,
+        messageList: null,
+        chatMembers: chatMembers,
+        modifiedDate: DateTime.now());
   }
 
   String? getFriendName(String friendId) {
@@ -210,16 +213,19 @@ class Message {
   final bool isMe;
   int notSeenMemberNumber = 0;
   String? imagePath;
+  bool isFailed;
 
-  Message(
-      {required this.friendId,
-      required this.messageTime,
-      required this.message,
-      required this.messageType,
-      required this.isMe,
-      required this.notSeenMemberNumber,
-      this.secondMessage,
-      this.imagePath});
+  Message({
+    required this.friendId,
+    required this.messageTime,
+    required this.message,
+    required this.messageType,
+    required this.isMe,
+    required this.notSeenMemberNumber,
+    this.isFailed = false,
+    this.secondMessage,
+    this.imagePath,
+  });
 
   Message copyWith({
     String? friendId,
@@ -238,7 +244,8 @@ class Message {
         messageType: messageType ?? this.messageType,
         isMe: isMe ?? this.isMe,
         notSeenMemberNumber: notSeenMemberNumber ?? this.notSeenMemberNumber,
-        imagePath: imagePath ?? this.imagePath);
+        imagePath: imagePath ?? this.imagePath,
+        isFailed: isFailed);
   }
 
   factory Message.fromJson(Map<String, dynamic> json) => _$MessageFromJson(json);
