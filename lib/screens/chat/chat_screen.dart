@@ -38,6 +38,7 @@ class _ChatScreenState extends ConsumerState<ChatScreen> {
   final _messageInputProvider = StateProvider<String>((ref) => '');
   final _inputTextController = TextEditingController();
   final ScrollController _scrollController = ScrollController();
+  bool editMode = true;
 
   // 현재 채팅중인 사람이 직전 사람과 다름 = true
   Friend? previousSelectedFriend;
@@ -251,7 +252,12 @@ class _ChatScreenState extends ConsumerState<ChatScreen> {
           itemTitle: "배경색 변경",
         ),
         ListItemModel(
-          itemTitle: "갭쳐용으로 전환하기",
+          itemTitle: editMode ? "갭쳐 모드로 전환하기" : "수정 모드로 전환하기",
+          clickEvent: () {
+            setState(() {
+              editMode = !editMode;
+            });
+          }
         ),
       ],
     );
@@ -550,24 +556,27 @@ class _ChatScreenState extends ConsumerState<ChatScreen> {
               ),
               Column(
                 children: [
-                  Row(
-                    mainAxisAlignment: MainAxisAlignment.center,
-                    children: [
-                      const Text("현재 채팅 유저: "),
-                      TextButton(
-                        onPressed: () {
-                          _showFriendSelectionDialog(me!, targetChatData);
-                        },
-                        child: Text(
-                          currentSelectedFriend != null
-                              ? me!.id == currentSelectedFriend?.id
-                                  ? "(자신)${currentSelectedFriend!.name}"
-                                  : currentSelectedFriend!.name
-                              : "선택된 친구 없음",
-                          style: const TextStyle(fontWeight: FontWeight.bold),
-                        ),
-                      )
-                    ],
+                  Visibility(
+                    visible: editMode,
+                    child: Row(
+                      mainAxisAlignment: MainAxisAlignment.center,
+                      children: [
+                        const Text("현재 채팅 유저: "),
+                        TextButton(
+                          onPressed: () {
+                            _showFriendSelectionDialog(me!, targetChatData);
+                          },
+                          child: Text(
+                            currentSelectedFriend != null
+                                ? me!.id == currentSelectedFriend?.id
+                                    ? "(자신)${currentSelectedFriend!.name}"
+                                    : currentSelectedFriend!.name
+                                : "선택된 친구 없음",
+                            style: const TextStyle(fontWeight: FontWeight.bold),
+                          ),
+                        )
+                      ],
+                    ),
                   ),
                   ConstrainedBox(
                     constraints: const BoxConstraints(maxHeight: 120),
