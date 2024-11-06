@@ -2,6 +2,7 @@ import 'dart:io';
 
 import 'package:flutter/material.dart';
 import 'package:flutter_chat_bubble/chat_bubble.dart';
+import 'package:flutter_svg/flutter_svg.dart';
 import 'package:intl/intl.dart';
 import 'package:self_talk/models/chat.dart';
 import 'package:self_talk/widgets/chat/message_bubble.dart';
@@ -31,29 +32,35 @@ class MessageFromMe extends StatelessWidget {
               // 보여줄 필요는 없지만 자리는 차지해야 일정한 크기로 유지된다.
               Padding(
                 padding: const EdgeInsets.fromLTRB(0, 0, 4, 0),
-                child: Column(
-                  crossAxisAlignment: CrossAxisAlignment.end,
-                  children: [
-                    // TODO: 전송 실패 기능 추가하기
-                    Opacity(
-                      opacity: message.notSeenMemberNumber > 0 ? 1.0 : 0.0,
-                      child: Text(
-                        message.notSeenMemberNumber.toString(),
-                        style: const TextStyle(fontSize: 7, color: Colors.yellow),
+                child: message.isFailed
+                    ? SvgPicture.asset(
+                        'assets/images/retry.svg',
+                        height: 24,
+                        width: 48,
+                        fit: BoxFit.fill,
+                      )
+                    : Column(
+                        crossAxisAlignment: CrossAxisAlignment.end,
+                        children: [
+                          Opacity(
+                            opacity: message.notSeenMemberNumber > 0 ? 1.0 : 0.0,
+                            child: Text(
+                              message.notSeenMemberNumber.toString(),
+                              style: const TextStyle(fontSize: 7, color: Colors.yellow),
+                            ),
+                          ),
+                          Visibility(
+                            visible: message.notSeenMemberNumber > 0 || showDate,
+                            child: Opacity(
+                              opacity: showDate ? 1.0 : 0.0,
+                              child: Text(
+                                DateFormat('HH:mm').format(message.messageTime),
+                                style: const TextStyle(fontSize: 8),
+                              ),
+                            ),
+                          ),
+                        ],
                       ),
-                    ),
-                    Visibility(
-                      visible: message.notSeenMemberNumber > 0 || showDate,
-                      child: Opacity(
-                        opacity: showDate ? 1.0 : 0.0,
-                        child: Text(
-                          DateFormat('HH:mm').format(message.messageTime),
-                          style: const TextStyle(fontSize: 8),
-                        ),
-                      ),
-                    ),
-                  ],
-                ),
               ),
               message.imagePath == null
                   ? ChatBubble(

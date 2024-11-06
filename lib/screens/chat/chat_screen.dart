@@ -133,6 +133,16 @@ class _ChatScreenState extends ConsumerState<ChatScreen> {
           ),
         ),
         ListItemModel(
+          itemTitle: message.isFailed ? "보내기 성공 처리" : "보내기 실패 처리",
+          clickEvent: () {
+            _updateMessageFailStatus(
+              viewModel: viewModel,
+              messageIndex: index,
+              message: message,
+            );
+          },
+        ),
+        ListItemModel(
           itemTitle: "읽은 않은 사람 수 바꾸기",
           clickEvent: () => _showNoWatchMemberNumber(viewModel, message, index),
         ),
@@ -149,6 +159,18 @@ class _ChatScreenState extends ConsumerState<ChatScreen> {
           },
         )
       ],
+    );
+  }
+
+  void _updateMessageFailStatus({
+    required ChatViewModel viewModel,
+    required int messageIndex,
+    required Message message,
+  }) async {
+    viewModel.updateMessage(
+      chatId: currentChatRoomId!,
+      messageIndex: messageIndex,
+      message: message.copyWith(isFailed: !message.isFailed),
     );
   }
 
@@ -215,7 +237,6 @@ class _ChatScreenState extends ConsumerState<ChatScreen> {
     required FriendViewModel friendViewModel,
     required List<Friend> wholeFriendList,
   }) {
-    // TODO: 넣지 않은 기능들 추가하기
     showListDialog(
       title: "채팅방 설정 변경",
       context: context,
@@ -244,21 +265,18 @@ class _ChatScreenState extends ConsumerState<ChatScreen> {
               final String? enteredText = await showTextInputDialog(context);
               if (enteredText?.isEmpty != null) {
                 setState(() {
-                  viewModel.changeChatRoomName(chatId: currentChatRoomId!, newChatRoomName: enteredText!);
+                  viewModel.changeChatRoomName(
+                      chatId: currentChatRoomId!, newChatRoomName: enteredText!);
                 });
               }
             }),
         ListItemModel(
-          itemTitle: "배경색 변경",
-        ),
-        ListItemModel(
-          itemTitle: editMode ? "갭쳐 모드로 전환하기" : "수정 모드로 전환하기",
-          clickEvent: () {
-            setState(() {
-              editMode = !editMode;
-            });
-          }
-        ),
+            itemTitle: editMode ? "갭쳐 모드로 전환하기" : "수정 모드로 전환하기",
+            clickEvent: () {
+              setState(() {
+                editMode = !editMode;
+              });
+            }),
       ],
     );
   }

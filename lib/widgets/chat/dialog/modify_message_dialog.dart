@@ -27,7 +27,6 @@ void showModifyMessageDialog({
               maxLines: null,
             ),
             const SizedBox(height: 10),
-            // TODO: (버그) 이거 없는데 나오는 애들 왜 그런지 확인하기
             if (message.secondMessage?.isNotEmpty != null)
               TextField(
                 controller: secondMessageController,

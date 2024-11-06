@@ -236,6 +236,7 @@ class Message {
     bool? isMe,
     int? notSeenMemberNumber,
     String? imagePath,
+    bool? isFailed,
   }) {
     return Message(
         friendId: friendId ?? this.friendId,
@@ -245,7 +246,7 @@ class Message {
         isMe: isMe ?? this.isMe,
         notSeenMemberNumber: notSeenMemberNumber ?? this.notSeenMemberNumber,
         imagePath: imagePath ?? this.imagePath,
-        isFailed: isFailed);
+        isFailed: isFailed ?? this.isFailed);
   }
 
   factory Message.fromJson(Map<String, dynamic> json) => _$MessageFromJson(json);

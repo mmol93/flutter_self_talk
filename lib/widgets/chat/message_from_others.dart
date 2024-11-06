@@ -2,6 +2,7 @@ import 'dart:io';
 
 import 'package:flutter/material.dart';
 import 'package:flutter_chat_bubble/chat_bubble.dart';
+import 'package:flutter_svg/flutter_svg.dart';
 import 'package:intl/intl.dart';
 import 'package:self_talk/assets/strings.dart';
 import 'package:self_talk/models/chat.dart';
@@ -90,28 +91,35 @@ class MessageFromOthers extends StatelessWidget {
                                 ),
                           Padding(
                             padding: const EdgeInsets.fromLTRB(4, 0, 0, 0),
-                            child: Column(
-                              crossAxisAlignment: CrossAxisAlignment.start,
-                              children: [
-                                Opacity(
-                                  opacity: message.notSeenMemberNumber > 0 ? 1.0 : 0.0,
-                                  child: Text(
-                                    message.notSeenMemberNumber.toString(),
-                                    style: const TextStyle(fontSize: 7, color: Colors.yellow),
+                            child: message.isFailed
+                                ? SvgPicture.asset(
+                                    'assets/images/retry.svg',
+                                    height: 24,
+                                    width: 48,
+                                    fit: BoxFit.fill,
+                                  )
+                                : Column(
+                                    crossAxisAlignment: CrossAxisAlignment.start,
+                                    children: [
+                                      Opacity(
+                                        opacity: message.notSeenMemberNumber > 0 ? 1.0 : 0.0,
+                                        child: Text(
+                                          message.notSeenMemberNumber.toString(),
+                                          style: const TextStyle(fontSize: 7, color: Colors.yellow),
+                                        ),
+                                      ),
+                                      Visibility(
+                                        visible: message.notSeenMemberNumber > 0 || showDate,
+                                        child: Opacity(
+                                          opacity: showDate ? 1.0 : 0.0,
+                                          child: Text(
+                                            DateFormat('HH:mm').format(message.messageTime),
+                                            style: const TextStyle(fontSize: 8),
+                                          ),
+                                        ),
+                                      ),
+                                    ],
                                   ),
-                                ),
-                                Visibility(
-                                  visible: message.notSeenMemberNumber > 0 || showDate,
-                                  child: Opacity(
-                                    opacity: showDate ? 1.0 : 0.0,
-                                    child: Text(
-                                      DateFormat('HH:mm').format(message.messageTime),
-                                      style: const TextStyle(fontSize: 8),
-                                    ),
-                                  ),
-                                ),
-                              ],
-                            ),
                           )
                         ],
                       ),
