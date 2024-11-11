@@ -86,7 +86,8 @@ Map<String, dynamic> _$MessageToJson(Message instance) => <String, dynamic>{
 
 const _$MessageTypeEnumMap = {
   MessageType.message: 'message',
-  MessageType.call: 'call',
+  MessageType.calling: 'calling',
+  MessageType.callCut: 'callCut',
   MessageType.date: 'date',
   MessageType.state: 'state',
 };

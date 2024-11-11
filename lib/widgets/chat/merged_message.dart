@@ -1,4 +1,6 @@
 import 'package:flutter/material.dart';
+import 'package:self_talk/widgets/chat/message_call_from_me.dart';
+import 'package:self_talk/widgets/chat/message_call_from_others.dart';
 import 'package:self_talk/widgets/chat/message_date.dart';
 import 'package:self_talk/widgets/chat/message_from_me.dart';
 import 'package:self_talk/widgets/chat/message_from_others.dart';
@@ -23,13 +25,55 @@ Widget getMergedMessage({
 
     case MessageType.state:
       if (message.secondMessage != null) {
-        return MessageStateTwoLine(firstLineText: message.message, secondLineText: message.secondMessage);
+        return MessageStateTwoLine(
+          firstLineText: message.message,
+          secondLineText: message.secondMessage,
+        );
       } else {
         return MessageStateHtmlLine(firstLineHtmlText: message.message);
       }
 
-    case MessageType.call:
-    // TODO: Handle this case.
+    case MessageType.calling:
+      if (isMe) {
+        return Padding(
+          padding: const EdgeInsets.fromLTRB(0, 5, 4, 0),
+          child: MessageCallFromMe(
+            message: message,
+            isCalling: true,
+          ),
+        );
+      } else {
+        return Padding(
+          padding: const EdgeInsets.fromLTRB(0, 5, 4, 0),
+          child: MessageCallFromOthers(
+            message: message,
+            profilePicturePath: profilePicturePath,
+            friendName: friendName,
+            isCalling: true,
+          ),
+        );
+      }
+
+    case MessageType.callCut:
+      if (isMe) {
+        return Padding(
+          padding: const EdgeInsets.fromLTRB(0, 5, 4, 0),
+          child: MessageCallFromMe(
+            message: message,
+            isCalling: false,
+          ),
+        );
+      } else {
+        return Padding(
+          padding: const EdgeInsets.fromLTRB(0, 5, 4, 0),
+          child: MessageCallFromOthers(
+            message: message,
+            profilePicturePath: profilePicturePath,
+            friendName: friendName,
+            isCalling: false,
+          ),
+        );
+      }
 
     case MessageType.message:
       if (isMe) {

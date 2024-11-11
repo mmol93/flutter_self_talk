@@ -150,6 +150,9 @@ class Chat {
   /// 채팅의 메시지 버블에서 Tail이 달린 버블을 사용할지 그냥 둥근 버블을 사용할지 결정
   bool shouldUseTailBubble(int targetIndex) {
     if (targetIndex - 1 >= 0 && messageList?.isNotEmpty == true) {
+      // 그룹콜이나 보톡이면 무조건 tail 필요 없음
+      if (messageList![targetIndex].messageType == MessageType.calling) return false;
+
       DateFormat formatter = DateFormat('yyyy.MM.dd-HH:mm');
       // 직전 메시지와 날짜가 다르거나 보내는 사람이 다르면 true를 반환한다.
       return formatter.format(messageList![targetIndex].messageTime) !=
@@ -258,4 +261,4 @@ class Message {
 /// call: 그룹콜, 개인콜에 대한 메시지
 /// date: 날짜 구분선
 /// state: 초대, 나가기 등 상태에 관한 메시지
-enum MessageType { message, call, date, state }
+enum MessageType { message, calling, callCut, date, state }

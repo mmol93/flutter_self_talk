@@ -175,8 +175,11 @@ class _ChatScreenState extends ConsumerState<ChatScreen> {
   }
 
   /// 메시지에서 추가 기능 사용 옵션 Dialog 보여주기
-  void _showAttachmentOptions(
-      {required ChatViewModel viewModel, required Friend me, required Chat currentTargetChatData}) {
+  void _showAttachmentOptions({
+    required ChatViewModel viewModel,
+    required Friend me,
+    required Chat currentTargetChatData,
+  }) {
     showListDialog(
       title: "추가 기능",
       context: context,
@@ -211,6 +214,28 @@ class _ChatScreenState extends ConsumerState<ChatScreen> {
             }
           },
         ),
+        ListItemModel(
+          itemTitle: currentTargetChatData.chatMembers.length > 2 ? "그룹 전화 보내기" : "개인 전화 보내기",
+          clickEvent: () {
+            _sendMessage(
+              viewModel: viewModel,
+              me: me,
+              currentMemberNumber: currentTargetChatData.chatMembers.length,
+              messageType: MessageType.calling,
+            );
+          },
+        ),
+        ListItemModel(
+          itemTitle: currentTargetChatData.chatMembers.length > 2 ? "그룹 전화 끊기" : "개인 전화 끊기",
+          clickEvent: () {
+            _sendMessage(
+              viewModel: viewModel,
+              me: me,
+              currentMemberNumber: currentTargetChatData.chatMembers.length,
+              messageType: MessageType.callCut,
+            );
+          },
+        )
       ],
     );
   }
