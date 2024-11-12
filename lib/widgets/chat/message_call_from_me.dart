@@ -7,12 +7,14 @@ import 'package:self_talk/widgets/chat/message_bubble.dart';
 
 class MessageCallFromMe extends StatelessWidget {
   final Message message;
+  final bool showDate;
   final bool isCalling;
 
   const MessageCallFromMe({
     super.key,
     required this.message,
     required this.isCalling,
+    required this.showDate,
   });
 
   @override
@@ -56,9 +58,15 @@ class MessageCallFromMe extends StatelessWidget {
                               style: const TextStyle(fontSize: 7, color: Colors.yellow),
                             ),
                           ),
-                          Text(
-                            DateFormat('HH:mm').format(message.messageTime),
-                            style: const TextStyle(fontSize: 8),
+                          Visibility(
+                            visible: message.notSeenMemberNumber > 0 || showDate,
+                            child: Opacity(
+                              opacity: showDate ? 1.0 : 0.0,
+                              child: Text(
+                                DateFormat('HH:mm').format(message.messageTime),
+                                style: const TextStyle(fontSize: 8),
+                              ),
+                            ),
                           ),
                         ],
                       ),
@@ -66,14 +74,22 @@ class MessageCallFromMe extends StatelessWidget {
               ChatBubble(
                 clipper: ChatBubbleClipper12(type: BubbleType.sendBubble),
                 margin: const EdgeInsets.fromLTRB(0, 2, 4, 0),
-                padding: const EdgeInsets.symmetric(horizontal: 16, vertical: 16),
+                padding: const EdgeInsets.symmetric(horizontal: 12, vertical: 16),
                 child: ConstrainedBox(
-                  constraints: BoxConstraints(maxWidth: screenWidth * 0.65),
+                  constraints: BoxConstraints(
+                    maxWidth: message.messageType == MessageType.callCut ||
+                            message.messageType == MessageType.calling
+                        ? screenWidth * 0.29
+                        : screenWidth * 0.60,
+                  ),
                   child: Row(
-                    mainAxisSize: MainAxisSize.min,
-                    mainAxisAlignment: MainAxisAlignment.spaceEvenly,
+                    mainAxisAlignment: MainAxisAlignment.spaceBetween,
                     children: [
-                      Icon(size: 20, Icons.call, color: isCalling ? Colors.green : Colors.black,),
+                      Icon(
+                        size: 20,
+                        Icons.call,
+                        color: isCalling ? Colors.green : Colors.black,
+                      ),
                       const SizedBox(width: 24),
                       Text(callText),
                     ],

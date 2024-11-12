@@ -40,6 +40,7 @@ Widget getMergedMessage({
           child: MessageCallFromMe(
             message: message,
             isCalling: true,
+            showDate: showDate,
           ),
         );
       } else {
@@ -49,7 +50,9 @@ Widget getMergedMessage({
             message: message,
             profilePicturePath: profilePicturePath,
             friendName: friendName,
+            shouldUseTailBubble: shouldUseTailBubble,
             isCalling: true,
+            showDate: showDate,
           ),
         );
       }
@@ -61,6 +64,7 @@ Widget getMergedMessage({
           child: MessageCallFromMe(
             message: message,
             isCalling: false,
+            showDate: showDate,
           ),
         );
       } else {
@@ -70,7 +74,9 @@ Widget getMergedMessage({
             message: message,
             profilePicturePath: profilePicturePath,
             friendName: friendName,
+            shouldUseTailBubble: shouldUseTailBubble,
             isCalling: false,
+            showDate: showDate,
           ),
         );
       }

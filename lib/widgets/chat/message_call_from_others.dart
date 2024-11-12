@@ -11,6 +11,8 @@ import 'package:self_talk/widgets/common/profile_picture.dart';
 class MessageCallFromOthers extends StatelessWidget {
   final Message message;
   final String profilePicturePath;
+  final bool showDate;
+  final bool shouldUseTailBubble;
   final String friendName;
   final bool isCalling;
 
@@ -20,6 +22,8 @@ class MessageCallFromOthers extends StatelessWidget {
     required this.profilePicturePath,
     required this.friendName,
     required this.isCalling,
+    required this.showDate,
+    required this.shouldUseTailBubble,
   });
 
   @override
@@ -43,14 +47,18 @@ class MessageCallFromOthers extends StatelessWidget {
             child: Row(
               crossAxisAlignment: CrossAxisAlignment.start,
               children: [
-                ProfilePicture(picturePath: profilePicturePath),
+                Opacity(
+                  opacity: shouldUseTailBubble ? 1.0 : 0.0,
+                  child: ProfilePicture(picturePath: profilePicturePath),
+                ),
                 Column(
                   crossAxisAlignment: CrossAxisAlignment.start,
                   children: [
-                    Padding(
-                      padding: const EdgeInsets.fromLTRB(7, 0, 0, 0),
-                      child: Text(friendName, style: const TextStyle(fontSize: 13)),
-                    ),
+                    if (shouldUseTailBubble)
+                      Padding(
+                        padding: const EdgeInsets.fromLTRB(7, 0, 0, 0),
+                        child: Text(friendName, style: const TextStyle(fontSize: 13)),
+                      ),
                     Padding(
                       padding: const EdgeInsets.fromLTRB(2, 0, 0, 0),
                       child: Row(
@@ -62,12 +70,20 @@ class MessageCallFromOthers extends StatelessWidget {
                                   margin: const EdgeInsets.fromLTRB(4, 2, 0, 0),
                                   padding: const EdgeInsets.symmetric(horizontal: 12, vertical: 16),
                                   child: ConstrainedBox(
-                                    constraints: BoxConstraints(maxWidth: screenWidth * 0.65),
+                                    constraints: BoxConstraints(
+                                      maxWidth: message.messageType == MessageType.callCut ||
+                                              message.messageType == MessageType.calling
+                                          ? screenWidth * 0.29
+                                          : screenWidth * 0.55,
+                                    ),
                                     child: Row(
-                                      mainAxisSize: MainAxisSize.min,
-                                      mainAxisAlignment: MainAxisAlignment.spaceEvenly,
+                                      mainAxisAlignment: MainAxisAlignment.spaceBetween,
                                       children: [
-                                        Icon(size: 20, Icons.call, color: isCalling ? Colors.green : Colors.black,),
+                                        Icon(
+                                          size: 20,
+                                          Icons.call,
+                                          color: isCalling ? Colors.green : Colors.black,
+                                        ),
                                         const SizedBox(width: 24),
                                         Text(callText),
                                       ],
@@ -76,7 +92,7 @@ class MessageCallFromOthers extends StatelessWidget {
                                 )
                               : Container(
                                   padding: const EdgeInsets.symmetric(horizontal: 4, vertical: 3),
-                                  // TODO: 작은 단말기에서 어떻게 나오는지 확인 필요?
+                                  // TODO: 여러 단말기에서 어떻게 나오는지 확인 필요
                                   constraints: const BoxConstraints(maxWidth: 240),
                                   child: ClipRRect(
                                     borderRadius: BorderRadius.circular(10),
@@ -109,9 +125,15 @@ class MessageCallFromOthers extends StatelessWidget {
                                           style: const TextStyle(fontSize: 7, color: Colors.yellow),
                                         ),
                                       ),
-                                      Text(
-                                        DateFormat('HH:mm').format(message.messageTime),
-                                        style: const TextStyle(fontSize: 8),
+                                      Visibility(
+                                        visible: message.notSeenMemberNumber > 0 || showDate,
+                                        child: Opacity(
+                                          opacity: showDate ? 1.0 : 0.0,
+                                          child: Text(
+                                            DateFormat('HH:mm').format(message.messageTime),
+                                            style: const TextStyle(fontSize: 8),
+                                          ),
+                                        ),
                                       ),
                                     ],
                                   ),

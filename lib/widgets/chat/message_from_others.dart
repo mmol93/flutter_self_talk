@@ -68,8 +68,9 @@ class MessageFromOthers extends StatelessWidget {
                                       : const EdgeInsets.fromLTRB(4, 2, 0, 0),
                                   padding: const EdgeInsets.symmetric(horizontal: 12, vertical: 10),
                                   child: ConstrainedBox(
-                                    // TODO: 작은 단말기에서 어떻게 나오는지 확인 필요?
-                                    constraints: BoxConstraints(maxWidth: screenWidth * 0.65),
+                                    // TODO: 여러 단말기에서 어떻게 나오는지 확인 필요
+                                    // others는 프로필 사진 부분까지 출력해야하기 때문에 좀 더 줄어든다.
+                                    constraints: BoxConstraints(maxWidth: screenWidth * 0.55),
                                     child: Text(message.message),
                                   ),
                                 )
