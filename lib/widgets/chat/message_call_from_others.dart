@@ -25,6 +25,14 @@ class MessageCallFromOthers extends StatelessWidget {
   @override
   Widget build(BuildContext context) {
     final double screenWidth = MediaQuery.of(context).size.width;
+    String callText = "";
+    if (message.message.isNotEmpty) {
+      callText = message.message;
+    } else if (isCalling) {
+      callText = "그룹콜 해요";
+    } else {
+      callText = "취소";
+    }
 
     return Padding(
       padding: const EdgeInsets.fromLTRB(0, 0, 0, 0),
@@ -61,7 +69,7 @@ class MessageCallFromOthers extends StatelessWidget {
                                       children: [
                                         Icon(size: 20, Icons.call, color: isCalling ? Colors.green : Colors.black,),
                                         const SizedBox(width: 24),
-                                        Text(message.message.isEmpty ? "그룹콜 해요" : message.message),
+                                        Text(callText),
                                       ],
                                     ),
                                   ),
