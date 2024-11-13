@@ -18,9 +18,11 @@ class ChatRepository {
   }
 
   /// 특정 채팅방의 특정 채팅 수정하기
-  Future<void> updateMessage(String chatId,
-      int messageIndex,
-      Message message,) async {
+  Future<void> updateMessage(
+    String chatId,
+    int messageIndex,
+    Message message,
+  ) async {
     final prefs = await _initPrefs();
     final chatListJson = prefs.getString('chatList');
     if (chatListJson != null) {
@@ -72,9 +74,11 @@ class ChatRepository {
   }
 
   /// 해당 채팅방에서 특정 메시지 삭제하기
-  Future<void> deleteMessage(String chatId,
-      int messageIndex,
-      Message message,) async {
+  Future<void> deleteMessage(
+    String chatId,
+    int messageIndex,
+    Message message,
+  ) async {
     final prefs = await _initPrefs();
     final chatListJson = prefs.getString('chatList');
     if (chatListJson != null) {
@@ -87,9 +91,11 @@ class ChatRepository {
   }
 
   /// 해당 채팅방에 메시지 추가하기
-  Future<void> addMessage(String chatId,
-      Message message,
-      bool notSameSpeaker,) async {
+  Future<void> addMessage(
+    String chatId,
+    Message message,
+    bool notSameSpeaker,
+  ) async {
     final prefs = await _initPrefs();
     final chatListJson = prefs.getString('chatList');
     if (chatListJson != null) {
@@ -207,9 +213,15 @@ class ChatRepository {
   }
 
   // TODO: 미완성 - 특정 채팅방을 삭제하게 해야함(지금은 모든 채팅 데이터를 삭제하게 되있음...)
-  Future<void> deleteChatList() async {
+  Future<void> removeChatList({required String chatId}) async {
     final prefs = await _initPrefs();
-    await prefs.remove('chatList');
+    final chatListJson = prefs.getString('chatList');
+
+    if (chatListJson != null) {
+      final chatData = ChatList.fromJson(jsonDecode(chatListJson));
+      chatData.chatRoom!.remove(chatId);
+      updateChatList(chatData);
+    }
   }
 
   /// 채팅방 자체를 만듬(새로운 채팅방 만들기 등...)

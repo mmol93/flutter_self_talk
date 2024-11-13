@@ -5,10 +5,11 @@ import 'package:self_talk/widgets/home/item_chat_room_picture.dart';
 
 class ChatRoomListItem extends StatelessWidget {
   const ChatRoomListItem(
-      {super.key, required this.chat, required this.clickChatRoomListItem});
+      {super.key, required this.chat, required this.clickChatRoomListItem, this.longClickEvent});
 
   final Chat chat;
-  final void Function() clickChatRoomListItem;
+  final Function() clickChatRoomListItem;
+  final Function()? longClickEvent;
 
   @override
   Widget build(BuildContext context) {
@@ -19,11 +20,16 @@ class ChatRoomListItem extends StatelessWidget {
       onTap: () {
         clickChatRoomListItem();
       },
+      onLongPress: () {
+        if (longClickEvent != null){
+          longClickEvent!();
+        }
+      },
       child: Container(
         padding: const EdgeInsets.symmetric(vertical: 10, horizontal: 10),
         child: Row(
           children: [
-            // 단톡방 사진 셋팅
+            // 단톡방 사진 셋팅(나 포함 숫자임)
             if (chatMembers.length >= 5)
               MultiChatRoomPicture(chat: chat)
             else if (chatMembers.length == 4)

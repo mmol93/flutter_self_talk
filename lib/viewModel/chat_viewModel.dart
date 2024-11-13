@@ -346,6 +346,11 @@ class ChatViewModel extends StateNotifier<ChatList?> {
     _chatRepository.deleteMessage(chatId, messageIndex, message).then((value) => getChatList());
   }
 
+  /// 해당 채팅방 삭제하기
+  void removeChatRoom({required String chatId}) async {
+    _chatRepository.removeChatList(chatId: chatId).then((value) => getChatList());
+  }
+
   /// 특정 채팅방의 특정 채팅 수정하기
   void updateMessage({
     required String chatId,

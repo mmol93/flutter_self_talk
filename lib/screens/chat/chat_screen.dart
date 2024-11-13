@@ -214,6 +214,7 @@ class _ChatScreenState extends ConsumerState<ChatScreen> {
             }
           },
         ),
+        // TODO: 그룹콜 보내고 lastMessage에 추가하도록 하기
         ListItemModel(
           itemTitle: currentTargetChatData.chatMembers.length > 2 ? "그룹 전화 보내기" : "개인 전화 보내기",
           clickEvent: () {
@@ -225,6 +226,7 @@ class _ChatScreenState extends ConsumerState<ChatScreen> {
             );
           },
         ),
+        // TODO: 그룹콜 보내고 lastMessage에 추가하도록 하기
         ListItemModel(
           itemTitle: currentTargetChatData.chatMembers.length > 2 ? "그룹 전화 끊기" : "개인 전화 끊기",
           clickEvent: () {

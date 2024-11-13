@@ -1,4 +1,5 @@
 import 'dart:io';
+
 import 'package:flutter/material.dart';
 import 'package:image_picker/image_picker.dart';
 import 'package:self_talk/assets/strings.dart';
@@ -188,6 +189,7 @@ class _AddFriendScreenState extends State<AddFriendScreen> {
                             borderRadius: BorderRadius.zero,
                           ),
                           backgroundColor: defaultYellow),
+                      // TODO: 작은 단말기에서 키보드 올리면 "추가하기"버튼이 가림(이거 디버깅 모드에서만 그런건지 확인하기)
                       child: const Text(
                         "추가하기",
                         style: TextStyle(color: Colors.black),

@@ -1,8 +1,10 @@
 import 'package:flutter/material.dart';
 import 'package:flutter_riverpod/flutter_riverpod.dart';
+import 'package:self_talk/models/list_item_model.dart';
 import 'package:self_talk/navigator/moving_navigator.dart';
 import 'package:self_talk/screens/chat/chat_screen.dart';
 import 'package:self_talk/viewModel/chat_viewModel.dart';
+import 'package:self_talk/widgets/dialog/list_dialog.dart';
 import 'package:self_talk/widgets/home/item_chat_room_list.dart';
 
 class ChatListScreen extends ConsumerStatefulWidget {
@@ -13,10 +15,28 @@ class ChatListScreen extends ConsumerStatefulWidget {
 }
 
 class _ChatListScreen extends ConsumerState<ChatListScreen> {
+  // TODO: 채팅룸 아이템을 길게 눌렀을 때 Dialog 보여주기
+  void _showChatRoomOptions(
+    String chatTitle,
+    ChatViewModel viewModel,
+    String chatId,
+  ) {
+    // TODO: 각각의 기능 추가하기(방 복제하기 등)
+    showListDialog(title: chatTitle, context: this.context, listItemModel: [
+      ListItemModel(
+          itemTitle: "방 삭제하기",
+          clickEvent: () {
+            viewModel.removeChatRoom(chatId: chatId);
+          }),
+      ListItemModel(itemTitle: "방 복사하기")
+    ]);
+  }
+
   @override
   Widget build(BuildContext context) {
     final viewModel = ref.watch(chatViewModelProvider.notifier);
     final chatData = ref.watch(chatViewModelProvider);
+
     return Scaffold(
       body: Expanded(
         child: chatData != null
@@ -26,7 +46,16 @@ class _ChatListScreen extends ConsumerState<ChatListScreen> {
                           chat: flattenChatData.value,
                           clickChatRoomListItem: () {
                             centerNavigateStateful(
-                                context, ChatScreen(chatId: flattenChatData.key));
+                              context,
+                              ChatScreen(chatId: flattenChatData.key),
+                            );
+                          },
+                          longClickEvent: () {
+                            _showChatRoomOptions(
+                              flattenChatData.value.chatRoomName ?? "",
+                              viewModel,
+                              flattenChatData.key,
+                            );
                           },
                         ))
                     .toList())
