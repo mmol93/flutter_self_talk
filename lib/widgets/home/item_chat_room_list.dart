@@ -18,6 +18,7 @@ class ChatRoomListItem extends StatelessWidget {
   @override
   Widget build(BuildContext context) {
     final chatMembers = chat.chatMembers;
+    final double screenWidth = MediaQuery.of(context).size.width;
 
     return GestureDetector(
       behavior: HitTestBehavior.opaque,
@@ -52,10 +53,14 @@ class ChatRoomListItem extends StatelessWidget {
                   children: [
                     Row(
                       children: [
-                        Text(
-                          // TODO: 너무 길면 옆에 아이콘 뚫고 나가는 버그 있음
-                          chat.chatRoomName!, // 단톡방 제목
-                          style: const TextStyle(fontSize: 16),
+                        ConstrainedBox(
+                          constraints: BoxConstraints(maxWidth: screenWidth * 0.45),
+                          child: Text(
+                            chat.chatRoomName!, // 단톡방 제목
+                            overflow: TextOverflow.ellipsis,
+                            maxLines: 1,
+                            style: const TextStyle(fontSize: 16),
+                          ),
                         ),
                         const SizedBox(width: 8),
                         Text(

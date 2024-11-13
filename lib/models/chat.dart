@@ -106,7 +106,7 @@ class Chat {
     String initTitle = "";
     for (var indexedValue in chatMembers.indexed) {
       if (indexedValue.$2.me == 0) {
-        // 자기 자신을 이미 제외했기 때문에 -2로 한다.
+        // 자기 자신을 이미 제외했기 때문에 -1로 한다.
         if (indexedValue.$1 != chatMembers.length - 1) {
           // 마지막 요소가 아닐 때
           initTitle = "$initTitle${indexedValue.$2.name}, ";

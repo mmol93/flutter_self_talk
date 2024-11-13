@@ -526,6 +526,7 @@ class _ChatScreenState extends ConsumerState<ChatScreen> {
     final wholeFriendList = ref.watch(friendViewModelProvider);
     final wholeChatList = ref.watch(chatViewModelProvider);
     final Chat targetChatData = wholeChatList!.chatRoom![currentChatRoomId]!;
+    final double screenWidth = MediaQuery.of(context).size.width;
     me = targetChatData.chatMembers.firstWhere((friend) => friend.me == 1);
 
     return Scaffold(
@@ -534,9 +535,14 @@ class _ChatScreenState extends ConsumerState<ChatScreen> {
         backgroundColor: defaultBackground,
         title: Row(
           children: [
-            Text(
-              targetChatData.chatRoomName ?? "",
-              style: const TextStyle(fontWeight: FontWeight.bold),
+            ConstrainedBox(
+              constraints: BoxConstraints(maxWidth: screenWidth * 0.44),
+              child: Text(
+                targetChatData.chatRoomName ?? "",
+                overflow: TextOverflow.ellipsis,
+                maxLines: 1,
+                style: const TextStyle(fontWeight: FontWeight.bold),
+              ),
             ),
             const SizedBox(width: 5),
             Text(
