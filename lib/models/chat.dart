@@ -78,6 +78,29 @@ class Chat {
     }
   }
 
+  /// 현재 채팅방 데이터를 복사한다.
+  Chat copyChatRoom({
+    String? chatRoomName,
+    List<Message>? messageList,
+    List<Friend>? chatMembers,
+    Noti? notification,
+    String? lastMessage,
+    DateTime? modifiedDate,
+    int? alarmOnOff,
+    String? modifiedChatRoomImg,
+  }) {
+    return Chat(
+      lastMessage: lastMessage ?? this.lastMessage,
+      chatRoomName: chatRoomName ?? this.chatRoomName,
+      messageList: messageList ?? this.messageList,
+      chatMembers: chatMembers ?? this.chatMembers,
+      modifiedDate: modifiedDate ?? this.modifiedDate,
+      alarmOnOff: alarmOnOff ?? this.alarmOnOff,
+      notification: notification ?? this.notification,
+      modifiedChatRoomImg: modifiedChatRoomImg ?? this.modifiedChatRoomImg,
+    );
+  }
+
   /// 빈 채팅방을 만든다.
   Chat createEmptyChatRoom() {
     String initTitle = "";

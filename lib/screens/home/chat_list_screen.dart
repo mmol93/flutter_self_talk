@@ -15,20 +15,25 @@ class ChatListScreen extends ConsumerStatefulWidget {
 }
 
 class _ChatListScreen extends ConsumerState<ChatListScreen> {
-  // TODO: 채팅룸 아이템을 길게 눌렀을 때 Dialog 보여주기
+  /// 채팅룸 아이템을 길게 눌렀을 때 보여줄 Dialog
   void _showChatRoomOptions(
     String chatTitle,
     ChatViewModel viewModel,
     String chatId,
   ) {
-    // TODO: 각각의 기능 추가하기(방 복제하기 등)
-    showListDialog(title: chatTitle, context: this.context, listItemModel: [
+    showListDialog(title: chatTitle, context: context, listItemModel: [
       ListItemModel(
-          itemTitle: "방 삭제하기",
-          clickEvent: () {
-            viewModel.removeChatRoom(chatId: chatId);
-          }),
-      ListItemModel(itemTitle: "방 복사하기")
+        itemTitle: "방 삭제하기",
+        clickEvent: () {
+          viewModel.removeChatRoom(chatId: chatId);
+        },
+      ),
+      ListItemModel(
+        itemTitle: "방 복사하기",
+        clickEvent: () {
+          viewModel.copyChatRoom(chatId: chatId);
+        },
+      )
     ]);
   }
 

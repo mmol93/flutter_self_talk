@@ -348,7 +348,12 @@ class ChatViewModel extends StateNotifier<ChatList?> {
 
   /// 해당 채팅방 삭제하기
   void removeChatRoom({required String chatId}) async {
-    _chatRepository.removeChatList(chatId: chatId).then((value) => getChatList());
+    _chatRepository.removeChatRoom(chatId: chatId).then((value) => getChatList());
+  }
+
+  /// 해당 채팅방을 복사한다.
+  void copyChatRoom({required String chatId}) async {
+    _chatRepository.copyChatRoom(chatId: chatId).then((value) => getChatList());
   }
 
   /// 특정 채팅방의 특정 채팅 수정하기

@@ -4,6 +4,7 @@ import 'package:self_talk/models/chat.dart';
 import 'package:self_talk/models/friend.dart';
 import 'package:self_talk/utils/Typedefs.dart';
 import 'package:shared_preferences/shared_preferences.dart';
+import 'package:uuid/uuid.dart';
 
 class ChatRepository {
   Future<SharedPreferences> _initPrefs() async {
@@ -212,14 +213,32 @@ class ChatRepository {
     await prefs.setString('chatList', chatListJson);
   }
 
-  // TODO: 미완성 - 특정 채팅방을 삭제하게 해야함(지금은 모든 채팅 데이터를 삭제하게 되있음...)
-  Future<void> removeChatList({required String chatId}) async {
+  /// 특정 채팅방을 삭제한다.
+  Future<void> removeChatRoom({required String chatId}) async {
     final prefs = await _initPrefs();
     final chatListJson = prefs.getString('chatList');
 
     if (chatListJson != null) {
       final chatData = ChatList.fromJson(jsonDecode(chatListJson));
       chatData.chatRoom!.remove(chatId);
+      updateChatList(chatData);
+    }
+  }
+
+  /// 특정 채팅방을 복사한다.
+  Future<void> copyChatRoom({required String chatId}) async {
+    final prefs = await _initPrefs();
+    final chatListJson = prefs.getString('chatList');
+
+    if (chatListJson != null) {
+      final chatData = ChatList.fromJson(jsonDecode(chatListJson));
+      // 해당 채팅방 데이터를 복사한다. (복사할 때 채팅방 이름 마지막에 "_복사본"을 붙인다.
+      final copiedChatRoomData = chatData.chatRoom![chatId]!
+          .copyChatRoom(chatRoomName: "${chatData.chatRoom![chatId]!.chatRoomName}_복사본");
+      final uniqueChatRoomId = const Uuid().v4();
+
+      // 채팅방 ID만 새롭게 추가하여 만든다.
+      chatData.chatRoom!.addAll({uniqueChatRoomId: copiedChatRoomData});
       updateChatList(chatData);
     }
   }

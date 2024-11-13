@@ -4,8 +4,12 @@ import 'package:self_talk/widgets/common/profile_picture.dart';
 import 'package:self_talk/widgets/home/item_chat_room_picture.dart';
 
 class ChatRoomListItem extends StatelessWidget {
-  const ChatRoomListItem(
-      {super.key, required this.chat, required this.clickChatRoomListItem, this.longClickEvent});
+  const ChatRoomListItem({
+    super.key,
+    required this.chat,
+    required this.clickChatRoomListItem,
+    this.longClickEvent,
+  });
 
   final Chat chat;
   final Function() clickChatRoomListItem;
@@ -21,7 +25,7 @@ class ChatRoomListItem extends StatelessWidget {
         clickChatRoomListItem();
       },
       onLongPress: () {
-        if (longClickEvent != null){
+        if (longClickEvent != null) {
           longClickEvent!();
         }
       },
@@ -49,6 +53,7 @@ class ChatRoomListItem extends StatelessWidget {
                     Row(
                       children: [
                         Text(
+                          // TODO: 너무 길면 옆에 아이콘 뚫고 나가는 버그 있음
                           chat.chatRoomName!, // 단톡방 제목
                           style: const TextStyle(fontSize: 16),
                         ),
