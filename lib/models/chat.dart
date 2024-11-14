@@ -103,6 +103,7 @@ class Chat {
 
   /// 빈 채팅방을 만든다.
   Chat createEmptyChatRoom() {
+    // 최초의 채팅방 이름 만들기
     String initTitle = "";
     for (var indexedValue in chatMembers.indexed) {
       if (indexedValue.$2.me == 0) {
@@ -116,6 +117,9 @@ class Chat {
         }
       }
     }
+
+    // 마지막에 ,가 있으면 이걸 삭제한다.
+    if (initTitle.endsWith(", ")) initTitle = initTitle.substring(0, initTitle.lastIndexOf(","));
 
     return Chat(
         chatRoomName: initTitle,

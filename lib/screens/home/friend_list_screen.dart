@@ -146,8 +146,8 @@ class _FriendListScreen extends ConsumerState<FriendListScreen> {
 
                             case FriendControl.deleteItself:
                               friendViewModel.deleteFriend(friend.id);
-
                             case FriendControl.chatMulti:
+                              // TODO: 다수의 친구와 대화할 수 있도록 변경
                           }
                         }),
                   );
