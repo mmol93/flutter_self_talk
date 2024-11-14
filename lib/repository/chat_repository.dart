@@ -33,7 +33,10 @@ class ChatRepository {
 
       // 변경한게 마지막 메시지 + 일반 메시지 타입이면 채팅방의 마지막 메시지도 바꿔야한다.
       if (messages != null) {
-        if (messages.length - 1 == messageIndex && MessageType.message == message.messageType) {
+        if (messages.length - 1 == messageIndex &&
+            (MessageType.message == message.messageType ||
+                MessageType.calling == message.messageType ||
+                MessageType.callCut == message.messageType)) {
           chatData.chatRoom![chatId]?.lastMessage = message.message;
         }
       }
@@ -53,7 +56,9 @@ class ChatRepository {
       if (messages != null) {
         for (var message in messages.reversed) {
           // 뒤에서 부터 확인하니 리소스도 그렇게 들지 않을 것임
-          if (message.messageType == MessageType.message) {
+          if (message.messageType == MessageType.message ||
+              message.messageType == MessageType.calling ||
+              message.messageType == MessageType.callCut) {
             chatData.chatRoom![chatId]?.lastMessage = message.message;
             await updateChatList(chatData);
             break;
@@ -123,6 +128,16 @@ class ChatRepository {
           targetChatRoom.lastMessage = message.message;
         }
         targetChatRoom.modifiedDate = DateTime.now();
+      } else if (message.messageType == MessageType.calling ||
+          message.messageType == MessageType.callCut) {
+        // 그룹 콜에 대한 마지막 메시지 삽입
+        if (message.message.isEmpty && message.messageType == MessageType.calling) {
+          targetChatRoom.lastMessage = "그룹콜 해요";
+        } else if ((message.message.isEmpty && message.messageType == MessageType.callCut)) {
+          targetChatRoom.lastMessage = "취소";
+        } else {
+          targetChatRoom.lastMessage = message.message;
+        }
       }
       await updateChatList(chatData);
     }

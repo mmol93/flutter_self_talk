@@ -45,7 +45,7 @@ Widget getMergedMessage({
         );
       } else {
         return Padding(
-          padding: const EdgeInsets.fromLTRB(0, 5, 4, 0),
+          padding: const EdgeInsets.fromLTRB(4, 5, 4, 0),
           child: MessageCallFromOthers(
             message: message,
             profilePicturePath: profilePicturePath,
@@ -69,7 +69,7 @@ Widget getMergedMessage({
         );
       } else {
         return Padding(
-          padding: const EdgeInsets.fromLTRB(0, 5, 4, 0),
+          padding: const EdgeInsets.fromLTRB(4, 5, 4, 0),
           child: MessageCallFromOthers(
             message: message,
             profilePicturePath: profilePicturePath,

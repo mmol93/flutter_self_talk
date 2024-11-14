@@ -39,7 +39,9 @@ class MessageCallFromOthers extends StatelessWidget {
     }
 
     return Padding(
-      padding: const EdgeInsets.fromLTRB(0, 0, 0, 0),
+      padding: shouldUseTailBubble
+          ? const EdgeInsets.fromLTRB(0, 2, 0, 0)
+          : const EdgeInsets.fromLTRB(0, 0, 0, 0),
       child: Row(
         children: [
           Flexible(
