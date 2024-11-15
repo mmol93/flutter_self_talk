@@ -5,6 +5,8 @@ import 'package:flutter/material.dart';
 import 'package:self_talk/models/friend.dart';
 
 /// 체크 리스트 + 확인 버튼 Dialog
+/// notInvitedFriendList: 이 체크리스트 Dialog에서 표시할 친구 리스트
+/// clickEvent: 해당 친구를 클릭했을 때 이벤트 = 체크 on/off 처리하며 on 된 친구들을 나중에 List로 반환함
 void showInviteFriendsDialog({
   required List<Friend> notInvitedFriendList,
   required BuildContext context,
