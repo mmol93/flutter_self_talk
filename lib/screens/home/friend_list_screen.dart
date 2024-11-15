@@ -4,6 +4,7 @@ import 'package:self_talk/models/chat.dart';
 import 'package:self_talk/models/friend.dart';
 import 'package:self_talk/models/friend_control.dart';
 import 'package:self_talk/navigator/moving_navigator.dart';
+import 'package:self_talk/screens/chat/chat_screen.dart';
 import 'package:self_talk/screens/friend/add_friend_screen.dart';
 import 'package:self_talk/screens/friend/update_friend_screen.dart';
 import 'package:self_talk/viewModel/chat_viewModel.dart';
@@ -24,14 +25,8 @@ class _FriendListScreen extends ConsumerState<FriendListScreen> {
   Widget build(BuildContext context) {
     final friendViewModel = ref.watch(friendViewModelProvider.notifier);
     final chatViewModel = ref.watch(chatViewModelProvider.notifier);
-    final friends = ref
-        .watch(friendViewModelProvider)
-        .where((friend) => friend.me == 0)
-        .toList();
-    final myProfile = ref
-        .watch(friendViewModelProvider)
-        .where((friend) => friend.me == 1)
-        .toList();
+    final friends = ref.watch(friendViewModelProvider).where((friend) => friend.me == 0).toList();
+    final myProfile = ref.watch(friendViewModelProvider).where((friend) => friend.me == 1).toList();
 
     return Scaffold(
       body: Expanded(
@@ -102,8 +97,7 @@ class _FriendListScreen extends ConsumerState<FriendListScreen> {
                 itemBuilder: (context, index) {
                   Friend friend = friends[index];
                   return Container(
-                    padding:
-                        const EdgeInsets.symmetric(vertical: 2, horizontal: 4),
+                    padding: const EdgeInsets.symmetric(vertical: 2, horizontal: 4),
                     child: FriendItem(
                         friend: Friend(
                           id: friend.id,
@@ -126,7 +120,11 @@ class _FriendListScreen extends ConsumerState<FriendListScreen> {
                                 modifiedDate: DateTime.now(),
                               ).createEmptyChatRoom();
                               chatViewModel.createChatRoom({uuid: initChat});
-                              // TODO: 방 만들고 해당 방으로 진입하게 해야함
+                              centerNavigateStateful(
+                                  context,
+                                  ChatScreen(
+                                    chatId: uuid,
+                                  ));
 
                             case FriendControl.modifyProfile:
                               slideNavigateStateful(
@@ -136,8 +134,7 @@ class _FriendListScreen extends ConsumerState<FriendListScreen> {
                                     if (updatedFriend.me == 1) {
                                       friendViewModel.updateAsMe(updatedFriend);
                                     } else {
-                                      friendViewModel
-                                          .updateFriend(updatedFriend);
+                                      friendViewModel.updateFriend(updatedFriend);
                                     }
                                   },
                                   targetFriend: friend,
@@ -147,7 +144,7 @@ class _FriendListScreen extends ConsumerState<FriendListScreen> {
                             case FriendControl.deleteItself:
                               friendViewModel.deleteFriend(friend.id);
                             case FriendControl.chatMulti:
-                              // TODO: 다수의 친구와 대화할 수 있도록 변경
+                            // TODO: 다수의 친구와 대화할 수 있도록 변경
                           }
                         }),
                   );
