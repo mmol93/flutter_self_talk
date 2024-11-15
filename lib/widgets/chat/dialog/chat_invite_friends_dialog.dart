@@ -6,7 +6,7 @@ import 'package:self_talk/models/friend.dart';
 
 /// 체크 리스트 + 확인 버튼 Dialog
 /// notInvitedFriendList: 이 체크리스트 Dialog에서 표시할 친구 리스트
-/// clickEvent: 해당 친구를 클릭했을 때 이벤트 = 체크 on/off 처리하며 on 된 친구들을 나중에 List로 반환함
+/// clickEvent: 선택한 친구 리스트를 이용하여 뭐를 할지에 대한 클릭 리스너
 void showInviteFriendsDialog({
   required List<Friend> notInvitedFriendList,
   required BuildContext context,
@@ -23,8 +23,8 @@ void showInviteFriendsDialog({
               },
               child: const Text("취소")),
           ElevatedButton(onPressed: () {
-            clickEvent(selectedFriend);
             Navigator.of(ctx).pop();
+            clickEvent(selectedFriend);
           }, child: const Text("확인")),
         ],
         title: const Text("초대할 친구 선택"),

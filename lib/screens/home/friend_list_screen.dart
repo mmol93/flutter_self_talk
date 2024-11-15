@@ -10,6 +10,7 @@ import 'package:self_talk/screens/friend/add_friend_screen.dart';
 import 'package:self_talk/screens/friend/update_friend_screen.dart';
 import 'package:self_talk/viewModel/chat_viewModel.dart';
 import 'package:self_talk/viewModel/friend_viewModel.dart';
+import 'package:self_talk/widgets/chat/dialog/chat_invite_friends_dialog.dart';
 import 'package:self_talk/widgets/common/utils.dart';
 import 'package:uuid/uuid.dart';
 
@@ -115,8 +116,8 @@ class _FriendListScreen extends ConsumerState<FriendListScreen> {
                               friendViewModel.updateAsMe(friend);
 
                             case FriendControl.chat1on1:
-                              final uuid = const Uuid().v4();
                               if (myProfile != null) {
+                                final uuid = const Uuid().v4();
                                 final initChat = Chat(
                                   chatRoomName: null,
                                   messageList: null,
@@ -150,7 +151,31 @@ class _FriendListScreen extends ConsumerState<FriendListScreen> {
 
                             case FriendControl.deleteItself:
                               friendViewModel.deleteFriend(friend.id);
+
                             case FriendControl.chatMulti:
+                              if (myProfile != null) {
+                                showInviteFriendsDialog(
+                                    context: context,
+                                    notInvitedFriendList: friends,
+                                    clickEvent: (invitedFriendList) {
+                                      final uuid = const Uuid().v4();
+                                      final initChat = Chat(
+                                        chatRoomName: null,
+                                        messageList: null,
+                                        chatMembers: [myProfile] + invitedFriendList,
+                                        modifiedDate: DateTime.now(),
+                                      ).createEmptyChatRoom();
+                                      chatViewModel.createChatRoom({uuid: initChat});
+                                      centerNavigateStateful(
+                                        context,
+                                        ChatScreen(
+                                          chatId: uuid,
+                                        ),
+                                      );
+                                    });
+                              } else {
+                                showToast('먼저 "나" 자신의 프로필을 만들어야 합니다.');
+                              }
                           }
                         }),
                   );
