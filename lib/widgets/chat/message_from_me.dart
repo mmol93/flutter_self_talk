@@ -12,9 +12,15 @@ class MessageFromMe extends StatelessWidget {
   final bool showDate;
   final bool shouldUseTailBubble;
   final Message message;
+  final bool isDeleted;
 
-  const MessageFromMe(
-      {super.key, this.showDate = true, required this.shouldUseTailBubble, required this.message});
+  const MessageFromMe({
+    super.key,
+    this.isDeleted = false,
+    this.showDate = true,
+    required this.shouldUseTailBubble,
+    required this.message,
+  });
 
   @override
   Widget build(BuildContext context) {
@@ -71,10 +77,23 @@ class MessageFromMe extends StatelessWidget {
                           ? const EdgeInsets.fromLTRB(0, 2, 0, 0)
                           : const EdgeInsets.fromLTRB(0, 2, 4, 0),
                       padding: const EdgeInsets.symmetric(horizontal: 12, vertical: 10),
-                      child: ConstrainedBox(
-                        // TODO: 작은 단말기에서 어떻게 나오는지 확인 필요
-                        constraints: BoxConstraints(maxWidth: screenWidth * 0.60),
-                        child: Text(message.message),
+                      child: Row(
+                        mainAxisSize: MainAxisSize.min,
+                        children: [
+                          isDeleted
+                              ? Container(
+                                  padding: const EdgeInsets.symmetric(horizontal: 4),
+                                  child: Icon(Icons.warning, color: Colors.grey.withOpacity(0.7),))
+                              : const SizedBox(),
+                          ConstrainedBox(
+                            // TODO: 작은 단말기에서 어떻게 나오는지 확인 필요
+                            constraints: BoxConstraints(maxWidth: screenWidth * 0.59),
+                            child: Text(
+                              message.message,
+                              style: TextStyle(color: isDeleted ? Colors.grey : Colors.black),
+                            ),
+                          ),
+                        ],
                       ),
                     )
                   : Container(

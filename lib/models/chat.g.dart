@@ -90,4 +90,5 @@ const _$MessageTypeEnumMap = {
   MessageType.callCut: 'callCut',
   MessageType.date: 'date',
   MessageType.state: 'state',
+  MessageType.deleted: 'deleted',
 };

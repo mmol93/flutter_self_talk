@@ -79,6 +79,19 @@ class ChatRepository {
     }
   }
 
+  /// 해당 메시지를 삭제된 메시지로 만들기
+  Future<void> makeMessageDeleted(String chatId, int messageIndex) async {
+    final prefs = await _initPrefs();
+    final chatListJson = prefs.getString('chatList');
+    if (chatListJson != null) {
+      final chatData = ChatList.fromJson(jsonDecode(chatListJson));
+      chatData.chatRoom![chatId]?.messageList![messageIndex].messageType = MessageType.deleted;
+      chatData.chatRoom![chatId]?.messageList![messageIndex].imagePath = null;
+      chatData.chatRoom![chatId]?.messageList![messageIndex].message = "삭제된 메시지입니다.";
+      await updateChatList(chatData);
+    }
+  }
+
   /// 해당 채팅방에서 특정 메시지 삭제하기
   Future<void> deleteMessage(
     String chatId,

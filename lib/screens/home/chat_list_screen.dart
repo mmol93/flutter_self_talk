@@ -66,7 +66,7 @@ class _ChatListScreen extends ConsumerState<ChatListScreen> {
                     .toList())
             : const Text("생성된 채팅방이 없습니다."),
       ),
-      // TODO: 나중에는 floatButton을 삭제한다.
+      // TODO: 나중에는 floatButton을 삭제하고 튜토리얼이 담긴 채팅방을 기본값으로 넣어준다.
       floatingActionButton: Container(
         margin: const EdgeInsets.only(bottom: 50, right: 35),
         child: FloatingActionButton(

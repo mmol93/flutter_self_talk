@@ -157,6 +157,15 @@ class _ChatScreenState extends ConsumerState<ChatScreen> {
               ),
             );
           },
+        ),
+        ListItemModel(
+          itemTitle: "삭제된 메시지로 바꾸기",
+          clickEvent: () {
+            viewModel.makeMessageDeleted(
+              chatId: currentChatRoomId!,
+              messageIndex: index,
+            );
+          },
         )
       ],
     );

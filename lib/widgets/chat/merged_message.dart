@@ -81,7 +81,7 @@ Widget getMergedMessage({
         );
       }
 
-    case MessageType.message:
+    case MessageType.message || MessageType.deleted:
       if (isMe) {
         return Padding(
           padding: const EdgeInsets.fromLTRB(0, 5, 4, 0),
@@ -89,6 +89,7 @@ Widget getMergedMessage({
             shouldUseTailBubble: shouldUseTailBubble,
             showDate: showDate,
             message: message,
+            isDeleted: message.messageType == MessageType.deleted,
           ),
         );
       } else {
@@ -100,6 +101,7 @@ Widget getMergedMessage({
             friendName: friendName,
             profilePicturePath: profilePicturePath,
             message: message,
+            isDeleted: message.messageType == MessageType.deleted,
           ),
         );
       }

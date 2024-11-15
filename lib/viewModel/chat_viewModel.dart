@@ -369,4 +369,12 @@ class ChatViewModel extends StateNotifier<ChatList?> {
   void updateChatNoti({required String chatId, required Noti? chatNoti}) async {
     _chatRepository.updateNoti(chatId, chatNoti).then((value) => getChatList());
   }
+
+  /// 해당 메시지를 삭제된 매시지로 만들기
+  void makeMessageDeleted({
+    required String chatId,
+    required int messageIndex,
+  }) {
+    _chatRepository.makeMessageDeleted(chatId, messageIndex).then((value) => getChatList());
+  }
 }
