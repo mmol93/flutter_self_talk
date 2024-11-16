@@ -23,20 +23,20 @@ Chat _$ChatFromJson(Map<String, dynamic> json) => Chat(
       notification: json['notification'] == null
           ? null
           : Noti.fromJson(json['notification'] as Map<String, dynamic>),
-      title: json['title'] as String?,
+      chatRoomName: json['chatRoomName'] as String?,
       messageList: (json['messageList'] as List<dynamic>?)
           ?.map((e) => Message.fromJson(e as Map<String, dynamic>))
           .toList(),
-      chatMember: (json['chatMember'] as List<dynamic>)
+      chatMembers: (json['chatMembers'] as List<dynamic>)
           .map((e) => Friend.fromJson(e as Map<String, dynamic>))
           .toList(),
       modifiedDate: Chat._fromDateJson((json['modifiedDate'] as num).toInt()),
     );
 
 Map<String, dynamic> _$ChatToJson(Chat instance) => <String, dynamic>{
-      'title': instance.title,
+      'chatRoomName': instance.chatRoomName,
       'messageList': instance.messageList,
-      'chatMember': instance.chatMember,
+      'chatMembers': instance.chatMembers,
       'notification': instance.notification,
       'lastMessage': instance.lastMessage,
       'modifiedDate': Chat._toDateJson(instance.modifiedDate),
@@ -45,33 +45,50 @@ Map<String, dynamic> _$ChatToJson(Chat instance) => <String, dynamic>{
     };
 
 Noti _$NotiFromJson(Map<String, dynamic> json) => Noti(
+      folded: json['folded'] as bool? ?? true,
+      isMinimize: json['isMinimize'] as bool? ?? false,
+      userName: json['userName'] as String,
       id: json['id'] as String,
       message: json['message'] as String,
     );
 
 Map<String, dynamic> _$NotiToJson(Noti instance) => <String, dynamic>{
+      'folded': instance.folded,
+      'isMinimize': instance.isMinimize,
       'id': instance.id,
+      'userName': instance.userName,
       'message': instance.message,
     };
 
 Message _$MessageFromJson(Map<String, dynamic> json) => Message(
-      id: json['id'] as String,
+      friendId: json['friendId'] as String,
       messageTime: DateTime.parse(json['messageTime'] as String),
       message: json['message'] as String,
       messageType: $enumDecode(_$MessageTypeEnumMap, json['messageType']),
       isMe: json['isMe'] as bool,
+      notSeenMemberNumber: (json['notSeenMemberNumber'] as num).toInt(),
+      isFailed: json['isFailed'] as bool? ?? false,
+      secondMessage: json['secondMessage'] as String?,
+      imagePath: json['imagePath'] as String?,
     );
 
 Map<String, dynamic> _$MessageToJson(Message instance) => <String, dynamic>{
-      'id': instance.id,
+      'friendId': instance.friendId,
       'messageTime': instance.messageTime.toIso8601String(),
       'message': instance.message,
+      'secondMessage': instance.secondMessage,
       'messageType': _$MessageTypeEnumMap[instance.messageType]!,
       'isMe': instance.isMe,
+      'notSeenMemberNumber': instance.notSeenMemberNumber,
+      'imagePath': instance.imagePath,
+      'isFailed': instance.isFailed,
     };
 
 const _$MessageTypeEnumMap = {
   MessageType.message: 'message',
+  MessageType.calling: 'calling',
+  MessageType.callCut: 'callCut',
   MessageType.date: 'date',
   MessageType.state: 'state',
+  MessageType.deleted: 'deleted',
 };

@@ -1,14 +1,19 @@
+import 'package:collection/collection.dart';
 import 'package:flutter/material.dart';
 import 'package:flutter_riverpod/flutter_riverpod.dart';
 import 'package:self_talk/models/chat.dart';
 import 'package:self_talk/models/friend.dart';
 import 'package:self_talk/models/friend_control.dart';
-import 'package:self_talk/navigator/slide_navigator.dart';
+import 'package:self_talk/navigator/moving_navigator.dart';
+import 'package:self_talk/screens/chat/chat_screen.dart';
 import 'package:self_talk/screens/friend/add_friend_screen.dart';
 import 'package:self_talk/screens/friend/update_friend_screen.dart';
 import 'package:self_talk/viewModel/chat_viewModel.dart';
 import 'package:self_talk/viewModel/friend_viewModel.dart';
+import 'package:self_talk/widgets/chat/dialog/chat_invite_friends_dialog.dart';
+import 'package:self_talk/widgets/common/utils.dart';
 import 'package:uuid/uuid.dart';
+
 import '../../widgets/home/item_friend.dart';
 
 class FriendListScreen extends ConsumerStatefulWidget {
@@ -23,14 +28,10 @@ class _FriendListScreen extends ConsumerState<FriendListScreen> {
   Widget build(BuildContext context) {
     final friendViewModel = ref.watch(friendViewModelProvider.notifier);
     final chatViewModel = ref.watch(chatViewModelProvider.notifier);
-    final friends = ref
-        .watch(friendViewModelProvider)
-        .where((friend) => friend.me == 0)
-        .toList();
-    final myProfile = ref
-        .watch(friendViewModelProvider)
-        .where((friend) => friend.me == 1)
-        .toList();
+    final List<Friend> friends =
+        ref.watch(friendViewModelProvider).where((friend) => friend.me == 0).toList();
+    final Friend? myProfile =
+        ref.watch(friendViewModelProvider).firstWhereOrNull((friend) => friend.me == 1);
 
     return Scaffold(
       body: Expanded(
@@ -48,17 +49,16 @@ class _FriendListScreen extends ConsumerState<FriendListScreen> {
               style: TextStyle(fontSize: 10, color: Colors.blueGrey),
             ),
           ),
-          if (myProfile.isNotEmpty)
+          if (myProfile != null)
             Container(
               padding: const EdgeInsets.symmetric(vertical: 8, horizontal: 4),
               child: FriendItem(
                 friend: Friend(
-                  // 내 프로필은 반드시 1개만 존재하기 때문에
-                  id: myProfile.first.id,
-                  name: myProfile.first.name,
-                  message: myProfile.first.message,
-                  profileImgPath: myProfile.first.profileImgPath,
-                  me: myProfile.first.me,
+                  id: myProfile.id,
+                  name: myProfile.name,
+                  message: myProfile.message,
+                  profileImgPath: myProfile.profileImgPath,
+                  me: myProfile.me,
                 ),
                 clickFriendItem: (clickedFriend) {
                   switch (clickedFriend) {
@@ -69,11 +69,11 @@ class _FriendListScreen extends ConsumerState<FriendListScreen> {
                           updateFriend: (updatedFriend) {
                             friendViewModel.updateFriend(updatedFriend);
                           },
-                          targetFriend: myProfile.first,
+                          targetFriend: myProfile,
                         ),
                       );
                     case FriendControl.deleteItself:
-                      friendViewModel.deleteFriend(myProfile.first.id);
+                      friendViewModel.deleteFriend(myProfile.id);
                     default:
                   }
                 },
@@ -101,8 +101,7 @@ class _FriendListScreen extends ConsumerState<FriendListScreen> {
                 itemBuilder: (context, index) {
                   Friend friend = friends[index];
                   return Container(
-                    padding:
-                        const EdgeInsets.symmetric(vertical: 2, horizontal: 4),
+                    padding: const EdgeInsets.symmetric(vertical: 2, horizontal: 4),
                     child: FriendItem(
                         friend: Friend(
                           id: friend.id,
@@ -117,15 +116,23 @@ class _FriendListScreen extends ConsumerState<FriendListScreen> {
                               friendViewModel.updateAsMe(friend);
 
                             case FriendControl.chat1on1:
-                              final uuid = const Uuid().v4();
-                              final initChat = Chat(
-                                title: null,
-                                messageList: null,
-                                chatMember: [friend, myProfile.first],
-                                modifiedDate: DateTime.now(),
-                              ).createEmptyChat();
-                              chatViewModel.createChatRoom({uuid: initChat});
-                              // TODO: 방 만들고 해당 방으로 진입하게 해야함
+                              if (myProfile != null) {
+                                final uuid = const Uuid().v4();
+                                final initChat = Chat(
+                                  chatRoomName: null,
+                                  messageList: null,
+                                  chatMembers: [friend, myProfile],
+                                  modifiedDate: DateTime.now(),
+                                ).createEmptyChatRoom();
+                                chatViewModel.createChatRoom({uuid: initChat});
+                                centerNavigateStateful(
+                                    context,
+                                    ChatScreen(
+                                      chatId: uuid,
+                                    ));
+                              } else {
+                                showToast('먼저 "나" 자신의 프로필을 만들어야 합니다.');
+                              }
 
                             case FriendControl.modifyProfile:
                               slideNavigateStateful(
@@ -135,8 +142,7 @@ class _FriendListScreen extends ConsumerState<FriendListScreen> {
                                     if (updatedFriend.me == 1) {
                                       friendViewModel.updateAsMe(updatedFriend);
                                     } else {
-                                      friendViewModel
-                                          .updateFriend(updatedFriend);
+                                      friendViewModel.updateFriend(updatedFriend);
                                     }
                                   },
                                   targetFriend: friend,
@@ -147,6 +153,29 @@ class _FriendListScreen extends ConsumerState<FriendListScreen> {
                               friendViewModel.deleteFriend(friend.id);
 
                             case FriendControl.chatMulti:
+                              if (myProfile != null) {
+                                showInviteFriendsDialog(
+                                    context: context,
+                                    notInvitedFriendList: friends,
+                                    clickEvent: (invitedFriendList) {
+                                      final uuid = const Uuid().v4();
+                                      final initChat = Chat(
+                                        chatRoomName: null,
+                                        messageList: null,
+                                        chatMembers: [myProfile] + invitedFriendList,
+                                        modifiedDate: DateTime.now(),
+                                      ).createEmptyChatRoom();
+                                      chatViewModel.createChatRoom({uuid: initChat});
+                                      centerNavigateStateful(
+                                        context,
+                                        ChatScreen(
+                                          chatId: uuid,
+                                        ),
+                                      );
+                                    });
+                              } else {
+                                showToast('먼저 "나" 자신의 프로필을 만들어야 합니다.');
+                              }
                           }
                         }),
                   );
@@ -185,7 +214,6 @@ class _FriendListScreen extends ConsumerState<FriendListScreen> {
           },
         ),
       ),
-      // TODO: 테스트용 버튼임, 나중에는 삭제하기
       floatingActionButtonLocation: FloatingActionButtonLocation.endFloat,
     );
   }

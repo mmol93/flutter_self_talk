@@ -1,18 +1,20 @@
 import 'package:flutter/material.dart';
 import 'package:flutter_riverpod/flutter_riverpod.dart';
 import 'package:google_fonts/google_fonts.dart';
-
+import 'package:intl/date_symbol_data_local.dart';
 import 'package:self_talk/screens/home/chat_list_screen.dart';
 import 'package:self_talk/screens/home/friend_list_screen.dart';
 import 'package:smooth_page_indicator/smooth_page_indicator.dart';
 
 import '../../assets/strings.dart';
 import '../../colors/default_color.dart';
-import '../../widgets/dialog/common_dialog.dart';
+import '../../widgets/dialog/simple_dialog.dart';
 
 const pageList = ["친구", "채팅", "설정"];
 
-void main() {
+void main() async {
+  WidgetsFlutterBinding.ensureInitialized();
+  await initializeDateFormatting('ko_KR', null);
   runApp(const ProviderScope(
     child: MyApp(),
   ));
@@ -55,7 +57,7 @@ class _HomePageState extends State<HomePage> {
   void initState() {
     super.initState();
     WidgetsBinding.instance.addPostFrameCallback((timeStamp) {
-      showCommonDialog(
+      showTextDialog(
         context: context,
         title: Strings.startCautionTitle,
         content: Strings.startCautionContent,

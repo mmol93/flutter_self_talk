@@ -12,7 +12,7 @@ class ThreeChatRoomPicture extends StatelessWidget {
   @override
   Widget build(BuildContext context) {
     // 내가 아닌 '다른' 단톡방 멤버들 = 2명
-    final chatMembersButMe = chat.chatMember.where((friend) => friend.me == 0);
+    final chatMembersButMe = chat.chatMembers.where((friend) => friend.me == 0);
 
     return chat.modifiedChatRoomImg == null ?
       SizedOverflowBox(
@@ -51,7 +51,7 @@ class FourChatRoomPicture extends StatelessWidget {
   @override
   Widget build(BuildContext context) {
     // 내가 아닌 '다른' 단톡방 멤버들 = 3명
-    final chatMembersButMe = chat.chatMember.where((friend) => friend.me == 0);
+    final chatMembersButMe = chat.chatMembers.where((friend) => friend.me == 0);
 
     return chat.modifiedChatRoomImg == null ?
       SizedOverflowBox(
@@ -86,7 +86,7 @@ class MultiChatRoomPicture extends StatelessWidget {
   @override
   Widget build(BuildContext context) {
     // 내가 아닌 '다른' 단톡방 멤버들 = 4명 이상
-    final chatMembersButMe = chat.chatMember.where((friend) => friend.me == 0);
+    final chatMembersButMe = chat.chatMembers.where((friend) => friend.me == 0);
 
     return chat.modifiedChatRoomImg == null ?
       SizedOverflowBox(
