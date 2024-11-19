@@ -79,6 +79,7 @@ class ChatRoomListItem extends StatelessWidget {
                     Text(
                       chat.lastMessage ?? "", // 최근 메시지
                       style: const TextStyle(color: Colors.grey),
+                      maxLines: 2,
                     )
                   ],
                 ),

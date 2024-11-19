@@ -4,11 +4,12 @@ import 'package:google_fonts/google_fonts.dart';
 import 'package:intl/date_symbol_data_local.dart';
 import 'package:self_talk/screens/home/chat_list_screen.dart';
 import 'package:self_talk/screens/home/friend_list_screen.dart';
+import 'package:self_talk/screens/setting/setting_list_screen.dart';
 import 'package:smooth_page_indicator/smooth_page_indicator.dart';
 
-import '../../assets/strings.dart';
-import '../../colors/default_color.dart';
-import '../../widgets/dialog/simple_dialog.dart';
+import '../assets/strings.dart';
+import '../colors/default_color.dart';
+import '../widgets/dialog/simple_dialog.dart';
 
 const pageList = ["친구", "채팅", "설정"];
 
@@ -125,15 +126,15 @@ class _HomePageState extends State<HomePage> {
           Expanded(
             child: PageView(
               controller: _pageController,
-              children: const [
-                Expanded(
+              children: [
+                const Expanded(
                   child: FriendListScreen(),
                 ),
-                Expanded(
+                const Expanded(
                   child: ChatListScreen(),
                 ),
                 Expanded(
-                  child: Text("sdfafd"),
+                  child: SettingListScreen(),
                 ),
               ],
             ),
