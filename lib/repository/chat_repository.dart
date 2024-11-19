@@ -7,8 +7,14 @@ import 'package:shared_preferences/shared_preferences.dart';
 import 'package:uuid/uuid.dart';
 
 class ChatRepository {
+  // SharedPreferences 인스턴스를 저장할 변수
+  SharedPreferences? _prefs;
+
+  // SharedPreferences 초기화 메서드
   Future<SharedPreferences> _initPrefs() async {
-    return await SharedPreferences.getInstance();
+    // 이미 초기화되어 있다면 캐시된 인스턴스 반환
+    _prefs ??= await SharedPreferences.getInstance();
+    return _prefs!;
   }
 
   /// 채팅 리스트 양식 만들기 = 채팅 초기화
