@@ -537,9 +537,9 @@ class _ChatScreenState extends ConsumerState<ChatScreen> {
     me = targetChatData.chatMembers.firstWhere((friend) => friend.me == 1);
 
     return Scaffold(
-      backgroundColor: defaultBackground,
+      backgroundColor: defaultBackgroundColor,
       appBar: AppBar(
-        backgroundColor: defaultBackground,
+        backgroundColor: defaultBackgroundColor,
         title: Row(
           children: [
             ConstrainedBox(

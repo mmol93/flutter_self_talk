@@ -1,5 +1,5 @@
 import 'package:flutter/material.dart';
-import 'package:self_talk/extensions/string_ext.dart';
+import 'package:self_talk/extensions/color_ext.dart';
 
 class ItemSetting extends StatefulWidget {
   final String mainTitle;
@@ -7,14 +7,14 @@ class ItemSetting extends StatefulWidget {
   final Function()? clickEvent;
   final String? statusText;
   final bool? isCheckbox;
-  final String? colorCode;
+  final Color? color;
 
   const ItemSetting({
     super.key,
     this.subTitle,
     this.statusText,
     this.isCheckbox,
-    this.colorCode,
+    this.color,
     this.clickEvent,
     required this.mainTitle,
   });
@@ -25,12 +25,10 @@ class ItemSetting extends StatefulWidget {
 
 class _ItemSettingState extends State<ItemSetting> {
   bool? checkBoxStatus;
-  Color? currentColor;
 
   @override
   void initState() {
     checkBoxStatus = widget.isCheckbox != null;
-    currentColor = widget.colorCode?.toColor();
     super.initState();
   }
 
@@ -78,16 +76,16 @@ class _ItemSettingState extends State<ItemSetting> {
                     Text(widget.statusText!)
                   else if (widget.isCheckbox != null)
                     Checkbox(value: checkBoxStatus, onChanged: _test)
-                  else if (currentColor != null)
+                  else if (widget.color != null)
                     Container(
                       width: 24,
                       height: 24,
-                      color: currentColor,
+                      color: widget.color,
                       margin: const EdgeInsets.symmetric(horizontal: 8),
                     ),
-                  if (widget.colorCode != null)
+                  if (widget.color != null)
                     Text(
-                      widget.colorCode!,
+                      widget.color!.toHexText(),
                       style: const TextStyle(fontFamily: 'RobotoMono'),
                     )
                 ],
