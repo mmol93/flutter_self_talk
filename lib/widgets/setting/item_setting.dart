@@ -42,6 +42,7 @@ class _ItemSettingState extends State<ItemSetting> {
       onTap: widget.clickEvent,
       child: Container(
         height: 60,
+        color: Colors.transparent,
         padding: const EdgeInsets.symmetric(horizontal: 16),
         child: Expanded(
           child: Row(
