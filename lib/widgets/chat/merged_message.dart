@@ -1,4 +1,5 @@
 import 'package:flutter/material.dart';
+import 'package:self_talk/models/setting_color.dart';
 import 'package:self_talk/widgets/chat/message_call_from_me.dart';
 import 'package:self_talk/widgets/chat/message_call_from_others.dart';
 import 'package:self_talk/widgets/chat/message_date.dart';
@@ -18,6 +19,7 @@ Widget getMergedMessage({
   required String profilePicturePath,
   MessageType messageType = MessageType.message,
   DateTime? pickedDate,
+  SettingColor? settingColor,
 }) {
   switch (messageType) {
     case MessageType.date:
@@ -25,6 +27,7 @@ Widget getMergedMessage({
 
     case MessageType.state:
       if (message.secondMessage != null) {
+        // TODO: 다크인지 아닌지에 따라 배경색의 opacity를 조절할 수 있게 해야함 ㅠ
         return MessageStateTwoLine(
           firstLineText: message.message,
           secondLineText: message.secondMessage,
@@ -90,6 +93,7 @@ Widget getMergedMessage({
             showDate: showDate,
             message: message,
             isDeleted: message.messageType == MessageType.deleted,
+            backgroundColor: settingColor?.myMessageColor,
           ),
         );
       } else {
@@ -102,6 +106,7 @@ Widget getMergedMessage({
             profilePicturePath: profilePicturePath,
             message: message,
             isDeleted: message.messageType == MessageType.deleted,
+            backgroundColor: settingColor?.othersMessageColor,
           ),
         );
       }

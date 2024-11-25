@@ -17,15 +17,18 @@ class MessageFromOthers extends StatelessWidget {
   final String profilePicturePath;
   final Message message;
   final bool isDeleted;
+  final Color? backgroundColor;
 
-  const MessageFromOthers(
-      {super.key,
-      this.showDate = true,
-      this.isDeleted = false,
-      this.profilePicturePath = Strings.defaultProfileImgPath,
-      required this.shouldUseTailBubble,
-      required this.friendName,
-      required this.message});
+  const MessageFromOthers({
+    super.key,
+    this.showDate = true,
+    this.isDeleted = false,
+    this.profilePicturePath = Strings.defaultProfileImgPath,
+    required this.shouldUseTailBubble,
+    required this.friendName,
+    required this.message,
+    this.backgroundColor,
+  });
 
   @override
   Widget build(BuildContext context) {
@@ -62,6 +65,7 @@ class MessageFromOthers extends StatelessWidget {
                         children: [
                           message.imagePath == null
                               ? ChatBubble(
+                                  backGroundColor: backgroundColor,
                                   clipper: shouldUseTailBubble
                                       ? ChatBubbleClipper11(type: BubbleType.receiverBubble)
                                       : ChatBubbleClipper12(type: BubbleType.receiverBubble),
@@ -75,10 +79,8 @@ class MessageFromOthers extends StatelessWidget {
                                       isDeleted
                                           ? Container(
                                               padding: const EdgeInsets.symmetric(horizontal: 4),
-                                              child: Icon(
-                                                Icons.warning,
-                                                color: Colors.grey.withOpacity(0.7)
-                                              ),
+                                              child: Icon(Icons.warning,
+                                                  color: Colors.grey.withOpacity(0.7)),
                                             )
                                           : const SizedBox(),
                                       ConstrainedBox(

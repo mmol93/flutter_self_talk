@@ -13,6 +13,7 @@ class MessageFromMe extends StatelessWidget {
   final bool shouldUseTailBubble;
   final Message message;
   final bool isDeleted;
+  final Color? backgroundColor;
 
   const MessageFromMe({
     super.key,
@@ -20,6 +21,7 @@ class MessageFromMe extends StatelessWidget {
     this.showDate = true,
     required this.shouldUseTailBubble,
     required this.message,
+    this.backgroundColor,
   });
 
   @override
@@ -70,6 +72,7 @@ class MessageFromMe extends StatelessWidget {
               ),
               message.imagePath == null
                   ? ChatBubble(
+                      backGroundColor: backgroundColor,
                       clipper: shouldUseTailBubble
                           ? ChatBubbleClipper11(type: BubbleType.sendBubble)
                           : ChatBubbleClipper12(type: BubbleType.sendBubble),
@@ -83,7 +86,10 @@ class MessageFromMe extends StatelessWidget {
                           isDeleted
                               ? Container(
                                   padding: const EdgeInsets.symmetric(horizontal: 4),
-                                  child: Icon(Icons.warning, color: Colors.grey.withOpacity(0.7),))
+                                  child: Icon(
+                                    Icons.warning,
+                                    color: Colors.grey.withOpacity(0.7),
+                                  ))
                               : const SizedBox(),
                           ConstrainedBox(
                             // TODO: 작은 단말기에서 어떻게 나오는지 확인 필요

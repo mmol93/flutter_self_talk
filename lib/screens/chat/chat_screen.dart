@@ -11,6 +11,7 @@ import 'package:self_talk/models/friend.dart';
 import 'package:self_talk/models/list_item_model.dart';
 import 'package:self_talk/viewModel/chat_viewModel.dart';
 import 'package:self_talk/viewModel/friend_viewModel.dart';
+import 'package:self_talk/viewModel/setting_viewModel.dart';
 import 'package:self_talk/widgets/chat/announce_icon.dart';
 import 'package:self_talk/widgets/chat/dialog/chat_invite_friends_dialog.dart';
 import 'package:self_talk/widgets/chat/dialog/modify_message_dialog.dart';
@@ -528,18 +529,19 @@ class _ChatScreenState extends ConsumerState<ChatScreen> {
 
   @override
   Widget build(BuildContext context) {
-    final viewModel = ref.watch(chatViewModelProvider.notifier);
+    final chatViewModel = ref.watch(chatViewModelProvider.notifier);
     final friendViewModel = ref.watch(friendViewModelProvider.notifier);
     final wholeFriendList = ref.watch(friendViewModelProvider);
     final wholeChatList = ref.watch(chatViewModelProvider);
+    final settingColor = ref.read(settingViewModelProvider);
     final Chat targetChatData = wholeChatList!.chatRoom![currentChatRoomId]!;
     final double screenWidth = MediaQuery.of(context).size.width;
     me = targetChatData.chatMembers.firstWhere((friend) => friend.me == 1);
 
     return Scaffold(
-      backgroundColor: defaultBackgroundColor,
+      backgroundColor: settingColor?.backgroundColor ?? defaultBackgroundColor,
       appBar: AppBar(
-        backgroundColor: defaultBackgroundColor,
+        backgroundColor: settingColor?.backgroundColor ?? defaultBackgroundColor,
         title: Row(
           children: [
             ConstrainedBox(
@@ -563,7 +565,7 @@ class _ChatScreenState extends ConsumerState<ChatScreen> {
           IconButton(
             onPressed: () {
               _showChatRoomOptionDialog(
-                viewModel: viewModel,
+                viewModel: chatViewModel,
                 targetChatData: targetChatData,
                 friendViewModel: friendViewModel,
                 wholeFriendList: wholeFriendList,
@@ -592,23 +594,24 @@ class _ChatScreenState extends ConsumerState<ChatScreen> {
                       final reversedChatIndex =
                           (targetChatData.messageList?.length ?? 0) - index - 1;
                       return GestureDetector(
-                          onTap: () {
-                            _showMessageOptions(viewModel, targetChatData, reversedChatIndex);
-                          },
-                          child: getMergedMessage(
-                              showDate: targetChatData.shouldShowDate(reversedChatIndex),
-                              isMe: targetChatData.messageList![reversedChatIndex].isMe,
-                              shouldUseTailBubble:
-                                  targetChatData.shouldUseTailBubble(reversedChatIndex),
-                              message: targetChatData.messageList![reversedChatIndex],
-                              friendName: targetChatData.getFriendName(
-                                      targetChatData.messageList![reversedChatIndex].friendId) ??
-                                  "(알 수 없음)",
-                              profilePicturePath: targetChatData.getaFriendProfilePath(),
-                              messageType:
-                                  targetChatData.messageList![reversedChatIndex].messageType,
-                              pickedDate:
-                                  targetChatData.messageList![reversedChatIndex].messageTime));
+                        onTap: () {
+                          _showMessageOptions(chatViewModel, targetChatData, reversedChatIndex);
+                        },
+                        child: getMergedMessage(
+                          showDate: targetChatData.shouldShowDate(reversedChatIndex),
+                          isMe: targetChatData.messageList![reversedChatIndex].isMe,
+                          shouldUseTailBubble:
+                              targetChatData.shouldUseTailBubble(reversedChatIndex),
+                          message: targetChatData.messageList![reversedChatIndex],
+                          friendName: targetChatData.getFriendName(
+                                  targetChatData.messageList![reversedChatIndex].friendId) ??
+                              "(알 수 없음)",
+                          profilePicturePath: targetChatData.getaFriendProfilePath(),
+                          messageType: targetChatData.messageList![reversedChatIndex].messageType,
+                          pickedDate: targetChatData.messageList![reversedChatIndex].messageTime,
+                          settingColor: settingColor,
+                        ),
+                      );
                     },
                     itemCount: targetChatData.messageList?.length ?? 0),
               ),
@@ -652,7 +655,7 @@ class _ChatScreenState extends ConsumerState<ChatScreen> {
                                   showToast("\"현재 채팅 유저\"를 먼저 선택해야 합니다.");
                                 } else {
                                   _showAttachmentOptions(
-                                      viewModel: viewModel,
+                                      viewModel: chatViewModel,
                                       me: me!,
                                       currentTargetChatData: targetChatData);
                                 }
@@ -697,7 +700,7 @@ class _ChatScreenState extends ConsumerState<ChatScreen> {
                                 return GestureDetector(
                                   onTap: () {
                                     _sendMessage(
-                                        viewModel: viewModel,
+                                        viewModel: chatViewModel,
                                         message: messageText,
                                         me: me!,
                                         currentMemberNumber: targetChatData.chatMembers.length);
@@ -732,7 +735,7 @@ class _ChatScreenState extends ConsumerState<ChatScreen> {
               alignment: Alignment.topRight,
               child: GestureDetector(
                 onTap: () {
-                  viewModel.updateChatNoti(
+                  chatViewModel.updateChatNoti(
                     chatId: currentChatRoomId!,
                     chatNoti: targetChatData.changeNotiMinimizeStatus(),
                   );
@@ -799,7 +802,7 @@ class _ChatScreenState extends ConsumerState<ChatScreen> {
                           ),
                           GestureDetector(
                             onTap: () {
-                              viewModel.updateChatNoti(
+                              chatViewModel.updateChatNoti(
                                 chatId: currentChatRoomId!,
                                 chatNoti: targetChatData.changeNotiFoldStatus(),
                               );
@@ -826,7 +829,7 @@ class _ChatScreenState extends ConsumerState<ChatScreen> {
                                 margin: const EdgeInsets.symmetric(horizontal: 4, vertical: 4),
                                 child: ElevatedButton(
                                   onPressed: () {
-                                    viewModel.updateChatNoti(
+                                    chatViewModel.updateChatNoti(
                                       chatId: currentChatRoomId!,
                                       chatNoti: null,
                                     );
@@ -848,7 +851,7 @@ class _ChatScreenState extends ConsumerState<ChatScreen> {
                                 margin: const EdgeInsets.symmetric(horizontal: 4),
                                 child: ElevatedButton(
                                   onPressed: () {
-                                    viewModel.updateChatNoti(
+                                    chatViewModel.updateChatNoti(
                                       chatId: currentChatRoomId!,
                                       chatNoti: targetChatData.changeNotiMinimizeStatus(),
                                     );
