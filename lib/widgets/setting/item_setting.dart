@@ -81,7 +81,10 @@ class _ItemSettingState extends State<ItemSetting> {
                     Container(
                       width: 24,
                       height: 24,
-                      color: widget.color,
+                      decoration: BoxDecoration(
+                        border: Border.all(color: Colors.black),
+                        color: widget.color,
+                      ),
                       margin: const EdgeInsets.symmetric(horizontal: 8),
                     ),
                   if (widget.color != null)
