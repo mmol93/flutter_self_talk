@@ -1,3 +1,4 @@
+import 'dart:math';
 import 'dart:ui';
 
 extension ColorToHex on Color {
@@ -17,5 +18,14 @@ extension ColorToHex on Color {
         '${red.toRadixString(16).padLeft(2, '0')}'
         '${green.toRadixString(16).padLeft(2, '0')}'
         '${blue.toRadixString(16).padLeft(2, '0')}';
+  }
+
+  bool isDark() {
+    double brightness = sqrt(
+      0.299 * pow(red, 2) + 0.587 * pow(green, 2) + 0.114 * pow(blue, 2),
+    );
+
+    // 임계값 (0-255 범위에서 128을 기준으로 판단)
+    return brightness < 128.0;
   }
 }

@@ -533,7 +533,7 @@ class _ChatScreenState extends ConsumerState<ChatScreen> {
     final friendViewModel = ref.watch(friendViewModelProvider.notifier);
     final wholeFriendList = ref.watch(friendViewModelProvider);
     final wholeChatList = ref.watch(chatViewModelProvider);
-    final settingColor = ref.read(settingViewModelProvider);
+    final settingColor = ref.watch(settingViewModelProvider);
     final Chat targetChatData = wholeChatList!.chatRoom![currentChatRoomId]!;
     final double screenWidth = MediaQuery.of(context).size.width;
     me = targetChatData.chatMembers.firstWhere((friend) => friend.me == 1);

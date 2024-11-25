@@ -17,7 +17,8 @@ class MessageFromOthers extends StatelessWidget {
   final String profilePicturePath;
   final Message message;
   final bool isDeleted;
-  final Color? backgroundColor;
+  final Color? bubbleColor;
+  final bool isBackgroundDark;
 
   const MessageFromOthers({
     super.key,
@@ -27,7 +28,8 @@ class MessageFromOthers extends StatelessWidget {
     required this.shouldUseTailBubble,
     required this.friendName,
     required this.message,
-    this.backgroundColor,
+    this.bubbleColor,
+    required this.isBackgroundDark,
   });
 
   @override
@@ -56,7 +58,11 @@ class MessageFromOthers extends StatelessWidget {
                     if (shouldUseTailBubble)
                       Padding(
                         padding: const EdgeInsets.fromLTRB(7, 0, 0, 0),
-                        child: Text(friendName, style: const TextStyle(fontSize: 13)),
+                        child: Text(friendName,
+                            style: TextStyle(
+                              fontSize: 13,
+                              color: isBackgroundDark ? Colors.white : Colors.black,
+                            )),
                       ),
                     Padding(
                       padding: const EdgeInsets.fromLTRB(2, 0, 0, 0),
@@ -65,7 +71,7 @@ class MessageFromOthers extends StatelessWidget {
                         children: [
                           message.imagePath == null
                               ? ChatBubble(
-                                  backGroundColor: backgroundColor,
+                                  backGroundColor: bubbleColor,
                                   clipper: shouldUseTailBubble
                                       ? ChatBubbleClipper11(type: BubbleType.receiverBubble)
                                       : ChatBubbleClipper12(type: BubbleType.receiverBubble),
@@ -137,7 +143,10 @@ class MessageFromOthers extends StatelessWidget {
                                           opacity: showDate ? 1.0 : 0.0,
                                           child: Text(
                                             DateFormat('HH:mm').format(message.messageTime),
-                                            style: const TextStyle(fontSize: 8),
+                                            style: TextStyle(
+                                              fontSize: 8,
+                                              color: isBackgroundDark ? Colors.white : Colors.black,
+                                            ),
                                           ),
                                         ),
                                       ),

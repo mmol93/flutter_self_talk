@@ -13,7 +13,8 @@ class MessageFromMe extends StatelessWidget {
   final bool shouldUseTailBubble;
   final Message message;
   final bool isDeleted;
-  final Color? backgroundColor;
+  final Color? bubbleColor;
+  final bool isBackgroundDark;
 
   const MessageFromMe({
     super.key,
@@ -21,7 +22,8 @@ class MessageFromMe extends StatelessWidget {
     this.showDate = true,
     required this.shouldUseTailBubble,
     required this.message,
-    this.backgroundColor,
+    this.bubbleColor,
+    required this.isBackgroundDark,
   });
 
   @override
@@ -63,7 +65,10 @@ class MessageFromMe extends StatelessWidget {
                               opacity: showDate ? 1.0 : 0.0,
                               child: Text(
                                 DateFormat('HH:mm').format(message.messageTime),
-                                style: const TextStyle(fontSize: 8),
+                                style: TextStyle(
+                                  fontSize: 8,
+                                  color: isBackgroundDark ? Colors.white : Colors.black,
+                                ),
                               ),
                             ),
                           ),
@@ -72,7 +77,7 @@ class MessageFromMe extends StatelessWidget {
               ),
               message.imagePath == null
                   ? ChatBubble(
-                      backGroundColor: backgroundColor,
+                      backGroundColor: bubbleColor,
                       clipper: shouldUseTailBubble
                           ? ChatBubbleClipper11(type: BubbleType.sendBubble)
                           : ChatBubbleClipper12(type: BubbleType.sendBubble),

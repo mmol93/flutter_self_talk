@@ -3,8 +3,13 @@ import 'package:flutter_html/flutter_html.dart';
 
 class MessageStateHtmlLine extends StatelessWidget {
   final String firstLineHtmlText;
+  final bool isBackgroundDark;
 
-  const MessageStateHtmlLine({super.key, required this.firstLineHtmlText});
+  const MessageStateHtmlLine({
+    super.key,
+    required this.firstLineHtmlText,
+    required this.isBackgroundDark,
+  });
 
   @override
   Widget build(BuildContext context) {
@@ -16,7 +21,7 @@ class MessageStateHtmlLine extends StatelessWidget {
           Container(
             padding: const EdgeInsets.symmetric(horizontal: 6),
             decoration: BoxDecoration(
-              color: Colors.black.withAlpha(35),
+              color: isBackgroundDark ? Colors.grey.withAlpha(85) : Colors.black.withAlpha(35),
               borderRadius: BorderRadius.circular(20.0),
             ),
             child: Html(data: firstLineHtmlText, style: {
