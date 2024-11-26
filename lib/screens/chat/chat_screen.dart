@@ -543,8 +543,7 @@ class _ChatScreenState extends ConsumerState<ChatScreen> {
       backgroundColor: settingColor?.backgroundColor ?? defaultBackgroundColor,
       appBar: AppBar(
         iconTheme: IconThemeData(
-          color: settingColor?.backgroundColor.isDark() == true ? Colors.white : Colors.black
-        ),
+            color: settingColor?.backgroundColor.isDark() == true ? Colors.white : Colors.black),
         backgroundColor: settingColor?.backgroundColor ?? defaultBackgroundColor,
         title: Row(
           children: [
@@ -554,14 +553,19 @@ class _ChatScreenState extends ConsumerState<ChatScreen> {
                 targetChatData.chatRoomName ?? "",
                 overflow: TextOverflow.ellipsis,
                 maxLines: 1,
-                style: TextStyle(fontWeight: FontWeight.w500, color: settingColor?.backgroundColor.isDark() == true ? Colors.white : Colors.black),
+                style: TextStyle(
+                  fontWeight: FontWeight.w500,
+                  color:
+                      settingColor?.backgroundColor.isDark() == true ? Colors.white : Colors.black,
+                ),
               ),
             ),
             const SizedBox(width: 5),
-            Text(
-              targetChatData.chatMembers.length.toString(),
-              style: const TextStyle(color: Colors.grey, fontWeight: FontWeight.w500),
-            )
+            if (targetChatData.chatMembers.length > 2)
+              Text(
+                targetChatData.chatMembers.length.toString(),
+                style: const TextStyle(color: Colors.grey, fontWeight: FontWeight.w500),
+              )
           ],
         ),
         actions: [
@@ -626,7 +630,13 @@ class _ChatScreenState extends ConsumerState<ChatScreen> {
                     child: Row(
                       mainAxisAlignment: MainAxisAlignment.center,
                       children: [
-                        Text("현재 채팅 유저: ", style: TextStyle(color: settingColor?.backgroundColor.isDark() == true ? Colors.white : Colors.black),),
+                        Text(
+                          "현재 채팅 유저: ",
+                          style: TextStyle(
+                              color: settingColor?.backgroundColor.isDark() == true
+                                  ? Colors.white
+                                  : Colors.black),
+                        ),
                         TextButton(
                           onPressed: () {
                             _showFriendSelectionDialog(me!, targetChatData);
@@ -637,7 +647,11 @@ class _ChatScreenState extends ConsumerState<ChatScreen> {
                                     ? "(자신)${currentSelectedFriend!.name}"
                                     : currentSelectedFriend!.name
                                 : "선택된 친구 없음",
-                            style: TextStyle(fontWeight: FontWeight.bold, color: settingColor?.backgroundColor.isDark() == true ? Colors.yellow.shade900 : Colors.purple),
+                            style: TextStyle(
+                                fontWeight: FontWeight.bold,
+                                color: settingColor?.backgroundColor.isDark() == true
+                                    ? Colors.yellow.shade900
+                                    : Colors.purple),
                           ),
                         )
                       ],

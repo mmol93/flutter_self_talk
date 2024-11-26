@@ -63,10 +63,11 @@ class ChatRoomListItem extends StatelessWidget {
                           ),
                         ),
                         const SizedBox(width: 8),
-                        Text(
-                          chatMembers.length.toString(), // 단톡방 사람 수
-                          style: const TextStyle(color: Colors.grey),
-                        ),
+                        if (chatMembers.length > 2)
+                          Text(
+                            chatMembers.length.toString(), // 단톡방 사람 수
+                            style: const TextStyle(color: Colors.grey),
+                          ),
                         const SizedBox(width: 5),
                         if (chat.alarmOnOff == 0)
                           const Icon(
