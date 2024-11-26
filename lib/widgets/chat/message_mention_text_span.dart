@@ -18,7 +18,7 @@ List<TextSpan> friendMentionColoredTextSpans(
       spans.add(
         TextSpan(
           text: '$part ',
-          style: TextStyle(color: isDeleted ? Colors.grey : Colors.black),
+          style: TextStyle(color: isDeleted ? Colors.grey : Colors.black, fontWeight: FontWeight.w300),
         ),
       );
     }
