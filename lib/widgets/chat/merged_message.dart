@@ -22,7 +22,6 @@ Widget getMergedMessage({
   DateTime? pickedDate,
   SettingColor? settingColor,
 }) {
-  // TODO: 배경색이 다크인지 아닌지에 따라 배경색이나 글씨색을 조절할 수 있게 해야함 ㅠ
   final bool isBackgroundDark = settingColor?.backgroundColor.isDark() ?? true;
 
   switch (messageType) {

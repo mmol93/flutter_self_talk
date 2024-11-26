@@ -10,6 +10,8 @@ import 'package:self_talk/widgets/chat/message_bubble.dart';
 import 'package:self_talk/widgets/chat/message_bubble_tail.dart';
 import 'package:self_talk/widgets/common/profile_picture.dart';
 
+import 'message_mention_text_span.dart';
+
 class MessageFromOthers extends StatelessWidget {
   final bool showDate;
   final bool shouldUseTailBubble;
@@ -92,11 +94,11 @@ class MessageFromOthers extends StatelessWidget {
                                       ConstrainedBox(
                                         // TODO: 여러 단말기에서 어떻게 나오는지 확인 필요
                                         // others는 프로필 사진 부분까지 출력해야하기 때문에 좀 더 줄어든다.
-                                        constraints: BoxConstraints(maxWidth: screenWidth * 0.55),
-                                        child: Text(
-                                          message.message,
-                                          style: TextStyle(
-                                              color: isDeleted ? Colors.grey : Colors.black),
+                                        constraints: BoxConstraints(maxWidth: screenWidth * 0.53),
+                                        child: RichText(
+                                          text: TextSpan(
+                                            children: friendMentionColoredTextSpans(message.message, isDeleted),
+                                          ),
                                         ),
                                       ),
                                     ],

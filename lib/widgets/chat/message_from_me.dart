@@ -7,6 +7,7 @@ import 'package:intl/intl.dart';
 import 'package:self_talk/models/chat.dart';
 import 'package:self_talk/widgets/chat/message_bubble.dart';
 import 'package:self_talk/widgets/chat/message_bubble_tail.dart';
+import 'package:self_talk/widgets/chat/message_mention_text_span.dart';
 
 class MessageFromMe extends StatelessWidget {
   final bool showDate;
@@ -99,9 +100,10 @@ class MessageFromMe extends StatelessWidget {
                           ConstrainedBox(
                             // TODO: 작은 단말기에서 어떻게 나오는지 확인 필요
                             constraints: BoxConstraints(maxWidth: screenWidth * 0.59),
-                            child: Text(
-                              message.message,
-                              style: TextStyle(color: isDeleted ? Colors.grey : Colors.black),
+                            child: RichText(
+                              text: TextSpan(
+                                children: friendMentionColoredTextSpans(message.message, isDeleted),
+                              ),
                             ),
                           ),
                         ],
