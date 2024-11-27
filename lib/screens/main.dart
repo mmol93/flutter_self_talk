@@ -61,7 +61,7 @@ class _HomePageState extends State<HomePage> {
       showTextDialog(
         context: context,
         title: Strings.startCautionTitle,
-        content: Strings.startCautionContent,
+        contentText: Strings.startCautionContent,
         okText: Strings.okPolite,
       );
     });

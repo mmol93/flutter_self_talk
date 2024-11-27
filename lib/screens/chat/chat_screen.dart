@@ -20,6 +20,7 @@ import 'package:self_talk/widgets/chat/merged_message.dart';
 import 'package:self_talk/widgets/common/utils.dart';
 import 'package:self_talk/widgets/dialog/common_time_picker_dialog.dart';
 import 'package:self_talk/widgets/dialog/list_dialog.dart';
+import 'package:self_talk/widgets/dialog/simple_dialog.dart';
 
 import '../../widgets/dialog/number_modify_dialog.dart';
 import '../../widgets/dialog/text_modify_dialog.dart';
@@ -41,6 +42,7 @@ class _ChatScreenState extends ConsumerState<ChatScreen> {
   final _inputTextController = TextEditingController();
   final ScrollController _scrollController = ScrollController();
   bool editMode = true;
+  bool movieMode = false;
 
   // 현재 채팅중인 사람이 직전 사람과 다름 = true
   Friend? previousSelectedFriend;
@@ -168,7 +170,7 @@ class _ChatScreenState extends ConsumerState<ChatScreen> {
               messageIndex: index,
             );
           },
-        )
+        ),
       ],
     );
   }
@@ -307,12 +309,30 @@ class _ChatScreenState extends ConsumerState<ChatScreen> {
               }
             }),
         ListItemModel(
-            itemTitle: editMode ? "갭쳐 모드로 전환하기" : "수정 모드로 전환하기",
-            clickEvent: () {
-              setState(() {
-                editMode = !editMode;
-              });
-            }),
+          itemTitle: editMode ? "갭쳐 모드로 전환하기" : "수정 모드로 전환하기",
+          clickEvent: () {
+            setState(() {
+              editMode = !editMode;
+            });
+          },
+        ),
+        ListItemModel(
+          itemTitle: "영상 모드 시작",
+          clickEvent: () {
+            showTextDialog(
+                title: "영상 모드",
+                okText: "시작",
+                contentText:
+                    "영상 모드를 사용하면 모든 대화가 설정한 \n초 만큼의 간격으로 1개씩 출력됩니다.\n\n초 설정은 설정 화면에서 변경 가능합니다. \n\n<응용방법>\n1. 휴대폰 화면 녹화 시작\n2. 영상모드를 시작\n3. 화면녹화를 끝낸 후 적절히 편집해서 사용",
+                context: context,
+                onPressed: () {
+                  setState(() {
+                    movieMode = true;
+
+                  });
+                });
+          },
+        )
       ],
     );
   }

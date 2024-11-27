@@ -7,14 +7,14 @@ import 'package:flutter/material.dart';
 void showTextDialog({
   required String title,
   required String okText,
-  required String content,
+  required String contentText,
   required BuildContext context,
   Function? onPressed,
 }) {
   Widget buildDialog(BuildContext context) {
     return AlertDialog(
       title: Text(title),
-      content: Text(content),
+      content: Text(contentText),
       actions: [
         TextButton(
           onPressed: () {
