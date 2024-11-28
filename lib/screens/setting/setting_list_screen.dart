@@ -77,14 +77,14 @@ class _SettingListScreenState extends ConsumerState<SettingListScreen> {
         mainTitle: "버전",
         statusText: "1.0.0",
       ),
-      Setting(
-        mainTitle: "라이센스",
-        clickEvent: () {},
-      ),
-      Setting(
-        mainTitle: "개인정보 보호정책",
-        clickEvent: () {},
-      ),
+      // Setting(
+      //   mainTitle: "라이센스",
+      //   clickEvent: () {},
+      // ),
+      // Setting(
+      //   mainTitle: "개인정보 보호정책",
+      //   clickEvent: () {},
+      // ),
     ];
   }
 

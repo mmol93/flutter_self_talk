@@ -1,3 +1,4 @@
+import 'dart:async';
 import 'dart:io';
 
 import 'package:flutter/material.dart';
@@ -43,6 +44,8 @@ class _ChatScreenState extends ConsumerState<ChatScreen> {
   final ScrollController _scrollController = ScrollController();
   bool editMode = true;
   bool movieMode = false;
+  Chat? _movieModeChatData;
+  int _movieModeChatMessageIndex = 0;
 
   // 현재 채팅중인 사람이 직전 사람과 다름 = true
   Friend? previousSelectedFriend;
@@ -97,6 +100,31 @@ class _ChatScreenState extends ConsumerState<ChatScreen> {
       showToast("이미지 파일을 첨부하기 위해선 권한이 필요합니다.");
     }
     return null;
+  }
+
+  void _initDelayedChat(Chat chat) {
+    movieMode = true;
+    editMode = false;
+    _movieModeChatData = chat.copyChatRoom();
+    _movieModeChatData?.messageList = _movieModeChatData?.copyMessageList();
+    chat.messageList?.clear();
+  }
+
+  void _finishMovieMode(ChatViewModel viewModel) {
+    movieMode = false;
+    _movieModeChatMessageIndex = 0;
+    viewModel.getChatList();
+  }
+
+  void _addMessageToTempChatMessage(Chat targetChat, ChatViewModel viewModel) {
+    setState(() {
+      if (_movieModeChatData!.messageList!.length - 1 > _movieModeChatMessageIndex) {
+        targetChat.messageList?.add(_movieModeChatData!.messageList![_movieModeChatMessageIndex]);
+        _movieModeChatMessageIndex++;
+      } else {
+        _finishMovieMode(viewModel);
+      }
+    });
   }
 
   /// 메시지 클릭 시 나오는 옵션 및 기능을 dialog로 표시
@@ -309,7 +337,7 @@ class _ChatScreenState extends ConsumerState<ChatScreen> {
               }
             }),
         ListItemModel(
-          itemTitle: editMode ? "갭쳐 모드로 전환하기" : "수정 모드로 전환하기",
+          itemTitle: editMode ? "캡쳐 모드로 전환하기" : "수정 모드로 전환하기",
           clickEvent: () {
             setState(() {
               editMode = !editMode;
@@ -317,20 +345,28 @@ class _ChatScreenState extends ConsumerState<ChatScreen> {
           },
         ),
         ListItemModel(
-          itemTitle: "영상 모드 시작",
+          itemTitle: movieMode ? "영상 모드 끄기" : "영상 모드 시작",
           clickEvent: () {
             showTextDialog(
-                title: "영상 모드",
-                okText: "시작",
-                contentText:
-                    "영상 모드를 사용하면 모든 대화가 설정한 \n초 만큼의 간격으로 1개씩 출력됩니다.\n\n초 설정은 설정 화면에서 변경 가능합니다. \n\n<응용방법>\n1. 휴대폰 화면 녹화 시작\n2. 영상모드를 시작\n3. 화면녹화를 끝낸 후 적절히 편집해서 사용",
-                context: context,
-                onPressed: () {
+              title: "영상 모드",
+              okText: movieMode ? "영상 모드 끄기" : "영상 모드 시작",
+              contentText: movieMode
+                  ? "영상 모드를 정말 종료하시겠습니까?"
+                  : "영상 모드를 사용하면 모든 대화가 하나씩 출력되게 할 수 있습니다. \n\n위에 있는 돋보기 아이콘을 클릭하면 메시지가 하나씩 출력됩니다.  \n\n<응용방법>\n1. 휴대폰 화면 녹화 시작\n2. 영상모드를 시작\n3. 화면녹화를 끝낸 후 적절히 편집해서 사용",
+              context: context,
+              onPressed: () {
+                if (movieMode) {
                   setState(() {
-                    movieMode = true;
-
+                    editMode = true;
+                    _finishMovieMode(viewModel);
                   });
-                });
+                } else {
+                  setState(() {
+                    _initDelayedChat(targetChatData);
+                  });
+                }
+              },
+            );
           },
         )
       ],
@@ -589,7 +625,17 @@ class _ChatScreenState extends ConsumerState<ChatScreen> {
           ],
         ),
         actions: [
-          IconButton(onPressed: () {}, icon: const Icon(Icons.search_outlined)),
+          IconButton(
+              onPressed: () {
+                if (movieMode) {
+                  _addMessageToTempChatMessage(targetChatData, chatViewModel);
+                } else {
+                  setState(() {
+                    editMode = true;
+                  });
+                }
+              },
+              icon: const Icon(Icons.search_outlined)),
           IconButton(
             onPressed: () {
               _showChatRoomOptionDialog(
@@ -613,35 +659,34 @@ class _ChatScreenState extends ConsumerState<ChatScreen> {
             children: [
               Flexible(
                 child: ListView.builder(
-                    reverse: true,
-                    shrinkWrap: true,
-                    padding: const EdgeInsets.symmetric(vertical: 8, horizontal: 0),
-                    controller: _scrollController,
-                    itemBuilder: (context, index) {
-                      // ListView에서 reverse를 true로 했기 때문에 사용하는 데이터도 reverse 처리를 해서 사용한다.
-                      final reversedChatIndex =
-                          (targetChatData.messageList?.length ?? 0) - index - 1;
-                      return GestureDetector(
-                        onTap: () {
-                          _showMessageOptions(chatViewModel, targetChatData, reversedChatIndex);
-                        },
-                        child: getMergedMessage(
-                          showDate: targetChatData.shouldShowDate(reversedChatIndex),
-                          isMe: targetChatData.messageList![reversedChatIndex].isMe,
-                          shouldUseTailBubble:
-                              targetChatData.shouldUseTailBubble(reversedChatIndex),
-                          message: targetChatData.messageList![reversedChatIndex],
-                          friendName: targetChatData.getFriendName(
-                                  targetChatData.messageList![reversedChatIndex].friendId) ??
-                              "(알 수 없음)",
-                          profilePicturePath: targetChatData.getaFriendProfilePath(),
-                          messageType: targetChatData.messageList![reversedChatIndex].messageType,
-                          pickedDate: targetChatData.messageList![reversedChatIndex].messageTime,
-                          settingColor: settingColor,
-                        ),
-                      );
-                    },
-                    itemCount: targetChatData.messageList?.length ?? 0),
+                  reverse: true,
+                  shrinkWrap: true,
+                  padding: const EdgeInsets.symmetric(vertical: 8, horizontal: 0),
+                  controller: _scrollController,
+                  itemBuilder: (context, index) {
+                    // ListView에서 reverse를 true로 했기 때문에 사용하는 데이터도 reverse 처리를 해서 사용한다.
+                    final reversedChatIndex = (targetChatData.messageList?.length ?? 0) - index - 1;
+                    return GestureDetector(
+                      onTap: () {
+                        _showMessageOptions(chatViewModel, targetChatData, reversedChatIndex);
+                      },
+                      child: getMergedMessage(
+                        showDate: targetChatData.shouldShowDate(reversedChatIndex),
+                        isMe: targetChatData.messageList![reversedChatIndex].isMe,
+                        shouldUseTailBubble: targetChatData.shouldUseTailBubble(reversedChatIndex),
+                        message: targetChatData.messageList![reversedChatIndex],
+                        friendName: targetChatData.getFriendName(
+                                targetChatData.messageList![reversedChatIndex].friendId) ??
+                            "(알 수 없음)",
+                        profilePicturePath: targetChatData.getaFriendProfilePath(),
+                        messageType: targetChatData.messageList![reversedChatIndex].messageType,
+                        pickedDate: targetChatData.messageList![reversedChatIndex].messageTime,
+                        settingColor: settingColor,
+                      ),
+                    );
+                  },
+                  itemCount: targetChatData.messageList?.length ?? 0,
+                ),
               ),
               Column(
                 children: [
