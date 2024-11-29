@@ -361,9 +361,13 @@ class _ChatScreenState extends ConsumerState<ChatScreen> {
                     _finishMovieMode(viewModel);
                   });
                 } else {
-                  setState(() {
+                  if (targetChatData.messageList?.isNotEmpty == true) {
+                    setState(() {
                     _initDelayedChat(targetChatData);
                   });
+                  } else {
+                    showToast("영상 모드는 하나 이상의 메시지가 필요합니다.");
+                  }
                 }
               },
             );
