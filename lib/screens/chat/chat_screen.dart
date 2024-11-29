@@ -599,7 +599,8 @@ class _ChatScreenState extends ConsumerState<ChatScreen> {
       backgroundColor: settingColor?.backgroundColor ?? defaultBackgroundColor,
       appBar: AppBar(
         iconTheme: IconThemeData(
-            color: settingColor?.backgroundColor.isDark() == true ? Colors.white : Colors.black),
+          color: settingColor?.backgroundColor.isDark() == true ? Colors.white : Colors.black,
+        ),
         backgroundColor: settingColor?.backgroundColor ?? defaultBackgroundColor,
         title: Row(
           children: [
@@ -626,6 +627,9 @@ class _ChatScreenState extends ConsumerState<ChatScreen> {
         ),
         actions: [
           IconButton(
+              // 클릭 이펙트를 제거
+              highlightColor: Colors.transparent,
+              splashColor: Colors.transparent,
               onPressed: () {
                 if (movieMode) {
                   _addMessageToTempChatMessage(targetChatData, chatViewModel);
