@@ -5,7 +5,7 @@ import 'package:self_talk/repository/chat_repository.dart';
 import 'package:self_talk/utils/Typedefs.dart';
 
 final chatViewModelProvider =
-    StateNotifierProvider<ChatViewModel, ChatList?>((ref) => ChatViewModel(ChatRepository()));
+    StateNotifierProvider.autoDispose<ChatViewModel, ChatList?>((ref) => ChatViewModel(ChatRepository()));
 
 // ChatList 예시
 ChatList dummyChatList = ChatList(chatRoom: {

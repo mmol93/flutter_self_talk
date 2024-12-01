@@ -3,7 +3,7 @@ import 'package:flutter_riverpod/flutter_riverpod.dart';
 import 'package:self_talk/models/setting_color.dart';
 import 'package:self_talk/repository/setting_repository.dart';
 
-final settingViewModelProvider = StateNotifierProvider<SettingViewmodel, SettingColor?>(
+final settingViewModelProvider = StateNotifierProvider.autoDispose<SettingViewmodel, SettingColor?>(
     (ref) => SettingViewmodel(SettingRepository()));
 
 class SettingViewmodel extends StateNotifier<SettingColor?> {

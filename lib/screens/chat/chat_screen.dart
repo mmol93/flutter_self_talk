@@ -638,9 +638,8 @@ class _ChatScreenState extends ConsumerState<ChatScreen> {
                 if (movieMode) {
                   _addMessageToTempChatMessage(targetChatData, chatViewModel);
                 } else {
-                  setState(() {
-                    editMode = true;
-                  });
+                  editMode = true;
+                  chatViewModel.getChatList();
                 }
               },
               icon: const Icon(Icons.search_outlined)),

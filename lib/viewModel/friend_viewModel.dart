@@ -3,7 +3,7 @@ import 'package:self_talk/models/friend.dart';
 import 'package:self_talk/repository/friend_repository.dart';
 
 final friendViewModelProvider =
-    StateNotifierProvider<FriendViewModel, List<Friend>>(
+    StateNotifierProvider.autoDispose<FriendViewModel, List<Friend>>(
         (ref) => FriendViewModel(FriendRepository()));
 
 class FriendViewModel extends StateNotifier<List<Friend>> {
