@@ -3,6 +3,7 @@ import 'package:flutter_riverpod/flutter_riverpod.dart';
 import 'package:self_talk/models/list_item_model.dart';
 import 'package:self_talk/navigator/moving_navigator.dart';
 import 'package:self_talk/screens/chat/chat_screen.dart';
+import 'package:self_talk/utils/Constants.dart';
 import 'package:self_talk/viewModel/chat_viewModel.dart';
 import 'package:self_talk/widgets/dialog/list_dialog.dart';
 import 'package:self_talk/widgets/home/item_chat_room_list.dart';
@@ -67,7 +68,7 @@ class _ChatListScreen extends ConsumerState<ChatListScreen> {
             : const Text("생성된 채팅방이 없습니다."),
       ),
       // TODO: 나중에는 floatButton을 삭제하고 튜토리얼이 담긴 채팅방을 기본값으로 넣어준다.
-      floatingActionButton: Container(
+      floatingActionButton: !isProduction ? Container(
         margin: const EdgeInsets.only(bottom: 50, right: 35),
         child: FloatingActionButton(
           child: const Icon(Icons.chat_bubble),
@@ -75,7 +76,7 @@ class _ChatListScreen extends ConsumerState<ChatListScreen> {
             viewModel.createChatList();
           },
         ),
-      ),
+      ) : null,
       floatingActionButtonLocation: FloatingActionButtonLocation.endFloat,
     );
   }

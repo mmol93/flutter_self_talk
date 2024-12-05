@@ -43,6 +43,28 @@ android {
         main.java.srcDirs += 'src/main/kotlin'
     }
 
+    flavorDimensions "app"
+
+    productFlavors {
+        "dev" {
+            dimension = "app"
+            resValue "string", "app_name", "셀프톡DV"
+            // 출력 예: com.example.app.dev
+            applicationIdSuffix = ".dev"
+
+            buildConfigField "boolean", "IS_PRODUCTION", "false"
+        }
+
+        "product" {
+            dimension = "app"
+            resValue "string", "app_name", "셀프톡"
+            // 출력 예: com.example.app.product
+            applicationIdSuffix = ".product"
+
+            buildConfigField "boolean", "IS_PRODUCTION", "true"
+        }
+    }
+
     defaultConfig {
         applicationId "com.easyo.self_talk"
         // You can update the following values to match your application needs.
@@ -54,6 +76,9 @@ android {
     }
 
     buildTypes {
+        debug {
+            signingConfig signingConfigs.debug
+        }
         release {
             // TODO: Add your own signing config for the release build.
             // Signing with the debug keys for now, so `flutter run --release` works.

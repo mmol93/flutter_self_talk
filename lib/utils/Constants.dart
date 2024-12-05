@@ -3,3 +3,4 @@ const profileImgHeight = 44.0;
 const backgroundColorKey = "backgroundColor";
 const myMessageColorKey = "myMessageColor";
 const othersMessageColorKey = "otherMessageColor";
+const isProduction = bool.fromEnvironment('IS_PRODUCTION');
