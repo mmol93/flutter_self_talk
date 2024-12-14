@@ -107,7 +107,6 @@ unlinked_spec.ds
 ios/Flutter/AppFrameworkInfo.plist
 ios/Runner.xcworkspace/contents.xcworkspacedata
 ios/Runner.xcodeproj/project.pbxproj
-ios/Runner.xcodeproj/xcshareddata/xcschemes/Runner.xcscheme
 
 # macOS
 **/Flutter/ephemeral/
