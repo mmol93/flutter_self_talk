@@ -1,7 +1,9 @@
+import 'package:firebase_core/firebase_core.dart';
 import 'package:flutter/material.dart';
 import 'package:flutter_riverpod/flutter_riverpod.dart';
 import 'package:google_fonts/google_fonts.dart';
 import 'package:intl/date_symbol_data_local.dart';
+import 'package:self_talk/firebase_options.dart';
 import 'package:self_talk/screens/home/chat_list_screen.dart';
 import 'package:self_talk/screens/home/friend_list_screen.dart';
 import 'package:self_talk/screens/setting/setting_list_screen.dart';
@@ -16,6 +18,9 @@ const pageList = ["친구", "채팅", "설정"];
 void main() async {
   WidgetsFlutterBinding.ensureInitialized();
   await initializeDateFormatting('ko_KR', null);
+  await Firebase.initializeApp(
+    options: DefaultFirebaseOptions.currentPlatform,
+  );
   runApp(const ProviderScope(
     child: MyApp(),
   ));
