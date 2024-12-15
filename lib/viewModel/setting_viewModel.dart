@@ -3,13 +3,14 @@ import 'package:flutter_riverpod/flutter_riverpod.dart';
 import 'package:self_talk/models/setting_color.dart';
 import 'package:self_talk/repository/setting_repository.dart';
 
-final settingViewModelProvider = StateNotifierProvider.autoDispose<SettingViewmodel, SettingColor?>(
-    (ref) => SettingViewmodel(SettingRepository()));
+final colorSettingViewModelProvider =
+    StateNotifierProvider.autoDispose<ColorSettingViewmodel, SettingColor?>(
+        (ref) => ColorSettingViewmodel(SettingRepository()));
 
-class SettingViewmodel extends StateNotifier<SettingColor?> {
+class ColorSettingViewmodel extends StateNotifier<SettingColor?> {
   final SettingRepository _settingRepository;
 
-  SettingViewmodel(this._settingRepository) : super(null) {
+  ColorSettingViewmodel(this._settingRepository) : super(null) {
     getSettingColors();
   }
 
@@ -37,8 +38,6 @@ class SettingViewmodel extends StateNotifier<SettingColor?> {
   }
 
   void setOthersMessageColor(Color color) {
-    _settingRepository
-        .updateOthersColorCodePref(color.value)
-        .then((value) => getSettingColors());
+    _settingRepository.updateOthersColorCodePref(color.value).then((value) => getSettingColors());
   }
 }

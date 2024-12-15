@@ -16,7 +16,7 @@ class SettingListScreen extends ConsumerStatefulWidget {
 }
 
 class _SettingListScreenState extends ConsumerState<SettingListScreen> {
-  late SettingViewmodel _settingViewModel;
+  late ColorSettingViewmodel _settingViewModel;
   SettingColor? _settingColor;
 
   // 설정 화면에 들어갈 리스트 아이템들
@@ -70,8 +70,10 @@ class _SettingListScreenState extends ConsumerState<SettingListScreen> {
       Setting(
         mainTitle: "암호 잠금 설정하기",
         subTitle: "암호를 분실했을 때는 0 왼쪽의 빈 공간을 길게 누르세요",
-        isCheckbox: false,
-        clickEvent: () {},
+        isCheckbox: true,
+        clickEvent: () {
+
+        },
       ),
       Setting(
         mainTitle: "버전",
@@ -90,8 +92,8 @@ class _SettingListScreenState extends ConsumerState<SettingListScreen> {
 
   @override
   Widget build(BuildContext context) {
-    _settingViewModel = ref.watch(settingViewModelProvider.notifier);
-    _settingColor = ref.watch(settingViewModelProvider);
+    _settingViewModel = ref.watch(colorSettingViewModelProvider.notifier);
+    _settingColor = ref.watch(colorSettingViewModelProvider);
     updateSettingList();
 
     return settingItemList.isNotEmpty
