@@ -4,7 +4,7 @@ import 'package:self_talk/colors/default_color.dart';
 import 'package:self_talk/models/setting.dart';
 import 'package:self_talk/models/setting_color.dart';
 import 'package:self_talk/utils/Constants.dart';
-import 'package:self_talk/viewModel/setting_viewModel.dart';
+import 'package:self_talk/viewModel/color_setting_viewModel.dart';
 import 'package:self_talk/widgets/dialog/color_picker_dialog.dart';
 import 'package:self_talk/widgets/setting/item_setting.dart';
 

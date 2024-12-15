@@ -13,7 +13,7 @@ import 'package:self_talk/models/friend.dart';
 import 'package:self_talk/models/list_item_model.dart';
 import 'package:self_talk/viewModel/chat_viewModel.dart';
 import 'package:self_talk/viewModel/friend_viewModel.dart';
-import 'package:self_talk/viewModel/setting_viewModel.dart';
+import 'package:self_talk/viewModel/color_setting_viewModel.dart';
 import 'package:self_talk/widgets/chat/announce_icon.dart';
 import 'package:self_talk/widgets/chat/dialog/chat_invite_friends_dialog.dart';
 import 'package:self_talk/widgets/chat/dialog/modify_message_dialog.dart';
