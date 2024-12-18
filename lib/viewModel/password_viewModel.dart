@@ -1,30 +1,24 @@
-import 'package:shared_preferences/shared_preferences.dart';
+import 'package:self_talk/repository/password_repository.dart';
 
 class PasswordViewModel {
-  // SharedPreferences 인스턴스를 저장할 변수
-  SharedPreferences? _prefs;
-
-  // SharedPreferences 초기화 메서드
-  Future<SharedPreferences> _initPrefs() async {
-    // 이미 초기화되어 있다면 캐시된 인스턴스 반환
-    _prefs ??= await SharedPreferences.getInstance();
-    return _prefs!;
-  }
+  final passwordRepository = PasswordRepository();
 
   /// 비밀번호 셋팅
-  Future<void> setPassword(String password) async {
-    final prefs = await _initPrefs();
-    await prefs.setString('password', password);
+  void setPassword(String password) {
+    passwordRepository.setPassword(password);
   }
 
-  Future<String> getPassword() async {
-    final prefs = await _initPrefs();
-    return prefs.getString('password') ?? "";
+  Future<String> getPassword() {
+    return passwordRepository.getPassword();
   }
 
   /// 비밀번호 사용 해제
-  Future<void> initPassword() async {
-    final prefs = await _initPrefs();
-    await prefs.setString('password', "");
+  void initPassword() {
+    passwordRepository.setPassword("");
+  }
+
+  /// 비밀번호가 셋팅 되어 있는 상태인지
+  Future<bool> isPasswordSet() async {
+    return passwordRepository.isPasswordSet();
   }
 }

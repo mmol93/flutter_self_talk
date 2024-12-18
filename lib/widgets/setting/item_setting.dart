@@ -26,18 +26,14 @@ class ItemSetting extends StatefulWidget {
 class _ItemSettingState extends State<ItemSetting> {
   bool? checkBoxStatus;
 
-  @override
-  void initState() {
-    checkBoxStatus = widget.isCheckbox != null;
-    super.initState();
-  }
-
   void _test(bool? currentCheckBoxStatus) {
     checkBoxStatus = currentCheckBoxStatus;
   }
 
   @override
   Widget build(BuildContext context) {
+    checkBoxStatus = widget.isCheckbox;
+
     return GestureDetector(
       onTap: widget.clickEvent,
       child: Container(
@@ -76,7 +72,7 @@ class _ItemSettingState extends State<ItemSetting> {
                   if (widget.statusText != null)
                     Text(widget.statusText!)
                   else if (widget.isCheckbox != null)
-                    Checkbox(value: checkBoxStatus, onChanged: _test)
+                    Checkbox(value: checkBoxStatus ?? false, onChanged: _test)
                   else if (widget.color != null)
                     Container(
                       width: 24,

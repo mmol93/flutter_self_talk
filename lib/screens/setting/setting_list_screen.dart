@@ -3,10 +3,13 @@ import 'package:flutter_riverpod/flutter_riverpod.dart';
 import 'package:self_talk/colors/default_color.dart';
 import 'package:self_talk/models/setting.dart';
 import 'package:self_talk/models/setting_color.dart';
+import 'package:self_talk/screens/setting/passwrod_pad_screen.dart';
 import 'package:self_talk/utils/Constants.dart';
-import 'package:self_talk/viewModel/color_setting_viewModel.dart';
+import 'package:self_talk/viewModel/setting_viewModel.dart';
 import 'package:self_talk/widgets/dialog/color_picker_dialog.dart';
 import 'package:self_talk/widgets/setting/item_setting.dart';
+
+import '../../navigator/moving_navigator.dart';
 
 class SettingListScreen extends ConsumerStatefulWidget {
   const SettingListScreen({super.key});
@@ -16,7 +19,7 @@ class SettingListScreen extends ConsumerStatefulWidget {
 }
 
 class _SettingListScreenState extends ConsumerState<SettingListScreen> {
-  late ColorSettingViewmodel _settingViewModel;
+  late SettingViewmodel _settingViewModel;
   SettingColor? _settingColor;
 
   // 설정 화면에 들어갈 리스트 아이템들
@@ -29,10 +32,9 @@ class _SettingListScreenState extends ConsumerState<SettingListScreen> {
         mainTitle: "채팅방 배경색 변경",
         clickEvent: () async {
           Color? pickedColor = await showColorPicker(
-            context: context,
-            initColor: _settingColor?.backgroundColor ?? defaultBackgroundColor,
-            type: backgroundColorKey
-          );
+              context: context,
+              initColor: _settingColor?.backgroundColor ?? defaultBackgroundColor,
+              type: backgroundColorKey);
           if (pickedColor != null) {
             _settingViewModel.setBackgroundColor(pickedColor);
           }
@@ -45,8 +47,7 @@ class _SettingListScreenState extends ConsumerState<SettingListScreen> {
           Color? pickedColor = await showColorPicker(
               context: context,
               initColor: _settingColor?.myMessageColor ?? defaultMyMessageColor,
-              type: myMessageColorKey
-          );
+              type: myMessageColorKey);
           if (pickedColor != null) {
             _settingViewModel.setMyMessageColor(pickedColor);
           }
@@ -59,8 +60,7 @@ class _SettingListScreenState extends ConsumerState<SettingListScreen> {
           Color? pickedColor = await showColorPicker(
               context: context,
               initColor: _settingColor?.othersMessageColor ?? defaultOthersMessageColor,
-              type: othersMessageColorKey
-          );
+              type: othersMessageColorKey);
           if (pickedColor != null) {
             _settingViewModel.setOthersMessageColor(pickedColor);
           }
@@ -70,9 +70,22 @@ class _SettingListScreenState extends ConsumerState<SettingListScreen> {
       Setting(
         mainTitle: "암호 잠금 설정하기",
         subTitle: "암호를 분실했을 때는 0 왼쪽의 빈 공간을 길게 누르세요",
-        isCheckbox: true,
-        clickEvent: () {
-
+        isCheckbox: _settingViewModel.isPasswordSet,
+        clickEvent: () async {
+          if (_settingViewModel.isPasswordSet == true) {
+            // 비밀번호가 이미 설정되어 있는 상태일 때
+            slideNavigateStateful(context, const PasswordInputScreen(isInit: true), backFunction: () {
+              setState(() {
+                _settingViewModel.updatePasswordStatus();
+              });
+            });
+          } else {
+            slideNavigateStateful(context, const PasswordInputScreen(isSetup: true), backFunction: () {
+              setState(() {
+                _settingViewModel.updatePasswordStatus();
+              });
+            });
+          }
         },
       ),
       Setting(
@@ -92,8 +105,8 @@ class _SettingListScreenState extends ConsumerState<SettingListScreen> {
 
   @override
   Widget build(BuildContext context) {
-    _settingViewModel = ref.watch(colorSettingViewModelProvider.notifier);
-    _settingColor = ref.watch(colorSettingViewModelProvider);
+    _settingViewModel = ref.watch(settingViewModelProvider.notifier);
+    _settingColor = ref.watch(settingViewModelProvider);
     updateSettingList();
 
     return settingItemList.isNotEmpty
