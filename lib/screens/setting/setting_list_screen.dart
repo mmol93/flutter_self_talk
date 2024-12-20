@@ -3,6 +3,7 @@ import 'package:flutter_riverpod/flutter_riverpod.dart';
 import 'package:self_talk/colors/default_color.dart';
 import 'package:self_talk/models/setting.dart';
 import 'package:self_talk/models/setting_color.dart';
+import 'package:self_talk/screens/setting/license_screen.dart';
 import 'package:self_talk/screens/setting/passwrod_pad_screen.dart';
 import 'package:self_talk/utils/Constants.dart';
 import 'package:self_talk/viewModel/setting_viewModel.dart';
@@ -92,10 +93,12 @@ class _SettingListScreenState extends ConsumerState<SettingListScreen> {
         mainTitle: "버전",
         statusText: "1.0.0",
       ),
-      // Setting(
-      //   mainTitle: "라이센스",
-      //   clickEvent: () {},
-      // ),
+      Setting(
+        mainTitle: "라이센스",
+        clickEvent: () {
+          slideNavigateStateful(context, const LicenseScreen());
+        },
+      ),
       // Setting(
       //   mainTitle: "개인정보 보호정책",
       //   clickEvent: () {},
