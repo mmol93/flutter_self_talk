@@ -1,4 +1,6 @@
 import 'package:firebase_core/firebase_core.dart';
+import 'package:firebase_crashlytics/firebase_crashlytics.dart';
+import 'package:flutter/foundation.dart';
 import 'package:flutter/material.dart';
 import 'package:flutter_riverpod/flutter_riverpod.dart';
 import 'package:google_fonts/google_fonts.dart';
@@ -21,6 +23,21 @@ void main() async {
   await Firebase.initializeApp(
     options: DefaultFirebaseOptions.currentPlatform,
   );
+
+  FlutterError.onError = (errorDetails) {
+    // 기존 recordFlutterFatalError를 호출
+    FirebaseCrashlytics.instance.recordFlutterFatalError(errorDetails);
+
+    // 추가적인 오류 처리
+    FlutterError.presentError(errorDetails); // Flutter 기본 처리
+  };
+
+  // 비동기 오류 처리
+  PlatformDispatcher.instance.onError = (error, stack) {
+    FirebaseCrashlytics.instance.recordError(error, stack, fatal: true);
+    return true;
+  };
+
   runApp(const ProviderScope(
     child: MyApp(),
   ));
