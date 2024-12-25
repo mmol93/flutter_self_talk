@@ -34,166 +34,166 @@ class _FriendListScreen extends ConsumerState<FriendListScreen> {
         ref.watch(friendViewModelProvider).firstWhereOrNull((friend) => friend.me == 1);
 
     return Scaffold(
-      body: Expanded(
-          child: Column(
-        children: [
-          Container(
-            decoration: BoxDecoration(
-              shape: BoxShape.rectangle,
-              border: Border.all(color: Colors.grey.shade300, width: 0.5),
+      body: Column(
+        mainAxisSize: MainAxisSize.max,
+              children: [
+      Container(
+        decoration: BoxDecoration(
+          shape: BoxShape.rectangle,
+          border: Border.all(color: Colors.grey.shade300, width: 0.5),
+        ),
+        width: double.infinity,
+        padding: const EdgeInsets.symmetric(horizontal: 12, vertical: 6),
+        child: const Text(
+          "내 프로필",
+          style: TextStyle(fontSize: 10, color: Colors.blueGrey),
+        ),
+      ),
+      if (myProfile != null)
+        Container(
+          padding: const EdgeInsets.symmetric(vertical: 8, horizontal: 4),
+          child: FriendItem(
+            friend: Friend(
+              id: myProfile.id,
+              name: myProfile.name,
+              message: myProfile.message,
+              profileImgPath: myProfile.profileImgPath,
+              me: myProfile.me,
             ),
-            width: double.infinity,
-            padding: const EdgeInsets.symmetric(horizontal: 12, vertical: 6),
-            child: const Text(
-              "내 프로필",
-              style: TextStyle(fontSize: 10, color: Colors.blueGrey),
-            ),
+            clickFriendItem: (clickedFriend) {
+              switch (clickedFriend) {
+                case FriendControl.modifyProfile:
+                  slideNavigateStateful(
+                    context,
+                    UpdateFriendScreen(
+                      updateFriend: (updatedFriend) {
+                        friendViewModel.updateFriend(updatedFriend);
+                      },
+                      targetFriend: myProfile,
+                    ),
+                  );
+                case FriendControl.deleteItself:
+                  friendViewModel.deleteFriend(myProfile.id);
+                default:
+              }
+            },
           ),
-          if (myProfile != null)
-            Container(
-              padding: const EdgeInsets.symmetric(vertical: 8, horizontal: 4),
-              child: FriendItem(
-                friend: Friend(
-                  id: myProfile.id,
-                  name: myProfile.name,
-                  message: myProfile.message,
-                  profileImgPath: myProfile.profileImgPath,
-                  me: myProfile.me,
-                ),
-                clickFriendItem: (clickedFriend) {
-                  switch (clickedFriend) {
-                    case FriendControl.modifyProfile:
-                      slideNavigateStateful(
-                        context,
-                        UpdateFriendScreen(
-                          updateFriend: (updatedFriend) {
-                            friendViewModel.updateFriend(updatedFriend);
-                          },
-                          targetFriend: myProfile,
-                        ),
-                      );
-                    case FriendControl.deleteItself:
-                      friendViewModel.deleteFriend(myProfile.id);
-                    default:
-                  }
-                },
-              ),
-            ),
-          Container(
-            decoration: BoxDecoration(
-                shape: BoxShape.rectangle,
-                border: Border.all(color: Colors.grey.shade300, width: 0.5)),
-            width: double.infinity,
-            padding: const EdgeInsets.symmetric(horizontal: 12, vertical: 6),
-            child: const Text(
-              "친구",
-              style: TextStyle(fontSize: 10, color: Colors.blueGrey),
-            ),
-          ),
-          Container(
-            height: 0.5,
-            margin: const EdgeInsets.symmetric(vertical: 2),
-          ),
-          if (friends.isNotEmpty)
-            Flexible(
-              child: ListView.separated(
-                shrinkWrap: true,
-                itemBuilder: (context, index) {
-                  Friend friend = friends[index];
-                  return Container(
-                    padding: const EdgeInsets.symmetric(vertical: 2, horizontal: 4),
-                    child: FriendItem(
-                        friend: Friend(
-                          id: friend.id,
-                          name: friend.name,
-                          message: friend.message,
-                          profileImgPath: friend.profileImgPath,
-                          me: friend.me,
-                        ),
-                        clickFriendItem: (clickedFriendControl) {
-                          switch (clickedFriendControl) {
-                            case FriendControl.setAsMe:
-                              friendViewModel.updateAsMe(friend);
+        ),
+      Container(
+        decoration: BoxDecoration(
+            shape: BoxShape.rectangle,
+            border: Border.all(color: Colors.grey.shade300, width: 0.5)),
+        width: double.infinity,
+        padding: const EdgeInsets.symmetric(horizontal: 12, vertical: 6),
+        child: const Text(
+          "친구",
+          style: TextStyle(fontSize: 10, color: Colors.blueGrey),
+        ),
+      ),
+      Container(
+        height: 0.5,
+        margin: const EdgeInsets.symmetric(vertical: 2),
+      ),
+      if (friends.isNotEmpty)
+        Flexible(
+          child: ListView.separated(
+            shrinkWrap: true,
+            itemBuilder: (context, index) {
+              Friend friend = friends[index];
+              return Container(
+                padding: const EdgeInsets.symmetric(vertical: 2, horizontal: 4),
+                child: FriendItem(
+                    friend: Friend(
+                      id: friend.id,
+                      name: friend.name,
+                      message: friend.message,
+                      profileImgPath: friend.profileImgPath,
+                      me: friend.me,
+                    ),
+                    clickFriendItem: (clickedFriendControl) {
+                      switch (clickedFriendControl) {
+                        case FriendControl.setAsMe:
+                          friendViewModel.updateAsMe(friend);
 
-                            case FriendControl.chat1on1:
-                              if (myProfile != null) {
-                                final uuid = const Uuid().v4();
-                                final initChat = Chat(
-                                  chatRoomName: null,
-                                  messageList: null,
-                                  chatMembers: [friend, myProfile],
-                                  modifiedDate: DateTime.now(),
-                                ).createEmptyChatRoom();
-                                chatViewModel.createChatRoom({uuid: initChat});
-                                centerNavigateStateful(
+                        case FriendControl.chat1on1:
+                          if (myProfile != null) {
+                            final uuid = const Uuid().v4();
+                            final initChat = Chat(
+                              chatRoomName: null,
+                              messageList: null,
+                              chatMembers: [friend, myProfile],
+                              modifiedDate: DateTime.now(),
+                            ).createEmptyChatRoom();
+                            chatViewModel.createChatRoom({uuid: initChat});
+                            centerNavigateStateful(
+                                context,
+                                ChatScreen(
+                                  chatId: uuid,
+                                ));
+                          } else {
+                            showToast('먼저 "나" 자신의 프로필을 만들어야 합니다.');
+                          }
+
+                        case FriendControl.modifyProfile:
+                          slideNavigateStateful(
+                            context,
+                            UpdateFriendScreen(
+                              updateFriend: (updatedFriend) {
+                                if (updatedFriend.me == 1) {
+                                  friendViewModel.updateAsMe(updatedFriend);
+                                } else {
+                                  friendViewModel.updateFriend(updatedFriend);
+                                }
+                              },
+                              targetFriend: friend,
+                            ),
+                          );
+
+                        case FriendControl.deleteItself:
+                          friendViewModel.deleteFriend(friend.id);
+
+                        case FriendControl.chatMulti:
+                          if (myProfile != null) {
+                            showInviteFriendsDialog(
+                                context: context,
+                                notInvitedFriendList: friends,
+                                clickEvent: (invitedFriendList) {
+                                  final uuid = const Uuid().v4();
+                                  final initChat = Chat(
+                                    chatRoomName: null,
+                                    messageList: null,
+                                    chatMembers: [myProfile] + invitedFriendList,
+                                    modifiedDate: DateTime.now(),
+                                  ).createEmptyChatRoom();
+                                  chatViewModel.createChatRoom({uuid: initChat});
+                                  centerNavigateStateful(
                                     context,
                                     ChatScreen(
                                       chatId: uuid,
-                                    ));
-                              } else {
-                                showToast('먼저 "나" 자신의 프로필을 만들어야 합니다.');
-                              }
-
-                            case FriendControl.modifyProfile:
-                              slideNavigateStateful(
-                                context,
-                                UpdateFriendScreen(
-                                  updateFriend: (updatedFriend) {
-                                    if (updatedFriend.me == 1) {
-                                      friendViewModel.updateAsMe(updatedFriend);
-                                    } else {
-                                      friendViewModel.updateFriend(updatedFriend);
-                                    }
-                                  },
-                                  targetFriend: friend,
-                                ),
-                              );
-
-                            case FriendControl.deleteItself:
-                              friendViewModel.deleteFriend(friend.id);
-
-                            case FriendControl.chatMulti:
-                              if (myProfile != null) {
-                                showInviteFriendsDialog(
-                                    context: context,
-                                    notInvitedFriendList: friends,
-                                    clickEvent: (invitedFriendList) {
-                                      final uuid = const Uuid().v4();
-                                      final initChat = Chat(
-                                        chatRoomName: null,
-                                        messageList: null,
-                                        chatMembers: [myProfile] + invitedFriendList,
-                                        modifiedDate: DateTime.now(),
-                                      ).createEmptyChatRoom();
-                                      chatViewModel.createChatRoom({uuid: initChat});
-                                      centerNavigateStateful(
-                                        context,
-                                        ChatScreen(
-                                          chatId: uuid,
-                                        ),
-                                      );
-                                    });
-                              } else {
-                                showToast('먼저 "나" 자신의 프로필을 만들어야 합니다.');
-                              }
+                                    ),
+                                  );
+                                });
+                          } else {
+                            showToast('먼저 "나" 자신의 프로필을 만들어야 합니다.');
                           }
-                        }),
-                  );
-                },
-                separatorBuilder: (context, index) => Divider(
-                  color: Colors.grey.withOpacity(0.5),
-                  thickness: 0.5,
-                ),
-                itemCount: friends.length,
-              ),
+                      }
+                    }),
+              );
+            },
+            separatorBuilder: (context, index) => Divider(
+              color: Colors.grey.withOpacity(0.5),
+              thickness: 0.5,
             ),
-          Container(
-            height: 0.5,
-            margin: const EdgeInsets.symmetric(vertical: 10),
-            color: Colors.grey.withOpacity(0.5),
+            itemCount: friends.length,
           ),
-        ],
-      )),
+        ),
+      Container(
+        height: 0.5,
+        margin: const EdgeInsets.symmetric(vertical: 10),
+        color: Colors.grey.withOpacity(0.5),
+      ),
+              ],
+            ),
       floatingActionButton: Container(
         margin: const EdgeInsets.only(bottom: 50, right: 35),
         child: FloatingActionButton(

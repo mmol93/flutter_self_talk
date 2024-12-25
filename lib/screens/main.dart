@@ -149,15 +149,9 @@ class _HomePageState extends State<HomePage> {
             child: PageView(
               controller: _pageController,
               children: const [
-                Expanded(
-                  child: FriendListScreen(),
-                ),
-                Expanded(
-                  child: ChatListScreen(),
-                ),
-                Expanded(
-                  child: SettingListScreen(),
-                ),
+                FriendListScreen(),
+                ChatListScreen(),
+                SettingListScreen(),
               ],
             ),
           ),

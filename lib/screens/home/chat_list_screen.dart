@@ -44,39 +44,39 @@ class _ChatListScreen extends ConsumerState<ChatListScreen> {
     final chatData = ref.watch(chatViewModelProvider);
 
     return Scaffold(
-      body: Expanded(
-        child: chatData != null
-            ? Column(
-                children: chatData.chatRoom!.entries
-                    .map((flattenChatData) => ChatRoomListItem(
-                          chat: flattenChatData.value,
-                          clickChatRoomListItem: () {
-                            centerNavigateStateful(
-                              context,
-                              ChatScreen(chatId: flattenChatData.key),
-                            );
-                          },
-                          longClickEvent: () {
-                            _showChatRoomOptions(
-                              flattenChatData.value.chatRoomName ?? "",
-                              viewModel,
-                              flattenChatData.key,
-                            );
-                          },
-                        ))
-                    .toList())
-            : const Text("생성된 채팅방이 없습니다."),
-      ),
+      body: chatData != null
+          ? Column(
+              children: chatData.chatRoom!.entries
+                  .map((flattenChatData) => ChatRoomListItem(
+                        chat: flattenChatData.value,
+                        clickChatRoomListItem: () {
+                          centerNavigateStateful(
+                            context,
+                            ChatScreen(chatId: flattenChatData.key),
+                          );
+                        },
+                        longClickEvent: () {
+                          _showChatRoomOptions(
+                            flattenChatData.value.chatRoomName ?? "",
+                            viewModel,
+                            flattenChatData.key,
+                          );
+                        },
+                      ))
+                  .toList())
+          : const Text("생성된 채팅방이 없습니다."),
       // TODO: 나중에는 floatButton을 삭제하고 튜토리얼이 담긴 채팅방을 기본값으로 넣어준다.
-      floatingActionButton: !isProduction ? Container(
-        margin: const EdgeInsets.only(bottom: 50, right: 35),
-        child: FloatingActionButton(
-          child: const Icon(Icons.chat_bubble),
-          onPressed: () {
-            viewModel.createChatList();
-          },
-        ),
-      ) : null,
+      floatingActionButton: !isProduction
+          ? Container(
+              margin: const EdgeInsets.only(bottom: 50, right: 35),
+              child: FloatingActionButton(
+                child: const Icon(Icons.chat_bubble),
+                onPressed: () {
+                  viewModel.createChatList();
+                },
+              ),
+            )
+          : null,
       floatingActionButtonLocation: FloatingActionButtonLocation.endFloat,
     );
   }
