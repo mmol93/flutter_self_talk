@@ -28,7 +28,6 @@ class _SettingListScreenState extends ConsumerState<SettingListScreen> {
 
   void updateSettingList() {
     settingItemList = [
-      // TODO: 각각 항목에 대한 클릭 이벤트 및 표시 기능 추가하기
       Setting(
         mainTitle: "채팅방 배경색 변경",
         clickEvent: () async {

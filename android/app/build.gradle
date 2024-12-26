@@ -5,6 +5,7 @@ if (localPropertiesFile.exists()) {
         localProperties.load(reader)
     }
 }
+def admob_app_id_key = localProperties.getProperty('addmob.app.id')
 
 def flutterRoot = localProperties.getProperty('flutter.sdk')
 if (flutterRoot == null) {
@@ -57,6 +58,7 @@ android {
             applicationIdSuffix = ".dev"
 
             buildConfigField "boolean", "IS_PRODUCTION", "false"
+            manifestPlaceholders += [admob_app_id_key: admob_app_id_key]
         }
 
         "product" {
@@ -77,6 +79,7 @@ android {
         targetSdkVersion flutter.targetSdkVersion
         versionCode flutterVersionCode.toInteger()
         versionName flutterVersionName
+        manifestPlaceholders += [admob_app_id_key: admob_app_id_key]
     }
 
     buildTypes {
