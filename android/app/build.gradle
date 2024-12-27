@@ -6,6 +6,7 @@ if (localPropertiesFile.exists()) {
     }
 }
 def admob_app_id_key = localProperties.getProperty('addmob.app.id')
+def admob_app_id_key_test = localProperties.getProperty('addmob.app.id.test.android')
 
 def flutterRoot = localProperties.getProperty('flutter.sdk')
 if (flutterRoot == null) {
@@ -80,6 +81,7 @@ android {
         versionCode flutterVersionCode.toInteger()
         versionName flutterVersionName
         manifestPlaceholders += [admob_app_id_key: admob_app_id_key]
+        manifestPlaceholders += [admob_app_id_key_test: admob_app_id_key_test]
     }
 
     buildTypes {
