@@ -12,7 +12,7 @@
 
         <meta-data
             android:name="com.google.android.gms.ads.APPLICATION_ID"
-            android:value="${admob_app_id_key_test}"/>
+            android:value="${admob_app_id_key}"/>
 
         <activity
             android:name=".MainActivity"

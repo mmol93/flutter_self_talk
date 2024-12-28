@@ -11,6 +11,7 @@ import 'package:self_talk/extensions/color_ext.dart';
 import 'package:self_talk/models/chat.dart';
 import 'package:self_talk/models/friend.dart';
 import 'package:self_talk/models/list_item_model.dart';
+import 'package:self_talk/utils/google_adaptive_ads.dart';
 import 'package:self_talk/viewModel/chat_viewModel.dart';
 import 'package:self_talk/viewModel/friend_viewModel.dart';
 import 'package:self_talk/viewModel/setting_viewModel.dart';
@@ -363,8 +364,8 @@ class _ChatScreenState extends ConsumerState<ChatScreen> {
                 } else {
                   if (targetChatData.messageList?.isNotEmpty == true) {
                     setState(() {
-                    _initDelayedChat(targetChatData);
-                  });
+                      _initDelayedChat(targetChatData);
+                    });
                   } else {
                     showToast("영상 모드는 하나 이상의 메시지가 필요합니다.");
                   }
@@ -728,6 +729,10 @@ class _ChatScreenState extends ConsumerState<ChatScreen> {
                         )
                       ],
                     ),
+                  ),
+                  Visibility(
+                    visible: editMode,
+                    child: const AnchoredAdaptiveAdsWidget(),
                   ),
                   ConstrainedBox(
                     constraints: const BoxConstraints(maxHeight: 120),
