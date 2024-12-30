@@ -1,4 +1,5 @@
 import 'package:flutter/material.dart';
+import 'package:flutter/services.dart';
 import 'package:self_talk/viewModel/password_viewModel.dart';
 
 import '../../colors/default_color.dart';
@@ -26,13 +27,14 @@ class _PasswordInputScreenState extends State<PasswordInputScreen> {
   void initState() {
     if (widget.isInit) {
       displayTitle = "비밀번호 초기화";
-    } else if(widget.isSetup) {
+    } else if (widget.isSetup) {
       displayTitle = "비밀번호 설정";
     } else {
       displayTitle = "비밀번호 입력";
     }
     super.initState();
   }
+
   final List<String> _password = [];
   final int _requiredLength = 4;
   final passwordViewModel = PasswordViewModel();
@@ -69,7 +71,8 @@ class _PasswordInputScreenState extends State<PasswordInputScreen> {
       if (savedPassword == enteredPassword) {
         // 비밀번호 일치
         if (widget.isInit) {
-          ScaffoldMessenger.of(context).showSnackBar(const SnackBar(content: Text('비밀번호를 삭제했습니다.')));
+          ScaffoldMessenger.of(context)
+              .showSnackBar(const SnackBar(content: Text('비밀번호를 삭제했습니다.')));
           passwordViewModel.initPassword();
         } else {
           ScaffoldMessenger.of(context).showSnackBar(const SnackBar(content: Text('비밀번호가 일치합니다.')));
@@ -80,8 +83,13 @@ class _PasswordInputScreenState extends State<PasswordInputScreen> {
         Navigator.pop(context);
       } else {
         // 비밀번호 불일치
-        ScaffoldMessenger.of(context)
-            .showSnackBar(SnackBar(content: Text("비밀번호가 일치하지 않습니다.: $savedPassword}}")));
+        if (appFlavor == 'dev') {
+          ScaffoldMessenger.of(context)
+              .showSnackBar(SnackBar(content: Text("비밀번호가 일치하지 않습니다.: $savedPassword}}")));
+        } else {
+          ScaffoldMessenger.of(context)
+              .showSnackBar(const SnackBar(content: Text("비밀번호가 일치하지 않습니다.}}")));
+        }
 
         // 입력 초기화
         setState(() {
@@ -146,7 +154,16 @@ class _PasswordInputScreenState extends State<PasswordInputScreen> {
                 onPressed: () => _handlePasswordInput('0'),
               ),
               // 빈 공간
-              const SizedBox(),
+              GestureDetector(
+                onLongPress: () {
+                  ScaffoldMessenger.of(context).showSnackBar(const SnackBar(content: Text('비밀번호를 삭제했습니다.')));
+                  passwordViewModel.initPassword();
+                  Navigator.pop(context);
+                },
+                child: Container(
+                  color: Colors.transparent,
+                ),
+              ),
             ],
           ),
         ],

@@ -73,7 +73,7 @@ class _SettingListScreenState extends ConsumerState<SettingListScreen> {
       ),
       Setting(
         mainTitle: "암호 잠금 설정하기",
-        subTitle: "암호를 분실했을 때는 0 왼쪽의 빈 공간을 길게 누르세요",
+        subTitle: "암호를 분실했을 때는 0 오른쪽의 빈 공간을 길게 누르세요",
         isCheckbox: _settingViewModel.isPasswordSet,
         clickEvent: () async {
           if (_settingViewModel.isPasswordSet == true) {
