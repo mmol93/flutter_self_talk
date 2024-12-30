@@ -1,11 +1,12 @@
 import 'package:flutter_riverpod/flutter_riverpod.dart';
 import 'package:self_talk/models/chat.dart';
 import 'package:self_talk/models/friend.dart';
+import 'package:self_talk/repository/adaptive_ads_repository.dart';
 import 'package:self_talk/repository/chat_repository.dart';
 import 'package:self_talk/utils/Typedefs.dart';
 
-final chatViewModelProvider =
-    StateNotifierProvider.autoDispose<ChatViewModel, ChatList?>((ref) => ChatViewModel(ChatRepository()));
+final chatViewModelProvider = StateNotifierProvider.autoDispose<ChatViewModel, ChatList?>(
+    (ref) => ChatViewModel(ChatRepository(), AdaptiveAdsRepository()));
 
 // ChatList 예시
 ChatList dummyChatList = ChatList(chatRoom: {
@@ -269,17 +270,21 @@ ChatList dummyChatList = ChatList(chatRoom: {
 
 class ChatViewModel extends StateNotifier<ChatList?> {
   final ChatRepository _chatRepository;
+  final AdaptiveAdsRepository _adaptiveAdsRepository;
+  bool isShowAds = true;
 
-  ChatViewModel(this._chatRepository) : super(null) {
+  ChatViewModel(this._chatRepository, this._adaptiveAdsRepository) : super(null) {
     getChatList();
   }
 
   void getChatList() async {
+    isShowAds = await _adaptiveAdsRepository.isOverAdaptiveAdsTime();
     state = await _chatRepository.readChatList();
   }
 
   /// 채팅 리스트 양식 만들기 = 채팅 초기화
   void createChatList() async {
+    isShowAds = await _adaptiveAdsRepository.isOverAdaptiveAdsTime();
     _chatRepository.createChatList(dummyChatList).then((value) => getChatList());
   }
 

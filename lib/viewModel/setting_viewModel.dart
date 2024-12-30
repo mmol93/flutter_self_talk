@@ -1,19 +1,30 @@
 import 'package:flutter/material.dart';
 import 'package:flutter_riverpod/flutter_riverpod.dart';
 import 'package:self_talk/models/setting_color.dart';
+import 'package:self_talk/repository/adaptive_ads_repository.dart';
 import 'package:self_talk/repository/password_repository.dart';
 import 'package:self_talk/repository/setting_repository.dart';
 
 final settingViewModelProvider = StateNotifierProvider.autoDispose<SettingViewmodel, SettingColor?>(
-    (ref) => SettingViewmodel(SettingRepository(), PasswordRepository()));
+    (ref) => SettingViewmodel(SettingRepository(), PasswordRepository(), AdaptiveAdsRepository()));
 
 class SettingViewmodel extends StateNotifier<SettingColor?> {
   final SettingRepository _settingRepository;
   final PasswordRepository _passwordRepository;
+  final AdaptiveAdsRepository _adaptiveAdsRepository;
   bool? isPasswordSet;
 
-  SettingViewmodel(this._settingRepository, this._passwordRepository) : super(null) {
+  SettingViewmodel(this._settingRepository, this._passwordRepository, this._adaptiveAdsRepository)
+      : super(null) {
     initSetting();
+  }
+
+  Future<void> updateAdaptiveAdsTime() async {
+    _adaptiveAdsRepository.saveCurrentTime();
+  }
+
+  Future<void> deleteAdaptiveAdsTime() async {
+    _adaptiveAdsRepository.deleteAdaptiveAdsTime();
   }
 
   Future<void> updatePasswordStatus() async {

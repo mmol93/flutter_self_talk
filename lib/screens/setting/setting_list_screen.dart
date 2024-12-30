@@ -1,4 +1,5 @@
 import 'package:flutter/material.dart';
+import 'package:flutter/services.dart';
 import 'package:flutter_riverpod/flutter_riverpod.dart';
 import 'package:self_talk/colors/default_color.dart';
 import 'package:self_talk/models/setting.dart';
@@ -8,6 +9,7 @@ import 'package:self_talk/screens/setting/passwrod_pad_screen.dart';
 import 'package:self_talk/utils/Constants.dart';
 import 'package:self_talk/utils/google_reward_ads.dart';
 import 'package:self_talk/viewModel/setting_viewModel.dart';
+import 'package:self_talk/widgets/common/utils.dart';
 import 'package:self_talk/widgets/dialog/color_picker_dialog.dart';
 import 'package:self_talk/widgets/dialog/simple_dialog.dart';
 import 'package:self_talk/widgets/setting/item_setting.dart';
@@ -95,6 +97,12 @@ class _SettingListScreenState extends ConsumerState<SettingListScreen> {
       Setting(
         mainTitle: "광고 보고 2시간 광고 없애기",
         subTitle: "광고를 시청하시면 2시간 동안 모든 광고가 사라집니다.",
+        longClickEvent: () {
+          if (appFlavor == "dev") {
+            _settingViewModel.deleteAdaptiveAdsTime();
+            showToast("광고 시청 시간 기록 삭제");
+          }
+        },
         clickEvent: () {
           showTextDialog(
             context: context,
@@ -104,7 +112,7 @@ class _SettingListScreenState extends ConsumerState<SettingListScreen> {
             needNoButton: true,
             contentButtonPressed: () {
               slideNavigateStateful(context, RewardedAdWidget(onRewardEarned: (_){
-
+                _settingViewModel.updateAdaptiveAdsTime();
               },));
             },
           );
@@ -137,6 +145,7 @@ class _SettingListScreenState extends ConsumerState<SettingListScreen> {
                 mainTitle: settingItemList[index].mainTitle,
                 subTitle: settingItemList[index].subTitle,
                 clickEvent: settingItemList[index].clickEvent,
+                longClickEvent: settingItemList[index].longClickEvent,
                 statusText: settingItemList[index].statusText,
                 isCheckbox: settingItemList[index].isCheckbox,
                 color: settingItemList[index].color,

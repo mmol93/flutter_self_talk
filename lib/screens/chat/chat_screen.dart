@@ -731,7 +731,7 @@ class _ChatScreenState extends ConsumerState<ChatScreen> {
                     ),
                   ),
                   Visibility(
-                    visible: editMode,
+                    visible: editMode && chatViewModel.isShowAds,
                     child: const AnchoredAdaptiveAdsWidget(),
                   ),
                   ConstrainedBox(

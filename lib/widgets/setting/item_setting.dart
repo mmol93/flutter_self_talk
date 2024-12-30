@@ -5,6 +5,7 @@ class ItemSetting extends StatefulWidget {
   final String mainTitle;
   final String? subTitle;
   final Function()? clickEvent;
+  final Function()? longClickEvent;
   final String? statusText;
   final bool? isCheckbox;
   final Color? color;
@@ -16,6 +17,7 @@ class ItemSetting extends StatefulWidget {
     this.isCheckbox,
     this.color,
     this.clickEvent,
+    this.longClickEvent,
     required this.mainTitle,
   });
 
@@ -36,6 +38,7 @@ class _ItemSettingState extends State<ItemSetting> {
 
     return GestureDetector(
       onTap: widget.clickEvent,
+      onLongPress: widget.longClickEvent,
       child: Container(
         height: 60,
         color: Colors.transparent,
