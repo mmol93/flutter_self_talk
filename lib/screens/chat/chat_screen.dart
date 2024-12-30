@@ -355,7 +355,7 @@ class _ChatScreenState extends ConsumerState<ChatScreen> {
                   ? "영상 모드를 정말 종료하시겠습니까?"
                   : "영상 모드를 사용하면 모든 대화가 하나씩 출력되게 할 수 있습니다. \n\n위에 있는 돋보기 아이콘을 클릭하면 메시지가 하나씩 출력됩니다.  \n\n<응용방법>\n1. 휴대폰 화면 녹화 시작\n2. 영상모드를 시작\n3. 화면녹화를 끝낸 후 적절히 편집해서 사용",
               context: context,
-              onPressed: () {
+              contentButtonPressed: () {
                 if (movieMode) {
                   setState(() {
                     editMode = true;

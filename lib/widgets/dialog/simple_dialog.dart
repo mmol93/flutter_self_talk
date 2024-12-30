@@ -9,7 +9,8 @@ void showTextDialog({
   required String okText,
   required String contentText,
   required BuildContext context,
-  Function? onPressed,
+  bool? needNoButton,
+  Function? contentButtonPressed,
 }) {
   Widget buildDialog(BuildContext context) {
     return AlertDialog(
@@ -18,13 +19,20 @@ void showTextDialog({
       actions: [
         TextButton(
           onPressed: () {
-            if (onPressed != null) {
-              onPressed();
-            }
             Navigator.pop(context);
+            if (contentButtonPressed != null) {
+              contentButtonPressed();
+            }
           },
           child: Text(okText),
-        )
+        ),
+        if (needNoButton == true)
+          TextButton(
+            onPressed: () {
+              Navigator.pop(context);
+            },
+            child: const Text("아니요"),
+          )
       ],
     );
   }

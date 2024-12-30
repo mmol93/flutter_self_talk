@@ -7,9 +7,9 @@ import 'package:google_mobile_ads/google_mobile_ads.dart';
 
 const String androidTestAdaptiveAdsKey = "ca-app-pub-3940256099942544/9214589741";
 const String iosTestAdaptiveAdsKey = "ca-app-pub-3940256099942544/2435281174";
-final String? adsKey = dotenv.env['addmob_app_id'];
+final String? adsKey = dotenv.env['addmob_adaptive_app_id'];
 
-String? getAdsId() {
+String? _getAdsId() {
   if (Platform.isAndroid) {
     if (appFlavor == "dev") {
       return androidTestAdaptiveAdsKey;
@@ -51,7 +51,7 @@ class AnchoredAdaptiveWidget extends State<AnchoredAdaptiveAdsWidget> {
         await AdSize.getCurrentOrientationAnchoredAdaptiveBannerAdSize(
             MediaQuery.of(context).size.width.truncate());
 
-    final adsId = getAdsId() ?? "";
+    final adsId = _getAdsId() ?? "";
 
     if (size == null) {
       print('Unable to get height of anchored banner.');

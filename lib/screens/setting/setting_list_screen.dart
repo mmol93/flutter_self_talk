@@ -6,8 +6,10 @@ import 'package:self_talk/models/setting_color.dart';
 import 'package:self_talk/screens/setting/license_screen.dart';
 import 'package:self_talk/screens/setting/passwrod_pad_screen.dart';
 import 'package:self_talk/utils/Constants.dart';
+import 'package:self_talk/utils/google_reward_ads.dart';
 import 'package:self_talk/viewModel/setting_viewModel.dart';
 import 'package:self_talk/widgets/dialog/color_picker_dialog.dart';
+import 'package:self_talk/widgets/dialog/simple_dialog.dart';
 import 'package:self_talk/widgets/setting/item_setting.dart';
 
 import '../../navigator/moving_navigator.dart';
@@ -74,18 +76,38 @@ class _SettingListScreenState extends ConsumerState<SettingListScreen> {
         clickEvent: () async {
           if (_settingViewModel.isPasswordSet == true) {
             // 비밀번호가 이미 설정되어 있는 상태일 때
-            slideNavigateStateful(context, const PasswordInputScreen(isInit: true), backFunction: () {
+            slideNavigateStateful(context, const PasswordInputScreen(isInit: true),
+                backFunction: () {
               setState(() {
                 _settingViewModel.updatePasswordStatus();
               });
             });
           } else {
-            slideNavigateStateful(context, const PasswordInputScreen(isSetup: true), backFunction: () {
+            slideNavigateStateful(context, const PasswordInputScreen(isSetup: true),
+                backFunction: () {
               setState(() {
                 _settingViewModel.updatePasswordStatus();
               });
             });
           }
+        },
+      ),
+      Setting(
+        mainTitle: "광고 보고 2시간 광고 없애기",
+        subTitle: "광고를 시청하시면 2시간 동안 모든 광고가 사라집니다.",
+        clickEvent: () {
+          showTextDialog(
+            context: context,
+            title: "광고 시청",
+            okText: "네",
+            contentText: "광고를 시청하시면\n2시간 동안 모든 광고가 사라집니다.\n동의하십니까?",
+            needNoButton: true,
+            contentButtonPressed: () {
+              slideNavigateStateful(context, RewardedAdWidget(onRewardEarned: (_){
+
+              },));
+            },
+          );
         },
       ),
       Setting(
@@ -98,10 +120,6 @@ class _SettingListScreenState extends ConsumerState<SettingListScreen> {
           slideNavigateStateful(context, const LicenseScreen());
         },
       ),
-      // Setting(
-      //   mainTitle: "개인정보 보호정책",
-      //   clickEvent: () {},
-      // ),
     ];
   }
 
