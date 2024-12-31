@@ -7,6 +7,7 @@ import '../../colors/default_color.dart';
 class PasswordInputScreen extends StatefulWidget {
   final bool isSetup;
   final bool isInit;
+  final bool needBackButton;
   final VoidCallback? onPasswordVerified;
 
   const PasswordInputScreen({
@@ -14,6 +15,7 @@ class PasswordInputScreen extends StatefulWidget {
     this.isSetup = false,
     this.onPasswordVerified,
     this.isInit = false,
+    this.needBackButton = true,
   }) : super(key: key);
 
   @override
@@ -70,6 +72,7 @@ class _PasswordInputScreenState extends State<PasswordInputScreen> {
 
       if (savedPassword == enteredPassword) {
         // 비밀번호 일치
+        ScaffoldMessenger.of(context).hideCurrentSnackBar();
         if (widget.isInit) {
           ScaffoldMessenger.of(context)
               .showSnackBar(const SnackBar(content: Text('비밀번호를 삭제했습니다.')));
@@ -78,11 +81,12 @@ class _PasswordInputScreenState extends State<PasswordInputScreen> {
           ScaffoldMessenger.of(context).showSnackBar(const SnackBar(content: Text('비밀번호가 일치합니다.')));
         }
 
-        // 선택적 콜백 호출
-        widget.onPasswordVerified?.call();
         Navigator.pop(context);
+        // 비밀번호 일치 이후 동작 실시
+        widget.onPasswordVerified?.call();
       } else {
         // 비밀번호 불일치
+        ScaffoldMessenger.of(context).hideCurrentSnackBar();
         if (appFlavor == 'dev') {
           ScaffoldMessenger.of(context)
               .showSnackBar(SnackBar(content: Text("비밀번호가 일치하지 않습니다.: $savedPassword}}")));
@@ -109,64 +113,69 @@ class _PasswordInputScreenState extends State<PasswordInputScreen> {
 
   @override
   Widget build(BuildContext context) {
-    return Scaffold(
-      appBar: AppBar(
-        title: Text(displayTitle ?? "비밀번호 입력"),
-      ),
-      body: Column(
-        mainAxisAlignment: MainAxisAlignment.center,
-        children: [
-          // 비밀번호 입력 상태 표시
-          Row(
-            mainAxisAlignment: MainAxisAlignment.center,
-            children: List.generate(_requiredLength, (index) {
-              return Container(
-                width: 20,
-                height: 20,
-                margin: const EdgeInsets.all(10),
-                decoration: BoxDecoration(
-                  shape: BoxShape.circle,
-                  color: index < _password.length ? defaultYellow : Colors.grey,
-                ),
-              );
-            }),
-          ),
-          const SizedBox(height: 20),
-          // 숫자 패드
-          GridView.count(
-            shrinkWrap: true,
-            crossAxisCount: 3,
-            children: [
-              ...List.generate(9, (index) {
-                return PasswordButton(
-                  label: '${index + 1}',
-                  onPressed: () => _handlePasswordInput('${index + 1}'),
+    return PopScope(
+      canPop: widget.needBackButton,
+      child: Scaffold(
+        appBar: AppBar(
+          title: Text(displayTitle ?? "비밀번호 입력"),
+          automaticallyImplyLeading: widget.needBackButton,
+        ),
+        body: Column(
+          mainAxisAlignment: MainAxisAlignment.center,
+          children: [
+            // 비밀번호 입력 상태 표시
+            Row(
+              mainAxisAlignment: MainAxisAlignment.center,
+              children: List.generate(_requiredLength, (index) {
+                return Container(
+                  width: 20,
+                  height: 20,
+                  margin: const EdgeInsets.all(10),
+                  decoration: BoxDecoration(
+                    shape: BoxShape.circle,
+                    color: index < _password.length ? defaultYellow : Colors.grey,
+                  ),
                 );
               }),
-              // 삭제 버튼
-              IconButton(
-                icon: const Icon(Icons.backspace),
-                onPressed: _deleteLastDigit,
-              ),
-              // 0 버튼
-              PasswordButton(
-                label: '0',
-                onPressed: () => _handlePasswordInput('0'),
-              ),
-              // 빈 공간
-              GestureDetector(
-                onLongPress: () {
-                  ScaffoldMessenger.of(context).showSnackBar(const SnackBar(content: Text('비밀번호를 삭제했습니다.')));
-                  passwordViewModel.initPassword();
-                  Navigator.pop(context);
-                },
-                child: Container(
-                  color: Colors.transparent,
+            ),
+            const SizedBox(height: 20),
+            // 숫자 패드
+            GridView.count(
+              shrinkWrap: true,
+              crossAxisCount: 3,
+              children: [
+                ...List.generate(9, (index) {
+                  return PasswordButton(
+                    label: '${index + 1}',
+                    onPressed: () => _handlePasswordInput('${index + 1}'),
+                  );
+                }),
+                // 삭제 버튼
+                IconButton(
+                  icon: const Icon(Icons.backspace),
+                  onPressed: _deleteLastDigit,
                 ),
-              ),
-            ],
-          ),
-        ],
+                // 0 버튼
+                PasswordButton(
+                  label: '0',
+                  onPressed: () => _handlePasswordInput('0'),
+                ),
+                // 빈 공간
+                GestureDetector(
+                  onLongPress: () {
+                    ScaffoldMessenger.of(context).hideCurrentSnackBar();
+                    ScaffoldMessenger.of(context).showSnackBar(const SnackBar(content: Text('비밀번호를 삭제했습니다.')));
+                    passwordViewModel.initPassword();
+                    Navigator.pop(context);
+                  },
+                  child: Container(
+                    color: Colors.transparent,
+                  ),
+                ),
+              ],
+            ),
+          ],
+        ),
       ),
     );
   }

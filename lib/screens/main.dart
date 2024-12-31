@@ -10,7 +10,9 @@ import 'package:intl/date_symbol_data_local.dart';
 import 'package:self_talk/firebase_options.dart';
 import 'package:self_talk/screens/home/chat_list_screen.dart';
 import 'package:self_talk/screens/home/friend_list_screen.dart';
+import 'package:self_talk/screens/setting/passwrod_pad_screen.dart';
 import 'package:self_talk/screens/setting/setting_list_screen.dart';
+import 'package:self_talk/viewModel/password_viewModel.dart';
 import 'package:smooth_page_indicator/smooth_page_indicator.dart';
 
 import '../assets/strings.dart';
@@ -27,6 +29,7 @@ void main() async {
   await Firebase.initializeApp(
     options: DefaultFirebaseOptions.currentPlatform,
   );
+  bool _isPasswordSet = await PasswordViewModel().isPasswordSet();
 
   FlutterError.onError = (errorDetails) {
     // 기존 recordFlutterFatalError를 호출
@@ -42,13 +45,17 @@ void main() async {
     return true;
   };
 
-  runApp(const ProviderScope(
-    child: MyApp(),
+  runApp(ProviderScope(
+    child: MyApp(
+      isPasswordSet: _isPasswordSet,
+    ),
   ));
 }
 
 class MyApp extends StatefulWidget {
-  const MyApp({super.key});
+  const MyApp({super.key, required this.isPasswordSet});
+
+  final bool isPasswordSet;
 
   @override
   State<MyApp> createState() => _MyAppState();
@@ -58,20 +65,20 @@ class _MyAppState extends State<MyApp> {
   @override
   Widget build(BuildContext context) {
     return MaterialApp(
-      theme: ThemeData(
-        textTheme: GoogleFonts.nanumGothicTextTheme(),
-        colorScheme: ColorScheme.fromSeed(seedColor: Colors.deepPurple),
-        useMaterial3: true,
-      ),
-      home: const HomePage(title: '셀프톡썰'),
-    );
+        theme: ThemeData(
+          textTheme: GoogleFonts.nanumGothicTextTheme(),
+          colorScheme: ColorScheme.fromSeed(seedColor: Colors.deepPurple),
+          useMaterial3: true,
+        ),
+        home: HomePage(title: '셀프톡썰', isPasswordSet: widget.isPasswordSet));
   }
 }
 
 class HomePage extends StatefulWidget {
-  const HomePage({super.key, required this.title});
+  const HomePage({super.key, required this.title, required this.isPasswordSet});
 
   final String title;
+  final bool isPasswordSet;
 
   @override
   State<HomePage> createState() => _HomePageState();
@@ -90,6 +97,9 @@ class _HomePageState extends State<HomePage> {
         contentText: Strings.startCautionContent,
         okText: Strings.okPolite,
       );
+      if (widget.isPasswordSet) {
+        Navigator.push(context, MaterialPageRoute(builder: (context) => const PasswordInputScreen(needBackButton: false,), fullscreenDialog: true));
+      }
     });
   }
 
@@ -108,8 +118,7 @@ class _HomePageState extends State<HomePage> {
         ),
         child: Text(
           viewPagerTitle,
-          style: const TextStyle(
-              fontSize: 18, color: Colors.black, fontWeight: FontWeight.w600),
+          style: const TextStyle(fontSize: 18, color: Colors.black, fontWeight: FontWeight.w600),
         ),
         onPressed: () {
           _updateBarIndicator(tabButtonIndex);
@@ -134,8 +143,7 @@ class _HomePageState extends State<HomePage> {
             mainAxisAlignment: MainAxisAlignment.spaceAround,
             children: pageList
                 .asMap()
-                .map((index, pageTitle) =>
-                    MapEntry(index, _viewPagerTitleWidget(pageTitle, index)))
+                .map((index, pageTitle) => MapEntry(index, _viewPagerTitleWidget(pageTitle, index)))
                 .values
                 .toList(),
           ),
