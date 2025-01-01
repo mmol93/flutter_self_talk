@@ -1,10 +1,13 @@
 import 'dart:io';
 
+import 'package:firebase_analytics/firebase_analytics.dart';
 import 'package:flutter/material.dart';
 import 'package:flutter/services.dart';
 import 'package:flutter_dotenv/flutter_dotenv.dart';
 import 'package:google_mobile_ads/google_mobile_ads.dart';
+import 'package:self_talk/assets/strings.dart';
 import 'package:self_talk/utils/MyLogger.dart';
+import 'package:self_talk/utils/firebase_events_sender.dart';
 import 'package:self_talk/widgets/common/utils.dart';
 
 const String androidTestAdaptiveAdsKey = "ca-app-pub-3940256099942544/5224354917";
@@ -82,6 +85,7 @@ class _RewardedAdWidgetState extends State<RewardedAdWidget> {
       },
       onAdImpression: (ad) {
         MyLogger.info("보상형 광고: 로딩 성공");
+        sendFirebaseEventForAds(eventName: Strings.eventWatchRewardsAds);
       },
       onAdFailedToShowFullScreenContent: (ad, error) {
         MyLogger.info("보상형 광고: 실패 \n\n$error");
@@ -91,9 +95,11 @@ class _RewardedAdWidgetState extends State<RewardedAdWidget> {
           // TODO: 인터넷 연결 끊은 상태에서 제대로 동작하는지 화인하기
           showToast("광고 로드에 실패했습니다.\n잠시후 다시 시도해주세요.");
           Navigator.pop(context);
-        }else {
+        } else {
           _loadRewardedAd();
         }
+        sendFirebaseEventForAds(eventName: Strings.eventErrorRewardsAds);
+        FirebaseAnalytics.instance.logSelectPromotion(promotionId: "보상형 광고 실패");
       },
       onAdDismissedFullScreenContent: (ad) {
         MyLogger.info("보상형 광고: 종료");
@@ -105,6 +111,7 @@ class _RewardedAdWidgetState extends State<RewardedAdWidget> {
       },
       onAdClicked: (ad) {
         MyLogger.info("보상형 광고: 클릭됨");
+        sendFirebaseEventForAds(eventName: Strings.eventClickRewardsAds);
       },
     );
   }
@@ -118,7 +125,7 @@ class _RewardedAdWidgetState extends State<RewardedAdWidget> {
     _rewardedAd?.show(
       onUserEarnedReward: (AdWithoutView ad, RewardItem reward) {
         MyLogger.info("보상형 광고: 시청 성공");
-        // debugPrint('User earned reward: ${reward.amount} ${reward.type}');
+        sendFirebaseEventForAds(eventName: Strings.eventCompleteRewardsAds);
         widget.onRewardEarned?.call(reward.amount.toInt());
       },
     );

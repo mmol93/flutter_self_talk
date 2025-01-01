@@ -4,6 +4,10 @@ import 'package:flutter/material.dart';
 import 'package:flutter/services.dart';
 import 'package:flutter_dotenv/flutter_dotenv.dart';
 import 'package:google_mobile_ads/google_mobile_ads.dart';
+import 'package:self_talk/utils/MyLogger.dart';
+import 'package:self_talk/utils/firebase_events_sender.dart';
+
+import '../assets/strings.dart';
 
 const String androidTestAdaptiveAdsKey = "ca-app-pub-3940256099942544/9214589741";
 const String iosTestAdaptiveAdsKey = "ca-app-pub-3940256099942544/2435281174";
@@ -54,7 +58,6 @@ class AnchoredAdaptiveWidget extends State<AnchoredAdaptiveAdsWidget> {
     final adsId = _getAdsId() ?? "";
 
     if (size == null) {
-      print('Unable to get height of anchored banner.');
       return;
     }
 
@@ -63,17 +66,21 @@ class AnchoredAdaptiveWidget extends State<AnchoredAdaptiveAdsWidget> {
       size: size,
       request: const AdRequest(),
       listener: BannerAdListener(
+        onAdClicked: (Ad ad) {
+          sendFirebaseEventForAds(eventName: Strings.eventClickAdaptiveAds);
+          MyLogger.info("적응형 광고 클릭됨");
+        },
         onAdLoaded: (Ad ad) {
-          print('$ad loaded: ${ad.responseInfo}');
+          sendFirebaseEventForAds(eventName: Strings.eventWatchAdaptiveAds);
+          MyLogger.info("적응형 광고 실행됨");
           setState(() {
-            // When the ad is loaded, get the ad size and use it to set
-            // the height of the ad container.
             _anchoredAdaptiveAd = ad as BannerAd;
             _isLoaded = true;
           });
         },
         onAdFailedToLoad: (Ad ad, LoadAdError error) {
-          print('Anchored adaptive banner failedToLoad: $error');
+          sendFirebaseEventForAds(eventName: Strings.eventErrorAdaptiveAds);
+          MyLogger.info("적응형 광고 실패 \n\n$error");
           ad.dispose();
         },
       ),
