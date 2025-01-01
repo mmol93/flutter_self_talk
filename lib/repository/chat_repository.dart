@@ -200,6 +200,8 @@ class ChatRepository {
       final targetChatRoom = chatData.chatRoom![chatId]!;
 
       for (Friend invitedFriend in invitedFriendList) {
+        // 초대된 친구는 무조건 친구로써 초대해야한다.
+        invitedFriend.me = 0;
         targetChatRoom.chatMembers.add(invitedFriend);
       }
 
