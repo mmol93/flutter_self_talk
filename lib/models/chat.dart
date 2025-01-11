@@ -84,11 +84,15 @@ class Chat {
 
   String getModifiedDateToString() => DateFormat('yyyy-MM-dd').format(modifiedDate);
 
-  /// 해당 단톡방에서 내가 아닌 친구의 사진 경로를 가져온다.
-  /// 그렇기 때문에 항상 같은 친구의 사진을 가져오는게 아님.
-  String getaFriendProfilePath() {
+  /// friendId 지정 = 채팅리스트에서 1:1 채팅방 사진 표시할 때
+  /// friendId 지정 안함 = 특정 친구의 프로필 사진 가져옴
+  String getaFriendProfilePath({String? friendId}) {
     try {
-      return chatMembers.firstWhere((friend) => friend.me == 0).profileImgPath;
+      if (friendId == null) {
+        return chatMembers.firstWhere((friend) => friend.me == 0).profileImgPath;
+      } else {
+        return chatMembers.firstWhere((friend) => friend.id == friendId).profileImgPath;
+      }
     } catch (e) {
       return Strings.defaultProfileImgPath;
     }

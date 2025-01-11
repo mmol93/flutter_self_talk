@@ -92,7 +92,6 @@ class MessageFromOthers extends StatelessWidget {
                                             )
                                           : const SizedBox(),
                                       ConstrainedBox(
-                                        // TODO: 여러 단말기에서 어떻게 나오는지 확인 필요
                                         // others는 프로필 사진 부분까지 출력해야하기 때문에 좀 더 줄어든다.
                                         constraints: BoxConstraints(maxWidth: screenWidth * 0.53),
                                         child: RichText(
@@ -106,13 +105,11 @@ class MessageFromOthers extends StatelessWidget {
                                 )
                               : Container(
                                   padding: const EdgeInsets.symmetric(horizontal: 4, vertical: 3),
-                                  // TODO: 작은 단말기에서 어떻게 나오는지 확인 필요?
-                                  constraints: const BoxConstraints(maxWidth: 240),
+                                  constraints: const BoxConstraints(maxWidth: 230),
                                   child: ClipRRect(
                                     borderRadius: BorderRadius.circular(10),
                                     child: Image.file(
                                       File(message.imagePath!),
-                                      // TODO: 사진이 그대로 잘 입력되는지 확인하기
                                       fit: BoxFit.fill,
                                       // 실패 시 그냥 무시되는 빈 위젯 제출
                                       errorBuilder: (context, error, stackTrace) =>

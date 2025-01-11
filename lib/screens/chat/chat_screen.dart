@@ -686,7 +686,9 @@ class _ChatScreenState extends ConsumerState<ChatScreen> {
                         friendName: targetChatData.getFriendName(
                                 targetChatData.messageList![reversedChatIndex].friendId) ??
                             "(알 수 없음)",
-                        profilePicturePath: targetChatData.getaFriendProfilePath(),
+                        profilePicturePath: targetChatData.getaFriendProfilePath(
+                          friendId: targetChatData.messageList![reversedChatIndex].friendId,
+                        ),
                         messageType: targetChatData.messageList![reversedChatIndex].messageType,
                         pickedDate: targetChatData.messageList![reversedChatIndex].messageTime,
                         settingColor: settingColor,
