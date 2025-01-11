@@ -1,8 +1,12 @@
+import 'dart:convert';
+
+import 'package:flutter/services.dart';
 import 'package:flutter_riverpod/flutter_riverpod.dart';
 import 'package:self_talk/models/chat.dart';
 import 'package:self_talk/models/friend.dart';
 import 'package:self_talk/repository/adaptive_ads_repository.dart';
 import 'package:self_talk/repository/chat_repository.dart';
+import 'package:self_talk/utils/MyLogger.dart';
 import 'package:self_talk/utils/Typedefs.dart';
 
 final chatViewModelProvider = StateNotifierProvider.autoDispose<ChatViewModel, ChatList?>(
@@ -56,216 +60,6 @@ ChatList dummyChatList = ChatList(chatRoom: {
     ],
     modifiedDate: DateTime.now().add(const Duration(minutes: 1)),
   ),
-  "abcd2": Chat(
-    lastMessage: "마지막 메시지",
-    alarmOnOff: 1,
-    chatRoomName: '친구들과의 채팅2',
-    messageList: [
-      Message(
-        friendId: '1',
-        messageTime: DateTime.now(),
-        message: '안녕하세요',
-        messageType: MessageType.message,
-        isMe: true,
-        notSeenMemberNumber: 0,
-      ),
-      Message(
-        friendId: '2',
-        messageTime: DateTime.now().add(const Duration(minutes: 1)),
-        message: '반갑습니다',
-        messageType: MessageType.message,
-        isMe: false,
-        notSeenMemberNumber: 0,
-      ),
-    ],
-    chatMembers: [
-      Friend(
-        id: '1',
-        name: '철수',
-        message: '안녕하세요',
-        profileImgPath: 'assets/images/profile_pic.png',
-        me: 0,
-      ),
-      Friend(
-        id: '2',
-        name: '영희',
-        message: '반갑습니다',
-        profileImgPath: 'assets/images/profile_pic.png',
-        me: 1,
-      ),
-    ],
-    modifiedDate: DateTime.now().add(const Duration(minutes: 1)),
-  ),
-  "abcd3": Chat(
-    lastMessage: "마지막 메시지3",
-    alarmOnOff: 0,
-    chatRoomName: '친구들과의 채팅3',
-    messageList: [
-      Message(
-        friendId: '1',
-        messageTime: DateTime.now(),
-        message: '안녕하세요',
-        messageType: MessageType.message,
-        isMe: true,
-        notSeenMemberNumber: 0,
-      ),
-      Message(
-        friendId: '2',
-        messageTime: DateTime.now().add(const Duration(minutes: 1)),
-        message: '반갑습니다',
-        messageType: MessageType.message,
-        isMe: false,
-        notSeenMemberNumber: 0,
-      ),
-    ],
-    chatMembers: [
-      Friend(
-        id: '1',
-        name: '철수',
-        message: '안녕하세요',
-        profileImgPath: 'assets/images/profile_pic.png',
-        me: 0,
-      ),
-      Friend(
-        id: '2',
-        name: '영희',
-        message: '반갑습니다',
-        profileImgPath: 'assets/images/profile_pic.png',
-        me: 1,
-      ),
-      Friend(
-        id: '3',
-        name: '영춘',
-        message: '반갑습니다',
-        profileImgPath: 'assets/images/profile_pic.png',
-        me: 0,
-      ),
-      Friend(
-        id: '4',
-        name: '영상',
-        message: '반갑습니다',
-        profileImgPath: 'assets/images/profile_pic.png',
-        me: 0,
-      ),
-    ],
-    modifiedDate: DateTime.now().add(const Duration(minutes: 1)),
-  ),
-  "abcd4": Chat(
-    lastMessage: "마지막 메시지4",
-    alarmOnOff: 0,
-    chatRoomName: '친구들과의 채팅4',
-    modifiedChatRoomImg: "",
-    messageList: [
-      Message(
-        friendId: '1',
-        messageTime: DateTime.now(),
-        message: '안녕하세요',
-        messageType: MessageType.message,
-        isMe: true,
-        notSeenMemberNumber: 0,
-      ),
-      Message(
-        friendId: '2',
-        messageTime: DateTime.now().add(const Duration(minutes: 1)),
-        message: '반갑습니다',
-        messageType: MessageType.message,
-        isMe: false,
-        notSeenMemberNumber: 0,
-      ),
-    ],
-    chatMembers: [
-      Friend(
-        id: '1',
-        name: '철수',
-        message: '안녕하세요',
-        profileImgPath: 'assets/images/profile_pic.png',
-        me: 0,
-      ),
-      Friend(
-        id: '2',
-        name: '영희',
-        message: '반갑습니다',
-        profileImgPath: 'assets/images/profile_pic.png',
-        me: 1,
-      ),
-      Friend(
-        id: '3',
-        name: '영춘',
-        message: '반갑습니다',
-        profileImgPath: 'assets/images/profile_pic.png',
-        me: 0,
-      ),
-      Friend(
-        id: '4',
-        name: '영상',
-        message: '반갑습니다',
-        profileImgPath: 'assets/images/profile_pic.png',
-        me: 0,
-      ),
-    ],
-    modifiedDate: DateTime.now().add(const Duration(minutes: 1)),
-  ),
-  "abcd5": Chat(
-    lastMessage: "마지막 메시지3",
-    alarmOnOff: 0,
-    chatRoomName: '친구들과의 채팅5',
-    messageList: [
-      Message(
-        friendId: '1',
-        messageTime: DateTime.now(),
-        message: '안녕하세요',
-        messageType: MessageType.message,
-        isMe: true,
-        notSeenMemberNumber: 0,
-      ),
-      Message(
-        friendId: '2',
-        messageTime: DateTime.now().add(const Duration(minutes: 1)),
-        message: '반갑습니다',
-        messageType: MessageType.message,
-        isMe: false,
-        notSeenMemberNumber: 0,
-      ),
-    ],
-    chatMembers: [
-      Friend(
-        id: '1',
-        name: '철수',
-        message: '안녕하세요',
-        profileImgPath: 'assets/images/profile_pic.png',
-        me: 0,
-      ),
-      Friend(
-        id: '2',
-        name: '영희',
-        message: '반갑습니다',
-        profileImgPath: 'assets/images/profile_pic.png',
-        me: 1,
-      ),
-      Friend(
-        id: '3',
-        name: '영춘',
-        message: '반갑습니다',
-        profileImgPath: 'assets/images/profile_pic.png',
-        me: 0,
-      ),
-      Friend(
-        id: '4',
-        name: '영상',
-        message: '반갑습니다',
-        profileImgPath: 'assets/images/profile_pic.png',
-        me: 0,
-      ),
-      Friend(
-        id: '5',
-        name: '영춘',
-        message: '반갑습니다',
-        profileImgPath: 'assets/images/profile_pic.png',
-        me: 0,
-      ),
-    ],
-    modifiedDate: DateTime.now().add(const Duration(minutes: 1)),
-  ),
 });
 
 class ChatViewModel extends StateNotifier<ChatList?> {
@@ -283,9 +77,30 @@ class ChatViewModel extends StateNotifier<ChatList?> {
   }
 
   /// 채팅 리스트 양식 만들기 = 채팅 초기화
-  void createChatList() async {
+  void initChatList() async {
     isShowAds = await _adaptiveAdsRepository.isOverAdaptiveAdsTime();
     _chatRepository.createChatList(dummyChatList).then((value) => getChatList());
+  }
+
+  /// 채팅 리스트에 진입하는게 처음인지 아닌지 확인하기
+  void checkFirstInitChat() async {
+    final bool isFirstInit = await _chatRepository.checkFirstInitChat();
+    if (isFirstInit) {
+      getTutorialChatList();
+    }
+  }
+
+  /// 처음 앱을 열었을 때 해당 채팅방으로 만들어지게 하기
+  void getTutorialChatList() async {
+    String tutorialFilePath = 'assets/etc/tutorial_chat_room.json';
+    try {
+      String tutorialJsonData = await rootBundle.loadString(tutorialFilePath);
+      Map<String, dynamic> jsonData = jsonDecode(tutorialJsonData);
+      ChatList tutorialChatList = ChatList.fromJson(jsonData);
+      _chatRepository.createChatList(tutorialChatList).then((value) => getChatList());
+    } catch (e) {
+      MyLogger.error("튜토리얼 파일 로딩 오류 $e");
+    }
   }
 
   /// 채팅방 자체를 만듬(새로운 채팅방 만들기 등...)

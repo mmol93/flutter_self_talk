@@ -29,7 +29,7 @@ void main() async {
   await Firebase.initializeApp(
     options: DefaultFirebaseOptions.currentPlatform,
   );
-  bool _isPasswordSet = await PasswordViewModel().isPasswordSet();
+  bool isPasswordSet = await PasswordViewModel().isPasswordSet();
 
   FlutterError.onError = (errorDetails) {
     // 기존 recordFlutterFatalError를 호출
@@ -47,7 +47,7 @@ void main() async {
 
   runApp(ProviderScope(
     child: MyApp(
-      isPasswordSet: _isPasswordSet,
+      isPasswordSet: isPasswordSet,
     ),
   ));
 }

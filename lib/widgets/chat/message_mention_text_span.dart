@@ -2,9 +2,9 @@ import 'package:flutter/material.dart';
 
 /// @가 있을 경우 친구 태그 기능을 넣어주는 TextSpan
 List<TextSpan> friendMentionColoredTextSpans(
-    String textMessage,
-    bool isDeleted,
-    ) {
+  String textMessage,
+  bool isDeleted,
+) {
   List<TextSpan> spans = [];
   List<String> lines = textMessage.split('\n');
 
@@ -14,25 +14,24 @@ List<TextSpan> friendMentionColoredTextSpans(
 
     for (int j = 0; j < parts.length; j++) {
       String part = parts[j];
-      if (part.isNotEmpty) {  // 빈 문자열 건너뛰기
+      if (part.isNotEmpty) {
+        // 빈 문자열 건너뛰기
         if (part.startsWith('@')) {
           spans.add(
-              TextSpan(
-                  text: '$part${j < parts.length - 1 ? ' ' : ''}',
-                  style: const TextStyle(
-                      color: Colors.blue,
-                      fontWeight: FontWeight.w500
-                  )
-              )
+            TextSpan(
+              text: '$part${j < parts.length - 1 ? ' ' : ''}',
+              style: const TextStyle(
+                color: Colors.blue,
+                fontWeight: FontWeight.w500,
+              ),
+            ),
           );
         } else {
           spans.add(
             TextSpan(
               text: '$part${j < parts.length - 1 ? ' ' : ''}',
               style: TextStyle(
-                  color: isDeleted ? Colors.grey : Colors.black,
-                  fontWeight: FontWeight.w300
-              ),
+                  color: isDeleted ? Colors.grey : Colors.black, fontWeight: FontWeight.w300),
             ),
           );
         }
@@ -44,10 +43,8 @@ List<TextSpan> friendMentionColoredTextSpans(
       spans.add(
         TextSpan(
           text: '\n',
-          style: TextStyle(
-              color: isDeleted ? Colors.grey : Colors.black,
-              fontWeight: FontWeight.w300
-          ),
+          style:
+              TextStyle(color: isDeleted ? Colors.grey : Colors.black, fontWeight: FontWeight.w300),
         ),
       );
     }

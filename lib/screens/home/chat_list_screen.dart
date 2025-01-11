@@ -42,6 +42,9 @@ class _ChatListScreen extends ConsumerState<ChatListScreen> {
   Widget build(BuildContext context) {
     final viewModel = ref.watch(chatViewModelProvider.notifier);
     final chatData = ref.watch(chatViewModelProvider);
+    if (isProduction) {
+      viewModel.checkFirstInitChat();
+    }
 
     return Scaffold(
       body: chatData != null
@@ -65,14 +68,13 @@ class _ChatListScreen extends ConsumerState<ChatListScreen> {
                       ))
                   .toList())
           : const Text("생성된 채팅방이 없습니다."),
-      // TODO: 나중에는 floatButton을 삭제하고 튜토리얼이 담긴 채팅방을 기본값으로 넣어준다.
       floatingActionButton: !isProduction
           ? Container(
               margin: const EdgeInsets.only(bottom: 50, right: 35),
               child: FloatingActionButton(
                 child: const Icon(Icons.chat_bubble),
                 onPressed: () {
-                  viewModel.createChatList();
+                  viewModel.initChatList();
                 },
               ),
             )
