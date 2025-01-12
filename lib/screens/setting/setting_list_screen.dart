@@ -144,8 +144,8 @@ class _SettingListScreenState extends ConsumerState<SettingListScreen> {
         );
       },
       data: (settingColor) {
-        // settingColor가 null이 아닐 때만 리스트 생성
-        if (settingColor != null && settingItemList.isEmpty) {
+        // settingColor가 null이 아닐 때마다 리스트 생성
+        if (settingColor != null) {
           settingItemList = createSettingList(settingColor);
         }
 
