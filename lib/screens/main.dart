@@ -17,6 +17,7 @@ import 'package:smooth_page_indicator/smooth_page_indicator.dart';
 
 import '../assets/strings.dart';
 import '../colors/default_color.dart';
+import '../utils/MyLogger.dart';
 import '../widgets/dialog/simple_dialog.dart';
 
 const pageList = ["친구", "채팅", "설정"];
@@ -38,6 +39,14 @@ void main() async {
     // 추가적인 오류 처리
     FlutterError.presentError(errorDetails); // Flutter 기본 처리
   };
+
+  if (kReleaseMode) {
+    MyLogger.info('셀프톡 앱은 릴리즈 모드에서 실행 중입니다.');
+  } else if (kDebugMode) {
+    MyLogger.info('셀프톡 앱은 디버그 모드에서 실행 중입니다.');
+  } else if (kProfileMode) {
+    MyLogger.info('셀프톡 앱은 프로파일 모드에서 실행 중입니다.');
+  }
 
   // 비동기 오류 처리
   PlatformDispatcher.instance.onError = (error, stack) {

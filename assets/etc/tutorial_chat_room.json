@@ -1,7 +1,7 @@
 {
   "chatRoom": {
     "1ab6a849-cf39-4296-8fec-355139b55e8e": {
-      "chatRoomName": "도우미",
+      "chatRoomName": "도움이",
       "messageList": [
         {
           "friendId": "4ead68f9-3a6f-4a28-80f5-4292ec4b070c",
@@ -50,7 +50,7 @@
         {
           "friendId": "4ead68f9-3a6f-4a28-80f5-4292ec4b070c",
           "messageTime": "2025-01-11T15:03:20.690983",
-          "message": "날짜도 가능하고",
+          "message": "날짜 입력도 가능하고",
           "secondMessage": null,
           "messageType": "message",
           "isMe": false,
@@ -83,7 +83,7 @@
         {
           "friendId": "4ead68f9-3a6f-4a28-80f5-4292ec4b070c",
           "messageTime": "2025-01-11T15:03:46.576356",
-          "message": "그룹톡 기능도 넣을 수 있지!",
+          "message": "그룹콜 기능도 넣을 수 있지!",
           "secondMessage": null,
           "messageType": "message",
           "isMe": false,
@@ -94,7 +94,7 @@
         {
           "friendId": "4ead68f9-3a6f-4a28-80f5-4292ec4b070c",
           "messageTime": "2025-01-11T15:04:52.632997",
-          "message": "그룹톡 내용을 변경해서 얼마나 통화 했는지도 나타낼 수 있어!",
+          "message": "그룹콜 내용을 변경해서 얼마나 통화 했는지도 나타낼 수 있어!",
           "secondMessage": null,
           "messageType": "message",
           "isMe": false,
@@ -227,7 +227,7 @@
       "chatMembers": [
         {
           "id": "4ead68f9-3a6f-4a28-80f5-4292ec4b070c",
-          "name": "도우미",
+          "name": "도움이",
           "message": "",
           "profileImgPath": "assets/images/profile_pic.png",
           "me": 0
