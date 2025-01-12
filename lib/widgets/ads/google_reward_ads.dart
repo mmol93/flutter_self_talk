@@ -1,6 +1,5 @@
 import 'dart:io';
 
-import 'package:firebase_analytics/firebase_analytics.dart';
 import 'package:flutter/material.dart';
 import 'package:flutter/services.dart';
 import 'package:flutter_dotenv/flutter_dotenv.dart';
@@ -85,7 +84,7 @@ class _RewardedAdWidgetState extends State<RewardedAdWidget> {
       },
       onAdImpression: (ad) {
         MyLogger.info("보상형 광고: 로딩 성공");
-        sendFirebaseEventForAds(eventName: Strings.eventWatchRewardsAds);
+        sendFirebaseEventForAds(eventName: Strings.eventNameWatchRewardsAds);
       },
       onAdFailedToShowFullScreenContent: (ad, error) {
         MyLogger.info("보상형 광고: 실패 \n\n$error");
@@ -98,8 +97,7 @@ class _RewardedAdWidgetState extends State<RewardedAdWidget> {
         } else {
           _loadRewardedAd();
         }
-        sendFirebaseEventForAds(eventName: Strings.eventErrorRewardsAds);
-        FirebaseAnalytics.instance.logSelectPromotion(promotionId: "보상형 광고 실패");
+        sendFirebaseEventForAds(eventName: Strings.eventNameLoadErrorRewardsAds);
       },
       onAdDismissedFullScreenContent: (ad) {
         MyLogger.info("보상형 광고: 종료");
@@ -111,7 +109,7 @@ class _RewardedAdWidgetState extends State<RewardedAdWidget> {
       },
       onAdClicked: (ad) {
         MyLogger.info("보상형 광고: 클릭됨");
-        sendFirebaseEventForAds(eventName: Strings.eventClickRewardsAds);
+        sendFirebaseEventForAds(eventName: Strings.eventNameClickRewardsAds);
       },
     );
   }
@@ -125,7 +123,7 @@ class _RewardedAdWidgetState extends State<RewardedAdWidget> {
     _rewardedAd?.show(
       onUserEarnedReward: (AdWithoutView ad, RewardItem reward) {
         MyLogger.info("보상형 광고: 시청 성공");
-        sendFirebaseEventForAds(eventName: Strings.eventCompleteRewardsAds);
+        sendFirebaseEventForAds(eventName: Strings.eventNameCompleteRewardsAds);
         widget.onRewardEarned?.call(reward.amount.toInt());
       },
     );

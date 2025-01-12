@@ -7,7 +7,7 @@ import 'package:google_mobile_ads/google_mobile_ads.dart';
 import 'package:self_talk/utils/MyLogger.dart';
 import 'package:self_talk/utils/firebase_events_sender.dart';
 
-import '../assets/strings.dart';
+import '../../assets/strings.dart';
 
 const String androidTestAdaptiveAdsKey = "ca-app-pub-3940256099942544/9214589741";
 const String iosTestAdaptiveAdsKey = "ca-app-pub-3940256099942544/2435281174";
@@ -67,11 +67,11 @@ class AnchoredAdaptiveWidget extends State<AnchoredAdaptiveAdsWidget> {
       request: const AdRequest(),
       listener: BannerAdListener(
         onAdClicked: (Ad ad) {
-          sendFirebaseEventForAds(eventName: Strings.eventClickAdaptiveAds);
+          sendFirebaseEventForAds(eventName: Strings.eventNameClickAdaptiveAds);
           MyLogger.info("적응형 광고 클릭됨");
         },
         onAdLoaded: (Ad ad) {
-          sendFirebaseEventForAds(eventName: Strings.eventWatchAdaptiveAds);
+          sendFirebaseEventForAds(eventName: Strings.eventNameWatchAdaptiveAds);
           MyLogger.info("적응형 광고 실행됨");
           setState(() {
             _anchoredAdaptiveAd = ad as BannerAd;
@@ -79,8 +79,8 @@ class AnchoredAdaptiveWidget extends State<AnchoredAdaptiveAdsWidget> {
           });
         },
         onAdFailedToLoad: (Ad ad, LoadAdError error) {
-          sendFirebaseEventForAds(eventName: Strings.eventErrorAdaptiveAds);
-          MyLogger.info("적응형 광고 실패 \n\n$error");
+          sendFirebaseEventForAds(eventName: Strings.eventNameLoadErrorAdaptiveAds);
+          MyLogger.info("적응형 광고 로딩 실패 \n\n$error");
           ad.dispose();
         },
       ),

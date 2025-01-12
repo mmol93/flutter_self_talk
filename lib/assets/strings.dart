@@ -4,11 +4,11 @@ class Strings {
   static const okPolite = "알겠습니다.";
   static const defaultProfileImgPath = "assets/images/profile_pic.png";
 
-  static const eventWatchAdaptiveAds = "적응형 광고 시청";
-  static const eventErrorAdaptiveAds = "적응형 광고 에러";
-  static const eventClickAdaptiveAds = "적응형 광고 클릭";
-  static const eventWatchRewardsAds = "보상형 광고 시작";
-  static const eventErrorRewardsAds = "보상형 광고 에러";
-  static const eventClickRewardsAds = "보상형 광고 클릭";
-  static const eventCompleteRewardsAds = "보상형 광고 완료";
+  static const eventNameWatchAdaptiveAds = "event_watch_adaptive_ads"; // 적응형 광고 시청
+  static const eventNameLoadErrorAdaptiveAds = "event_load_error_adaptive_ads"; // 적응형 광고 에러
+  static const eventNameClickAdaptiveAds = "event_click_adaptive_ads"; // 적응형 광고 클릭
+  static const eventNameWatchRewardsAds = "event_watch_rewards_ads"; // 보상형 광고 시작
+  static const eventNameLoadErrorRewardsAds = "event_load_error_rewards_ads"; // 보상형 광고 에러
+  static const eventNameClickRewardsAds = "event_click_rewards_ads"; // 보상형 광고 클릭
+  static const eventNameCompleteRewardsAds = "event_complete_rewards_ads"; // 보상형 광고 완료
 }
