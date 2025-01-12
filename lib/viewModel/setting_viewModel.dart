@@ -5,17 +5,18 @@ import 'package:self_talk/repository/adaptive_ads_repository.dart';
 import 'package:self_talk/repository/password_repository.dart';
 import 'package:self_talk/repository/setting_repository.dart';
 
-final settingViewModelProvider = StateNotifierProvider.autoDispose<SettingViewmodel, SettingColor?>(
-    (ref) => SettingViewmodel(SettingRepository(), PasswordRepository(), AdaptiveAdsRepository()));
+final settingViewModelProvider =
+    StateNotifierProvider.autoDispose<SettingViewmodel, AsyncValue<SettingColor?>>((ref) =>
+        SettingViewmodel(SettingRepository(), PasswordRepository(), AdaptiveAdsRepository()));
 
-class SettingViewmodel extends StateNotifier<SettingColor?> {
+class SettingViewmodel extends StateNotifier<AsyncValue<SettingColor?>> {
   final SettingRepository _settingRepository;
   final PasswordRepository _passwordRepository;
   final AdaptiveAdsRepository _adaptiveAdsRepository;
   bool? isPasswordSet;
 
   SettingViewmodel(this._settingRepository, this._passwordRepository, this._adaptiveAdsRepository)
-      : super(null) {
+      : super(const AsyncValue.loading()) {
     initSetting();
   }
 
@@ -32,27 +33,33 @@ class SettingViewmodel extends StateNotifier<SettingColor?> {
   }
 
   Future<void> initSetting() async {
-    Color backgroundColor = Color(await _settingRepository.getBackgroundColorCodePref());
-    Color myMessageColor = Color(await _settingRepository.getMyMessageColorCodePref());
-    Color othersMessageColor = Color(await _settingRepository.getOthersMessageColorCodePref());
-    isPasswordSet = await _passwordRepository.isPasswordSet();
+    try {
+      state = const AsyncValue.loading();
 
-    state = SettingColor(
-      backgroundColor: backgroundColor,
-      myMessageColor: myMessageColor,
-      othersMessageColor: othersMessageColor,
-    );
+      Color backgroundColor = Color(await _settingRepository.getBackgroundColorCodePref());
+      Color myMessageColor = Color(await _settingRepository.getMyMessageColorCodePref());
+      Color othersMessageColor = Color(await _settingRepository.getOthersMessageColorCodePref());
+      isPasswordSet = await _passwordRepository.isPasswordSet();
+
+      state = AsyncValue.data(SettingColor(
+        backgroundColor: backgroundColor,
+        myMessageColor: myMessageColor,
+        othersMessageColor: othersMessageColor,
+      ));
+    } catch (error, stackTrace) {
+      state = AsyncValue.error(error, stackTrace);
+    }
   }
 
   Future<void> getSettingColors() async {
     Color backgroundColor = Color(await _settingRepository.getBackgroundColorCodePref());
     Color myMessageColor = Color(await _settingRepository.getMyMessageColorCodePref());
     Color othersMessageColor = Color(await _settingRepository.getOthersMessageColorCodePref());
-    state = SettingColor(
+    state = AsyncValue.data(SettingColor(
       backgroundColor: backgroundColor,
       myMessageColor: myMessageColor,
       othersMessageColor: othersMessageColor,
-    );
+    ));
   }
 
   void setBackgroundColor(Color color) {

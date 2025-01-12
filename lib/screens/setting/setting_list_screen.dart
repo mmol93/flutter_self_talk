@@ -1,7 +1,6 @@
 import 'package:flutter/material.dart';
 import 'package:flutter/services.dart';
 import 'package:flutter_riverpod/flutter_riverpod.dart';
-import 'package:self_talk/colors/default_color.dart';
 import 'package:self_talk/models/setting.dart';
 import 'package:self_talk/models/setting_color.dart';
 import 'package:self_talk/screens/setting/license_screen.dart';
@@ -25,51 +24,47 @@ class SettingListScreen extends ConsumerStatefulWidget {
 
 class _SettingListScreenState extends ConsumerState<SettingListScreen> {
   late SettingViewmodel _settingViewModel;
-  SettingColor? _settingColor;
+  var loadingCount = 0;
 
   // 설정 화면에 들어갈 리스트 아이템들
   List<Setting> settingItemList = [];
 
-  void updateSettingList() {
-    settingItemList = [
+  List<Setting> createSettingList(SettingColor settingColor) {
+    return [
       Setting(
         mainTitle: "채팅방 배경색 변경",
         clickEvent: () async {
           Color? pickedColor = await showColorPicker(
-              context: context,
-              initColor: _settingColor?.backgroundColor ?? defaultBackgroundColor,
-              type: backgroundColorKey);
+              context: context, initColor: settingColor.backgroundColor, type: backgroundColorKey);
           if (pickedColor != null) {
             _settingViewModel.setBackgroundColor(pickedColor);
           }
         },
-        color: _settingColor?.backgroundColor ?? defaultBackgroundColor,
+        color: settingColor.backgroundColor,
       ),
       Setting(
         mainTitle: "채팅방 자신의 말풍선 색 변경",
         clickEvent: () async {
           Color? pickedColor = await showColorPicker(
-              context: context,
-              initColor: _settingColor?.myMessageColor ?? defaultMyMessageColor,
-              type: myMessageColorKey);
+              context: context, initColor: settingColor.myMessageColor, type: myMessageColorKey);
           if (pickedColor != null) {
             _settingViewModel.setMyMessageColor(pickedColor);
           }
         },
-        color: _settingColor?.myMessageColor ?? defaultMyMessageColor,
+        color: settingColor.myMessageColor,
       ),
       Setting(
         mainTitle: "채팅방 상대방 말풍선 색 변경",
         clickEvent: () async {
           Color? pickedColor = await showColorPicker(
               context: context,
-              initColor: _settingColor?.othersMessageColor ?? defaultOthersMessageColor,
+              initColor: settingColor.othersMessageColor,
               type: othersMessageColorKey);
           if (pickedColor != null) {
             _settingViewModel.setOthersMessageColor(pickedColor);
           }
         },
-        color: _settingColor?.othersMessageColor ?? defaultOthersMessageColor,
+        color: settingColor.othersMessageColor,
       ),
       Setting(
         mainTitle: "암호 잠금 설정하기",
@@ -77,7 +72,6 @@ class _SettingListScreenState extends ConsumerState<SettingListScreen> {
         isCheckbox: _settingViewModel.isPasswordSet,
         clickEvent: () async {
           if (_settingViewModel.isPasswordSet == true) {
-            // 비밀번호가 이미 설정되어 있는 상태일 때
             slideNavigateStateful(context, const PasswordInputScreen(isInit: true),
                 backFunction: () {
               setState(() {
@@ -111,9 +105,11 @@ class _SettingListScreenState extends ConsumerState<SettingListScreen> {
             contentText: "광고를 시청하시면\n2시간 동안 모든 광고가 사라집니다.\n동의하십니까?",
             needNoButton: true,
             contentButtonPressed: () {
-              slideNavigateStateful(context, RewardedAdWidget(onRewardEarned: (_){
-                _settingViewModel.updateAdaptiveAdsTime();
-              },));
+              slideNavigateStateful(context, RewardedAdWidget(
+                onRewardEarned: (_) {
+                  _settingViewModel.updateAdaptiveAdsTime();
+                },
+              ));
             },
           );
         },
@@ -134,29 +130,45 @@ class _SettingListScreenState extends ConsumerState<SettingListScreen> {
   @override
   Widget build(BuildContext context) {
     _settingViewModel = ref.watch(settingViewModelProvider.notifier);
-    _settingColor = ref.watch(settingViewModelProvider);
-    updateSettingList();
+    final settingColorState = ref.watch(settingViewModelProvider);
 
-    return settingItemList.isNotEmpty
-        ? ListView.separated(
-            shrinkWrap: true,
-            itemBuilder: (context, index) {
-              return ItemSetting(
-                mainTitle: settingItemList[index].mainTitle,
-                subTitle: settingItemList[index].subTitle,
-                clickEvent: settingItemList[index].clickEvent,
-                longClickEvent: settingItemList[index].longClickEvent,
-                statusText: settingItemList[index].statusText,
-                isCheckbox: settingItemList[index].isCheckbox,
-                color: settingItemList[index].color,
-              );
-            },
-            separatorBuilder: (context, index) => Divider(
-              color: Colors.grey.withOpacity(0.5),
-              thickness: 0.5,
-            ),
-            itemCount: settingItemList.length,
-          )
-        : const Placeholder();
+    return settingColorState.when(
+      loading: () {
+        return const Center(
+          child: CircularProgressIndicator(),
+        );
+      },
+      error: (error, stack) {
+        return Center(
+          child: Text("Error: $error"),
+        );
+      },
+      data: (settingColor) {
+        // settingColor가 null이 아닐 때만 리스트 생성
+        if (settingColor != null && settingItemList.isEmpty) {
+          settingItemList = createSettingList(settingColor);
+        }
+
+        return ListView.separated(
+          shrinkWrap: true,
+          itemBuilder: (context, index) {
+            return ItemSetting(
+              mainTitle: settingItemList[index].mainTitle,
+              subTitle: settingItemList[index].subTitle,
+              clickEvent: settingItemList[index].clickEvent,
+              longClickEvent: settingItemList[index].longClickEvent,
+              statusText: settingItemList[index].statusText,
+              isCheckbox: settingItemList[index].isCheckbox,
+              color: settingItemList[index].color,
+            );
+          },
+          separatorBuilder: (context, index) => Divider(
+            color: Colors.grey.withOpacity(0.5),
+            thickness: 0.5,
+          ),
+          itemCount: settingItemList.length,
+        );
+      },
+    );
   }
 }

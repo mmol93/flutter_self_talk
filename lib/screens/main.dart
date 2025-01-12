@@ -12,6 +12,8 @@ import 'package:self_talk/screens/home/chat_list_screen.dart';
 import 'package:self_talk/screens/home/friend_list_screen.dart';
 import 'package:self_talk/screens/setting/passwrod_pad_screen.dart';
 import 'package:self_talk/screens/setting/setting_list_screen.dart';
+import 'package:self_talk/utils/Constants.dart';
+import 'package:self_talk/utils/MyLogger.dart';
 import 'package:self_talk/viewModel/password_viewModel.dart';
 import 'package:smooth_page_indicator/smooth_page_indicator.dart';
 
@@ -30,6 +32,14 @@ void main() async {
     options: DefaultFirebaseOptions.currentPlatform,
   );
   bool isPasswordSet = await PasswordViewModel().isPasswordSet();
+
+  if (kReleaseMode) {
+    MyLogger.info('셀프톡 앱이 릴리즈 모드에서 실행 중입니다.');
+  } else if (kDebugMode) {
+    MyLogger.info('셀프톡 앱이 디버그 모드에서 실행 중입니다.');
+  } else if (kProfileMode) {
+    MyLogger.info('셀프톡 앱 프로파일 모드에서 실행 중입니다.');
+  }
 
   FlutterError.onError = (errorDetails) {
     // 기존 recordFlutterFatalError를 호출
@@ -65,6 +75,7 @@ class _MyAppState extends State<MyApp> {
   @override
   Widget build(BuildContext context) {
     return MaterialApp(
+        debugShowCheckedModeBanner: !isProduction,
         theme: ThemeData(
           textTheme: GoogleFonts.nanumGothicTextTheme(),
           colorScheme: ColorScheme.fromSeed(seedColor: Colors.deepPurple),
@@ -98,7 +109,13 @@ class _HomePageState extends State<HomePage> {
         okText: Strings.okPolite,
       );
       if (widget.isPasswordSet) {
-        Navigator.push(context, MaterialPageRoute(builder: (context) => const PasswordInputScreen(needBackButton: false,), fullscreenDialog: true));
+        Navigator.push(
+            context,
+            MaterialPageRoute(
+                builder: (context) => const PasswordInputScreen(
+                      needBackButton: false,
+                    ),
+                fullscreenDialog: true));
       }
     });
   }

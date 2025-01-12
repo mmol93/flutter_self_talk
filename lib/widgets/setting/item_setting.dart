@@ -8,6 +8,7 @@ class ItemSetting extends StatefulWidget {
   final Function()? longClickEvent;
   final String? statusText;
   final bool? isCheckbox;
+  final Function(bool?)? onCheckboxChanged; // 체크박스 콜백
   final Color? color;
 
   const ItemSetting({
@@ -18,6 +19,7 @@ class ItemSetting extends StatefulWidget {
     this.color,
     this.clickEvent,
     this.longClickEvent,
+    this.onCheckboxChanged,
     required this.mainTitle,
   });
 
@@ -26,16 +28,8 @@ class ItemSetting extends StatefulWidget {
 }
 
 class _ItemSettingState extends State<ItemSetting> {
-  bool? checkBoxStatus;
-
-  void _test(bool? currentCheckBoxStatus) {
-    checkBoxStatus = currentCheckBoxStatus;
-  }
-
   @override
   Widget build(BuildContext context) {
-    checkBoxStatus = widget.isCheckbox;
-
     return GestureDetector(
       onTap: widget.clickEvent,
       onLongPress: widget.longClickEvent,
@@ -43,58 +37,59 @@ class _ItemSettingState extends State<ItemSetting> {
         height: 60,
         color: Colors.transparent,
         padding: const EdgeInsets.symmetric(horizontal: 16),
-        child: Expanded(
-          child: Row(
-            mainAxisAlignment: MainAxisAlignment.spaceBetween,
-            crossAxisAlignment: CrossAxisAlignment.center,
-            children: [
-              Expanded(
-                child: Column(
-                  mainAxisSize: MainAxisSize.min,
-                  crossAxisAlignment: CrossAxisAlignment.start,
-                  children: [
-                    Padding(
-                      padding: const EdgeInsets.symmetric(vertical: 4),
-                      child: Text(
-                        widget.mainTitle,
-                        style: const TextStyle(fontSize: 16),
-                      ),
-                    ),
-                    if (widget.subTitle != null)
-                      Text(
-                        widget.subTitle!,
-                        style: const TextStyle(fontSize: 12, color: Colors.grey),
-                        maxLines: 2,
-                      )
-                  ],
-                ),
-              ),
-              Row(
+        child: Row(
+          mainAxisAlignment: MainAxisAlignment.spaceBetween,
+          crossAxisAlignment: CrossAxisAlignment.center,
+          children: [
+            Expanded(
+              child: Column(
                 mainAxisSize: MainAxisSize.min,
+                crossAxisAlignment: CrossAxisAlignment.start,
                 children: [
-                  if (widget.statusText != null)
-                    Text(widget.statusText!)
-                  else if (widget.isCheckbox != null)
-                    Checkbox(value: checkBoxStatus ?? false, onChanged: _test)
-                  else if (widget.color != null)
-                    Container(
-                      width: 24,
-                      height: 24,
-                      decoration: BoxDecoration(
-                        border: Border.all(color: Colors.black),
-                        color: widget.color,
-                      ),
-                      margin: const EdgeInsets.symmetric(horizontal: 8),
+                  Padding(
+                    padding: const EdgeInsets.symmetric(vertical: 4),
+                    child: Text(
+                      widget.mainTitle,
+                      style: const TextStyle(fontSize: 16),
                     ),
-                  if (widget.color != null)
+                  ),
+                  if (widget.subTitle != null)
                     Text(
-                      widget.color!.toHexText(),
-                      style: const TextStyle(fontFamily: 'RobotoMono'),
+                      widget.subTitle!,
+                      style: const TextStyle(fontSize: 12, color: Colors.grey),
+                      maxLines: 2,
                     )
                 ],
-              )
-            ],
-          ),
+              ),
+            ),
+            Row(
+              mainAxisSize: MainAxisSize.min,
+              children: [
+                if (widget.statusText != null)
+                  Text(widget.statusText!)
+                else if (widget.isCheckbox != null)
+                  Checkbox(
+                    value: widget.isCheckbox ?? false,
+                    onChanged: widget.onCheckboxChanged,
+                  )
+                else if (widget.color != null)
+                  Container(
+                    width: 24,
+                    height: 24,
+                    decoration: BoxDecoration(
+                      border: Border.all(color: Colors.black),
+                      color: widget.color,
+                    ),
+                    margin: const EdgeInsets.symmetric(horizontal: 8),
+                  ),
+                if (widget.color != null)
+                  Text(
+                    widget.color!.toHexText(),
+                    style: const TextStyle(fontFamily: 'RobotoMono'),
+                  )
+              ],
+            )
+          ],
         ),
       ),
     );

@@ -601,12 +601,12 @@ class _ChatScreenState extends ConsumerState<ChatScreen> {
     me = targetChatData.chatMembers.firstWhere((friend) => friend.me == 1);
 
     return Scaffold(
-      backgroundColor: settingColor?.backgroundColor ?? defaultBackgroundColor,
+      backgroundColor: settingColor.value?.backgroundColor ?? defaultBackgroundColor,
       appBar: AppBar(
         iconTheme: IconThemeData(
-          color: settingColor?.backgroundColor.isDark() == true ? Colors.white : Colors.black,
+          color: settingColor.value?.backgroundColor.isDark() == true ? Colors.white : Colors.black,
         ),
-        backgroundColor: settingColor?.backgroundColor ?? defaultBackgroundColor,
+        backgroundColor: settingColor.value?.backgroundColor ?? defaultBackgroundColor,
         title: Row(
           children: [
             ConstrainedBox(
@@ -617,8 +617,9 @@ class _ChatScreenState extends ConsumerState<ChatScreen> {
                 maxLines: 1,
                 style: TextStyle(
                   fontWeight: FontWeight.w500,
-                  color:
-                      settingColor?.backgroundColor.isDark() == true ? Colors.white : Colors.black,
+                  color: settingColor.value?.backgroundColor.isDark() == true
+                      ? Colors.white
+                      : Colors.black,
                 ),
               ),
             ),
@@ -691,7 +692,7 @@ class _ChatScreenState extends ConsumerState<ChatScreen> {
                         ),
                         messageType: targetChatData.messageList![reversedChatIndex].messageType,
                         pickedDate: targetChatData.messageList![reversedChatIndex].messageTime,
-                        settingColor: settingColor,
+                        settingColor: settingColor.value,
                       ),
                     );
                   },
@@ -708,7 +709,7 @@ class _ChatScreenState extends ConsumerState<ChatScreen> {
                         Text(
                           "현재 채팅 유저: ",
                           style: TextStyle(
-                              color: settingColor?.backgroundColor.isDark() == true
+                              color: settingColor.value?.backgroundColor.isDark() == true
                                   ? Colors.white
                                   : Colors.black),
                         ),
@@ -724,7 +725,7 @@ class _ChatScreenState extends ConsumerState<ChatScreen> {
                                 : "선택된 친구 없음",
                             style: TextStyle(
                                 fontWeight: FontWeight.bold,
-                                color: settingColor?.backgroundColor.isDark() == true
+                                color: settingColor.value?.backgroundColor.isDark() == true
                                     ? Colors.yellow.shade900
                                     : Colors.purple),
                           ),
