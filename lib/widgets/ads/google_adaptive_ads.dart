@@ -8,6 +8,7 @@ import 'package:self_talk/utils/MyLogger.dart';
 import 'package:self_talk/utils/firebase_events_sender.dart';
 
 import '../../assets/strings.dart';
+import '../../viewModel/ads_viewModel.dart';
 
 const String androidTestAdaptiveAdsKey = "ca-app-pub-3940256099942544/9214589741";
 const String iosTestAdaptiveAdsKey = "ca-app-pub-3940256099942544/2435281174";
@@ -42,6 +43,7 @@ class AnchoredAdaptiveAdsWidget extends StatefulWidget {
 class AnchoredAdaptiveWidget extends State<AnchoredAdaptiveAdsWidget> {
   BannerAd? _anchoredAdaptiveAd;
   bool _isLoaded = false;
+  final adsViewModel = AdsViewmodel();
 
   @override
   void didChangeDependencies() {
@@ -66,12 +68,16 @@ class AnchoredAdaptiveWidget extends State<AnchoredAdaptiveAdsWidget> {
       size: size,
       request: const AdRequest(),
       listener: BannerAdListener(
-        onAdClicked: (Ad ad) {
+        onAdClicked: (Ad ad) async {
           sendFirebaseEventForAds(eventName: Strings.eventNameClickAdaptiveAds);
+
           MyLogger.info("적응형 광고 클릭됨");
         },
-        onAdLoaded: (Ad ad) {
-          sendFirebaseEventForAds(eventName: Strings.eventNameWatchAdaptiveAds);
+        onAdLoaded: (Ad ad) async {
+          sendFirebaseEventForAds(
+              eventName: Strings.eventNameWatchAdaptiveAds,
+              clickCount: await adsViewModel.getAdsClickCount());
+          adsViewModel.setAdsClickCount();
           MyLogger.info("적응형 광고 실행됨");
           setState(() {
             _anchoredAdaptiveAd = ad as BannerAd;

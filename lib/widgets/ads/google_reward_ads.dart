@@ -7,6 +7,7 @@ import 'package:google_mobile_ads/google_mobile_ads.dart';
 import 'package:self_talk/assets/strings.dart';
 import 'package:self_talk/utils/MyLogger.dart';
 import 'package:self_talk/utils/firebase_events_sender.dart';
+import 'package:self_talk/viewModel/ads_viewModel.dart';
 import 'package:self_talk/widgets/common/utils.dart';
 
 const String androidTestAdaptiveAdsKey = "ca-app-pub-3940256099942544/5224354917";
@@ -47,6 +48,7 @@ class _RewardedAdWidgetState extends State<RewardedAdWidget> {
   RewardedAd? _rewardedAd;
   bool _isAdLoaded = false;
   int _retryCount = 0;
+  final adsViewModel = AdsViewmodel();
 
   final String adsId = _getAdsId() ?? "";
 
@@ -107,9 +109,12 @@ class _RewardedAdWidgetState extends State<RewardedAdWidget> {
           Navigator.of(context).pop();
         }
       },
-      onAdClicked: (ad) {
+      onAdClicked: (ad) async {
         MyLogger.info("보상형 광고: 클릭됨");
-        sendFirebaseEventForAds(eventName: Strings.eventNameClickRewardsAds);
+        sendFirebaseEventForAds(
+            eventName: Strings.eventNameClickRewardsAds,
+            clickCount: await adsViewModel.getAdsClickCount());
+        adsViewModel.setAdsClickCount();
       },
     );
   }
