@@ -1,3 +1,4 @@
+import 'package:flutter/foundation.dart';
 import 'package:flutter/material.dart';
 import 'package:flutter/services.dart';
 import 'package:flutter_riverpod/flutter_riverpod.dart';
@@ -117,6 +118,13 @@ class _SettingListScreenState extends ConsumerState<SettingListScreen> {
       Setting(
         mainTitle: "버전",
         statusText: _settingViewModel.appVersion ?? "1.0.0",
+        clickEvent: () {
+          if (kReleaseMode) {
+            showToast("릴리즈: ${_settingViewModel.buildNumber}");
+          } else {
+            showToast("디버그: ${_settingViewModel.buildNumber}");
+          }
+        }
       ),
       Setting(
         mainTitle: "라이센스",

@@ -16,6 +16,7 @@ class SettingViewmodel extends StateNotifier<AsyncValue<SettingColor?>> {
   final AdaptiveAdsRepository _adaptiveAdsRepository;
   bool? isPasswordSet;
   String? appVersion;
+  String? buildNumber;
 
   SettingViewmodel(this._settingRepository, this._passwordRepository, this._adaptiveAdsRepository)
       : super(const AsyncValue.loading()) {
@@ -40,6 +41,7 @@ class SettingViewmodel extends StateNotifier<AsyncValue<SettingColor?>> {
 
       final packageInfo = await PackageInfo.fromPlatform();
       appVersion = packageInfo.version;
+      buildNumber = packageInfo.buildNumber;
 
       Color backgroundColor = Color(await _settingRepository.getBackgroundColorCodePref());
       Color myMessageColor = Color(await _settingRepository.getMyMessageColorCodePref());
