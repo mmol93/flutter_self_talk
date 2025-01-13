@@ -2,6 +2,8 @@ import 'package:flutter/material.dart';
 import 'package:flutter_colorpicker/flutter_colorpicker.dart';
 import 'package:self_talk/colors/default_color.dart';
 import 'package:self_talk/utils/Constants.dart';
+import 'package:self_talk/utils/MyLogger.dart';
+import 'package:url_launcher/url_launcher.dart';
 
 Future<Color?> showColorPicker({
   required BuildContext context,
@@ -9,6 +11,14 @@ Future<Color?> showColorPicker({
   String? type,
 }) async {
   Color currentColor = initColor;
+
+  final Uri url = Uri.parse('https://android-developer.tistory.com/89');
+
+  void _launchUrl() async {
+    if (!await launchUrl(url)) {
+      MyLogger.error("카카오 색상코드가 있는 웹페이지 열기 불가능");
+    }
+  }
 
   Widget buildDialog(BuildContext ctx) {
     return StatefulBuilder(
@@ -33,7 +43,14 @@ Future<Color?> showColorPicker({
                   enableAlpha: true,
                 ),
               ),
-              const Text("색상코드 확인은 여기를 클릭하세요.", style: TextStyle(fontSize: 12),)
+              GestureDetector(
+                  onTap: () {
+                    _launchUrl();
+                  },
+                  child: const Text(
+                "색상코드 확인은 여기를 클릭하세요.",
+                style: TextStyle(fontSize: 12),
+              ))
             ],
           ),
           actions: [
