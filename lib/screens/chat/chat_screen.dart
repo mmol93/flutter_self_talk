@@ -827,7 +827,6 @@ class _ChatScreenState extends ConsumerState<ChatScreen> {
 
           /// 공지 부분
           if (targetChatData.notification?.isMinimize == true)
-
             /// Announce를 완전히 접었을 때
             Align(
               alignment: Alignment.topRight,
@@ -839,7 +838,7 @@ class _ChatScreenState extends ConsumerState<ChatScreen> {
                   );
                 },
                 child: Container(
-                  margin: const EdgeInsets.symmetric(horizontal: 8),
+                  margin: const EdgeInsets.symmetric(horizontal: 8, vertical: 12),
                   width: 40,
                   height: 40,
                   padding: const EdgeInsets.all(8),
@@ -855,7 +854,7 @@ class _ChatScreenState extends ConsumerState<ChatScreen> {
             Align(
               alignment: Alignment.topCenter,
               child: Padding(
-                padding: const EdgeInsets.all(4),
+                padding: const EdgeInsets.symmetric(horizontal: 4),
                 child: Container(
                   padding: const EdgeInsets.symmetric(vertical: 6, horizontal: 8),
                   decoration:
