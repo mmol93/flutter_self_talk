@@ -116,7 +116,7 @@ class _SettingListScreenState extends ConsumerState<SettingListScreen> {
       ),
       Setting(
         mainTitle: "버전",
-        statusText: "1.0.0",
+        statusText: _settingViewModel.appVersion ?? "1.0.0",
       ),
       Setting(
         mainTitle: "라이센스",
