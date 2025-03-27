@@ -1,11 +1,16 @@
+import 'dart:convert';
+
+import 'package:flutter/services.dart';
 import 'package:flutter_riverpod/flutter_riverpod.dart';
 import 'package:self_talk/models/chat.dart';
 import 'package:self_talk/models/friend.dart';
+import 'package:self_talk/repository/adaptive_ads_repository.dart';
 import 'package:self_talk/repository/chat_repository.dart';
+import 'package:self_talk/utils/MyLogger.dart';
 import 'package:self_talk/utils/Typedefs.dart';
 
-final chatViewModelProvider =
-    StateNotifierProvider<ChatViewModel, ChatList?>((ref) => ChatViewModel(ChatRepository()));
+final chatViewModelProvider = StateNotifierProvider.autoDispose<ChatViewModel, ChatList?>(
+    (ref) => ChatViewModel(ChatRepository(), AdaptiveAdsRepository()));
 
 // ChatList 예시
 ChatList dummyChatList = ChatList(chatRoom: {
@@ -269,18 +274,43 @@ ChatList dummyChatList = ChatList(chatRoom: {
 
 class ChatViewModel extends StateNotifier<ChatList?> {
   final ChatRepository _chatRepository;
+  final AdaptiveAdsRepository _adaptiveAdsRepository;
+  bool isShowAds = true;
 
-  ChatViewModel(this._chatRepository) : super(null) {
+  ChatViewModel(this._chatRepository, this._adaptiveAdsRepository) : super(null) {
     getChatList();
   }
 
   void getChatList() async {
+    isShowAds = await _adaptiveAdsRepository.isOverAdaptiveAdsTime();
     state = await _chatRepository.readChatList();
   }
 
   /// 채팅 리스트 양식 만들기 = 채팅 초기화
-  void createChatList() async {
+  void initChatList() async {
+    isShowAds = await _adaptiveAdsRepository.isOverAdaptiveAdsTime();
     _chatRepository.createChatList(dummyChatList).then((value) => getChatList());
+  }
+
+  /// 채팅 리스트에 진입하는게 처음인지 아닌지 확인하기
+  void checkFirstInitChat() async {
+    final bool isFirstInit = await _chatRepository.checkFirstInitChat();
+    if (isFirstInit) {
+      getTutorialChatList();
+    }
+  }
+
+  /// 처음 앱을 열었을 때 해당 채팅방으로 만들어지게 하기
+  void getTutorialChatList() async {
+    String tutorialFilePath = 'assets/etc/tutorial_chat_room.json';
+    try {
+      String tutorialJsonData = await rootBundle.loadString(tutorialFilePath);
+      Map<String, dynamic> jsonData = jsonDecode(tutorialJsonData);
+      ChatList tutorialChatList = ChatList.fromJson(jsonData);
+      _chatRepository.createChatList(tutorialChatList).then((value) => getChatList());
+    } catch (e) {
+      MyLogger.error("튜토리얼 파일 로딩 오류 $e");
+    }
   }
 
   /// 채팅방 자체를 만듬(새로운 채팅방 만들기 등...)

@@ -1,4 +1,6 @@
 import 'package:flutter/material.dart';
+import 'package:self_talk/extensions/color_ext.dart';
+import 'package:self_talk/models/setting_color.dart';
 import 'package:self_talk/widgets/chat/message_call_from_me.dart';
 import 'package:self_talk/widgets/chat/message_call_from_others.dart';
 import 'package:self_talk/widgets/chat/message_date.dart';
@@ -18,19 +20,29 @@ Widget getMergedMessage({
   required String profilePicturePath,
   MessageType messageType = MessageType.message,
   DateTime? pickedDate,
+  SettingColor? settingColor,
 }) {
+  final bool isBackgroundDark = settingColor?.backgroundColor.isDark() ?? true;
+
   switch (messageType) {
     case MessageType.date:
-      return MessageDate(pickedDate: pickedDate ?? DateTime.now());
+      return MessageDate(
+        pickedDate: pickedDate ?? DateTime.now(),
+        isBackgroundDark: isBackgroundDark,
+      );
 
     case MessageType.state:
       if (message.secondMessage != null) {
         return MessageStateTwoLine(
           firstLineText: message.message,
           secondLineText: message.secondMessage,
+          isBackgroundDark: isBackgroundDark,
         );
       } else {
-        return MessageStateHtmlLine(firstLineHtmlText: message.message);
+        return MessageStateHtmlLine(
+          firstLineHtmlText: message.message,
+          isBackgroundDark: isBackgroundDark,
+        );
       }
 
     case MessageType.calling:
@@ -41,6 +53,7 @@ Widget getMergedMessage({
             message: message,
             isCalling: true,
             showDate: showDate,
+            isBackgroundDark: isBackgroundDark,
           ),
         );
       } else {
@@ -53,6 +66,7 @@ Widget getMergedMessage({
             shouldUseTailBubble: shouldUseTailBubble,
             isCalling: true,
             showDate: showDate,
+            isBackgroundDark: isBackgroundDark,
           ),
         );
       }
@@ -65,6 +79,7 @@ Widget getMergedMessage({
             message: message,
             isCalling: false,
             showDate: showDate,
+            isBackgroundDark: isBackgroundDark,
           ),
         );
       } else {
@@ -77,6 +92,7 @@ Widget getMergedMessage({
             shouldUseTailBubble: shouldUseTailBubble,
             isCalling: false,
             showDate: showDate,
+            isBackgroundDark: isBackgroundDark,
           ),
         );
       }
@@ -90,6 +106,8 @@ Widget getMergedMessage({
             showDate: showDate,
             message: message,
             isDeleted: message.messageType == MessageType.deleted,
+            bubbleColor: settingColor?.myMessageColor,
+            isBackgroundDark: isBackgroundDark,
           ),
         );
       } else {
@@ -102,6 +120,8 @@ Widget getMergedMessage({
             profilePicturePath: profilePicturePath,
             message: message,
             isDeleted: message.messageType == MessageType.deleted,
+            bubbleColor: settingColor?.othersMessageColor,
+            isBackgroundDark: isBackgroundDark,
           ),
         );
       }

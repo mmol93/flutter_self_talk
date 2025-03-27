@@ -9,12 +9,14 @@ class MessageCallFromMe extends StatelessWidget {
   final Message message;
   final bool showDate;
   final bool isCalling;
+  final bool isBackgroundDark;
 
   const MessageCallFromMe({
     super.key,
     required this.message,
     required this.isCalling,
     required this.showDate,
+    required this.isBackgroundDark,
   });
 
   @override
@@ -64,7 +66,9 @@ class MessageCallFromMe extends StatelessWidget {
                               opacity: showDate ? 1.0 : 0.0,
                               child: Text(
                                 DateFormat('HH:mm').format(message.messageTime),
-                                style: const TextStyle(fontSize: 8),
+                                style: TextStyle(
+                                    fontSize: 8,
+                                    color: isBackgroundDark ? Colors.white : Colors.black),
                               ),
                             ),
                           ),
@@ -72,6 +76,7 @@ class MessageCallFromMe extends StatelessWidget {
                       ),
               ),
               ChatBubble(
+                backGroundColor: Colors.white,
                 clipper: ChatBubbleClipper12(type: BubbleType.sendBubble),
                 margin: const EdgeInsets.fromLTRB(0, 2, 4, 0),
                 padding: const EdgeInsets.symmetric(horizontal: 12, vertical: 16),
@@ -79,7 +84,7 @@ class MessageCallFromMe extends StatelessWidget {
                   constraints: BoxConstraints(
                     maxWidth: message.messageType == MessageType.callCut ||
                             message.messageType == MessageType.calling
-                        ? screenWidth * 0.29
+                        ? screenWidth * 0.31
                         : screenWidth * 0.60,
                   ),
                   child: Row(

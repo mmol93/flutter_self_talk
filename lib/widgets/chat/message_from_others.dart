@@ -10,6 +10,8 @@ import 'package:self_talk/widgets/chat/message_bubble.dart';
 import 'package:self_talk/widgets/chat/message_bubble_tail.dart';
 import 'package:self_talk/widgets/common/profile_picture.dart';
 
+import 'message_mention_text_span.dart';
+
 class MessageFromOthers extends StatelessWidget {
   final bool showDate;
   final bool shouldUseTailBubble;
@@ -17,15 +19,20 @@ class MessageFromOthers extends StatelessWidget {
   final String profilePicturePath;
   final Message message;
   final bool isDeleted;
+  final Color? bubbleColor;
+  final bool isBackgroundDark;
 
-  const MessageFromOthers(
-      {super.key,
-      this.showDate = true,
-      this.isDeleted = false,
-      this.profilePicturePath = Strings.defaultProfileImgPath,
-      required this.shouldUseTailBubble,
-      required this.friendName,
-      required this.message});
+  const MessageFromOthers({
+    super.key,
+    this.showDate = true,
+    this.isDeleted = false,
+    this.profilePicturePath = Strings.defaultProfileImgPath,
+    required this.shouldUseTailBubble,
+    required this.friendName,
+    required this.message,
+    this.bubbleColor,
+    required this.isBackgroundDark,
+  });
 
   @override
   Widget build(BuildContext context) {
@@ -53,7 +60,11 @@ class MessageFromOthers extends StatelessWidget {
                     if (shouldUseTailBubble)
                       Padding(
                         padding: const EdgeInsets.fromLTRB(7, 0, 0, 0),
-                        child: Text(friendName, style: const TextStyle(fontSize: 13)),
+                        child: Text(friendName,
+                            style: TextStyle(
+                              fontSize: 13,
+                              color: isBackgroundDark ? Colors.white : Colors.black,
+                            )),
                       ),
                     Padding(
                       padding: const EdgeInsets.fromLTRB(2, 0, 0, 0),
@@ -62,6 +73,7 @@ class MessageFromOthers extends StatelessWidget {
                         children: [
                           message.imagePath == null
                               ? ChatBubble(
+                                  backGroundColor: bubbleColor,
                                   clipper: shouldUseTailBubble
                                       ? ChatBubbleClipper11(type: BubbleType.receiverBubble)
                                       : ChatBubbleClipper12(type: BubbleType.receiverBubble),
@@ -75,20 +87,17 @@ class MessageFromOthers extends StatelessWidget {
                                       isDeleted
                                           ? Container(
                                               padding: const EdgeInsets.symmetric(horizontal: 4),
-                                              child: Icon(
-                                                Icons.warning,
-                                                color: Colors.grey.withOpacity(0.7)
-                                              ),
+                                              child: Icon(Icons.warning,
+                                                  color: Colors.grey.withOpacity(0.7)),
                                             )
                                           : const SizedBox(),
                                       ConstrainedBox(
-                                        // TODO: 여러 단말기에서 어떻게 나오는지 확인 필요
                                         // others는 프로필 사진 부분까지 출력해야하기 때문에 좀 더 줄어든다.
-                                        constraints: BoxConstraints(maxWidth: screenWidth * 0.55),
-                                        child: Text(
-                                          message.message,
-                                          style: TextStyle(
-                                              color: isDeleted ? Colors.grey : Colors.black),
+                                        constraints: BoxConstraints(maxWidth: screenWidth * 0.53),
+                                        child: RichText(
+                                          text: TextSpan(
+                                            children: friendMentionColoredTextSpans(message.message, isDeleted),
+                                          ),
                                         ),
                                       ),
                                     ],
@@ -96,13 +105,11 @@ class MessageFromOthers extends StatelessWidget {
                                 )
                               : Container(
                                   padding: const EdgeInsets.symmetric(horizontal: 4, vertical: 3),
-                                  // TODO: 작은 단말기에서 어떻게 나오는지 확인 필요?
-                                  constraints: const BoxConstraints(maxWidth: 240),
+                                  constraints: const BoxConstraints(maxWidth: 230),
                                   child: ClipRRect(
                                     borderRadius: BorderRadius.circular(10),
                                     child: Image.file(
                                       File(message.imagePath!),
-                                      // TODO: 사진이 그대로 잘 입력되는지 확인하기
                                       fit: BoxFit.fill,
                                       // 실패 시 그냥 무시되는 빈 위젯 제출
                                       errorBuilder: (context, error, stackTrace) =>
@@ -135,7 +142,10 @@ class MessageFromOthers extends StatelessWidget {
                                           opacity: showDate ? 1.0 : 0.0,
                                           child: Text(
                                             DateFormat('HH:mm').format(message.messageTime),
-                                            style: const TextStyle(fontSize: 8),
+                                            style: TextStyle(
+                                              fontSize: 8,
+                                              color: isBackgroundDark ? Colors.white : Colors.black,
+                                            ),
                                           ),
                                         ),
                                       ),

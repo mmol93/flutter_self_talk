@@ -7,12 +7,15 @@ import 'package:intl/intl.dart';
 import 'package:self_talk/models/chat.dart';
 import 'package:self_talk/widgets/chat/message_bubble.dart';
 import 'package:self_talk/widgets/chat/message_bubble_tail.dart';
+import 'package:self_talk/widgets/chat/message_mention_text_span.dart';
 
 class MessageFromMe extends StatelessWidget {
   final bool showDate;
   final bool shouldUseTailBubble;
   final Message message;
   final bool isDeleted;
+  final Color? bubbleColor;
+  final bool isBackgroundDark;
 
   const MessageFromMe({
     super.key,
@@ -20,6 +23,8 @@ class MessageFromMe extends StatelessWidget {
     this.showDate = true,
     required this.shouldUseTailBubble,
     required this.message,
+    this.bubbleColor,
+    required this.isBackgroundDark,
   });
 
   @override
@@ -61,7 +66,10 @@ class MessageFromMe extends StatelessWidget {
                               opacity: showDate ? 1.0 : 0.0,
                               child: Text(
                                 DateFormat('HH:mm').format(message.messageTime),
-                                style: const TextStyle(fontSize: 8),
+                                style: TextStyle(
+                                  fontSize: 8,
+                                  color: isBackgroundDark ? Colors.white : Colors.black,
+                                ),
                               ),
                             ),
                           ),
@@ -70,6 +78,7 @@ class MessageFromMe extends StatelessWidget {
               ),
               message.imagePath == null
                   ? ChatBubble(
+                      backGroundColor: bubbleColor,
                       clipper: shouldUseTailBubble
                           ? ChatBubbleClipper11(type: BubbleType.sendBubble)
                           : ChatBubbleClipper12(type: BubbleType.sendBubble),
@@ -83,14 +92,18 @@ class MessageFromMe extends StatelessWidget {
                           isDeleted
                               ? Container(
                                   padding: const EdgeInsets.symmetric(horizontal: 4),
-                                  child: Icon(Icons.warning, color: Colors.grey.withOpacity(0.7),))
+                                  child: Icon(
+                                    Icons.warning,
+                                    color: Colors.grey.withOpacity(0.7),
+                                  ))
                               : const SizedBox(),
                           ConstrainedBox(
                             // TODO: 작은 단말기에서 어떻게 나오는지 확인 필요
                             constraints: BoxConstraints(maxWidth: screenWidth * 0.59),
-                            child: Text(
-                              message.message,
-                              style: TextStyle(color: isDeleted ? Colors.grey : Colors.black),
+                            child: RichText(
+                              text: TextSpan(
+                                children: friendMentionColoredTextSpans(message.message, isDeleted),
+                              ),
                             ),
                           ),
                         ],

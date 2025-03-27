@@ -1,6 +1,7 @@
 import 'package:flutter/material.dart';
 import 'package:fluttertoast/fluttertoast.dart';
 
+/// Toase 메시지 보여주기
 void showToast(String message) {
   Fluttertoast.showToast(
     msg: message,

@@ -1,0 +1,250 @@
+{
+  "chatRoom": {
+    "1ab6a849-cf39-4296-8fec-355139b55e8e": {
+      "chatRoomName": "도우미",
+      "messageList": [
+        {
+          "friendId": "4ead68f9-3a6f-4a28-80f5-4292ec4b070c",
+          "messageTime": "2025-01-11T15:01:49.901662",
+          "message": "이 앱을 처음 써 본다고??",
+          "secondMessage": null,
+          "messageType": "message",
+          "isMe": false,
+          "notSeenMemberNumber": 0,
+          "imagePath": null,
+          "isFailed": false
+        },
+        {
+          "friendId": "4ead68f9-3a6f-4a28-80f5-4292ec4b070c",
+          "messageTime": "2025-01-11T15:01:57.766102",
+          "message": "그럼 내가 도와줄게.",
+          "secondMessage": null,
+          "messageType": "message",
+          "isMe": false,
+          "notSeenMemberNumber": 0,
+          "imagePath": null,
+          "isFailed": false
+        },
+        {
+          "friendId": "4ead68f9-3a6f-4a28-80f5-4292ec4b070c",
+          "messageTime": "2025-01-11T15:02:53.608992",
+          "message": "먼저 메시지 입력 칸 왼쪽의 플러스 버튼을 사용하면 다음과 같이 채팅 이외의 요소를 넣을 수 있어.",
+          "secondMessage": "",
+          "messageType": "message",
+          "isMe": false,
+          "notSeenMemberNumber": 0,
+          "imagePath": null,
+          "isFailed": false
+        },
+        {
+          "friendId": "4ead68f9-3a6f-4a28-80f5-4292ec4b070c",
+          "messageTime": "2025-01-11T00:00:00.000",
+          "message": "",
+          "secondMessage": null,
+          "messageType": "date",
+          "isMe": false,
+          "notSeenMemberNumber": 0,
+          "imagePath": null,
+          "isFailed": false
+        },
+        {
+          "friendId": "4ead68f9-3a6f-4a28-80f5-4292ec4b070c",
+          "messageTime": "2025-01-11T15:03:20.690983",
+          "message": "날짜도 가능하고",
+          "secondMessage": null,
+          "messageType": "message",
+          "isMe": false,
+          "notSeenMemberNumber": 0,
+          "imagePath": null,
+          "isFailed": false
+        },
+        {
+          "friendId": "4ead68f9-3a6f-4a28-80f5-4292ec4b070c",
+          "messageTime": "2025-01-11T15:03:24.553104",
+          "message": "",
+          "secondMessage": null,
+          "messageType": "calling",
+          "isMe": false,
+          "notSeenMemberNumber": 0,
+          "imagePath": null,
+          "isFailed": false
+        },
+        {
+          "friendId": "4ead68f9-3a6f-4a28-80f5-4292ec4b070c",
+          "messageTime": "2025-01-11T15:03:27.725422",
+          "message": "",
+          "secondMessage": null,
+          "messageType": "callCut",
+          "isMe": false,
+          "notSeenMemberNumber": 0,
+          "imagePath": null,
+          "isFailed": false
+        },
+        {
+          "friendId": "4ead68f9-3a6f-4a28-80f5-4292ec4b070c",
+          "messageTime": "2025-01-11T15:03:46.576356",
+          "message": "그룹톡 기능도 넣을 수 있지!",
+          "secondMessage": null,
+          "messageType": "message",
+          "isMe": false,
+          "notSeenMemberNumber": 0,
+          "imagePath": null,
+          "isFailed": false
+        },
+        {
+          "friendId": "4ead68f9-3a6f-4a28-80f5-4292ec4b070c",
+          "messageTime": "2025-01-11T15:04:52.632997",
+          "message": "그룹톡 내용을 변경해서 얼마나 통화 했는지도 나타낼 수 있어!",
+          "secondMessage": null,
+          "messageType": "message",
+          "isMe": false,
+          "notSeenMemberNumber": 0,
+          "imagePath": null,
+          "isFailed": false
+        },
+        {
+          "friendId": "4ead68f9-3a6f-4a28-80f5-4292ec4b070c",
+          "messageTime": "2025-01-11T15:04:55.782626",
+          "message": "12:19",
+          "secondMessage": "",
+          "messageType": "callCut",
+          "isMe": false,
+          "notSeenMemberNumber": 0,
+          "imagePath": null,
+          "isFailed": false
+        },
+        {
+          "friendId": "4ead68f9-3a6f-4a28-80f5-4292ec4b070c",
+          "messageTime": "2025-01-11T15:05:53.127161",
+          "message": "@ 을 사용하여 다음과 같이 친구 태그 기능을 사용 할수도 있어",
+          "secondMessage": null,
+          "messageType": "message",
+          "isMe": false,
+          "notSeenMemberNumber": 0,
+          "imagePath": null,
+          "isFailed": false
+        },
+        {
+          "friendId": "4ead68f9-3a6f-4a28-80f5-4292ec4b070c",
+          "messageTime": "2025-01-11T15:06:03.903997",
+          "message": "@친구\n야!!!!!",
+          "secondMessage": "",
+          "messageType": "message",
+          "isMe": false,
+          "notSeenMemberNumber": 0,
+          "imagePath": null,
+          "isFailed": false
+        },
+        {
+          "friendId": "4ead68f9-3a6f-4a28-80f5-4292ec4b070c",
+          "messageTime": "2025-01-11T15:06:45.256148",
+          "message": "오른쪽 위 햄버거 버튼을 누르면 친구 강퇴 및 초대도 할 수 있고",
+          "secondMessage": null,
+          "messageType": "message",
+          "isMe": false,
+          "notSeenMemberNumber": 0,
+          "imagePath": null,
+          "isFailed": false
+        },
+        {
+          "friendId": "4ead68f9-3a6f-4a28-80f5-4292ec4b070c",
+          "messageTime": "2025-01-11T15:07:05.404556",
+          "message": "캡처 모드나 동영상 모드로 바꿀 수 있어",
+          "secondMessage": null,
+          "messageType": "message",
+          "isMe": false,
+          "notSeenMemberNumber": 0,
+          "imagePath": null,
+          "isFailed": false
+        },
+        {
+          "friendId": "4ead68f9-3a6f-4a28-80f5-4292ec4b070c",
+          "messageTime": "2025-01-11T15:07:10.661673",
+          "message": "도우미님이 <u>친구</u>님을 초대했습니다.",
+          "secondMessage": null,
+          "messageType": "state",
+          "isMe": false,
+          "notSeenMemberNumber": 0,
+          "imagePath": null,
+          "isFailed": false
+        },
+        {
+          "friendId": "b09a10e6-94c6-47c6-b2e6-f1663a144cf3",
+          "messageTime": "2025-01-11T15:07:16.056953",
+          "message": "친구님이 나갔습니다.",
+          "secondMessage": "채팅방으로 초대하기",
+          "messageType": "state",
+          "isMe": false,
+          "notSeenMemberNumber": 0,
+          "imagePath": null,
+          "isFailed": false
+        },
+        {
+          "friendId": "4ead68f9-3a6f-4a28-80f5-4292ec4b070c",
+          "messageTime": "2025-01-11T15:07:46.907332",
+          "message": "동영상 모드를 사용하면 컨텐츠를 더욱 쉽게 만들수있으니까",
+          "secondMessage": null,
+          "messageType": "message",
+          "isMe": false,
+          "notSeenMemberNumber": 0,
+          "imagePath": null,
+          "isFailed": false
+        },
+        {
+          "friendId": "4ead68f9-3a6f-4a28-80f5-4292ec4b070c",
+          "messageTime": "2025-01-11T15:08:00.040991",
+          "message": "꼭 사용해봐!!!",
+          "secondMessage": null,
+          "messageType": "message",
+          "isMe": false,
+          "notSeenMemberNumber": 0,
+          "imagePath": null,
+          "isFailed": false
+        },
+        {
+          "friendId": "237d7ed7-c8a3-4ba9-8fb3-f72e5bb11954",
+          "messageTime": "2025-01-11T15:08:10.869989",
+          "message": "고마워!!",
+          "secondMessage": null,
+          "messageType": "message",
+          "isMe": true,
+          "notSeenMemberNumber": 0,
+          "imagePath": null,
+          "isFailed": false
+        },
+        {
+          "friendId": "4ead68f9-3a6f-4a28-80f5-4292ec4b070c",
+          "messageTime": "2025-01-11T15:08:48.929209",
+          "message": "아, 참고로 밖에 있는 설정 메뉴에서 배경색도 바꿀수있어.",
+          "secondMessage": null,
+          "messageType": "message",
+          "isMe": false,
+          "notSeenMemberNumber": 1,
+          "imagePath": null,
+          "isFailed": false
+        }
+      ],
+      "chatMembers": [
+        {
+          "id": "4ead68f9-3a6f-4a28-80f5-4292ec4b070c",
+          "name": "도우미",
+          "message": "",
+          "profileImgPath": "assets/images/profile_pic.png",
+          "me": 0
+        },
+        {
+          "id": "237d7ed7-c8a3-4ba9-8fb3-f72e5bb11954",
+          "name": "나",
+          "message": "",
+          "profileImgPath": "assets/images/profile_pic.png",
+          "me": 1
+        }
+      ],
+      "notification": null,
+      "lastMessage": "아, 참고로 밖에 있는 설정 메뉴에서 배경색도 바꿀수있어.",
+      "modifiedDate": 1736575728932,
+      "alarmOnOff": 1,
+      "modifiedChatRoomImg": null
+    }
+  }
+}

@@ -3,8 +3,13 @@ import 'package:intl/intl.dart';
 
 class MessageDate extends StatelessWidget {
   final DateTime pickedDate;
+  final bool isBackgroundDark;
 
-  const MessageDate({super.key, required this.pickedDate});
+  const MessageDate({
+    super.key,
+    required this.pickedDate,
+    required this.isBackgroundDark,
+  });
 
   @override
   Widget build(BuildContext context) {
@@ -16,7 +21,7 @@ class MessageDate extends StatelessWidget {
         child: Container(
           padding: const EdgeInsets.symmetric(horizontal: 12, vertical: 8),
           decoration: BoxDecoration(
-            color: Colors.black.withAlpha(35),
+            color: isBackgroundDark ? Colors.grey.withAlpha(85) : Colors.black.withAlpha(35),
             borderRadius: BorderRadius.circular(16.0),
           ),
           child: Row(

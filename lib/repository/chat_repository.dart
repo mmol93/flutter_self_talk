@@ -2,13 +2,32 @@ import 'dart:convert';
 
 import 'package:self_talk/models/chat.dart';
 import 'package:self_talk/models/friend.dart';
+import 'package:self_talk/utils/Constants.dart';
 import 'package:self_talk/utils/Typedefs.dart';
 import 'package:shared_preferences/shared_preferences.dart';
 import 'package:uuid/uuid.dart';
 
 class ChatRepository {
+  // SharedPreferences 인스턴스를 저장할 변수
+  SharedPreferences? _prefs;
+
+  // SharedPreferences 초기화 메서드
   Future<SharedPreferences> _initPrefs() async {
-    return await SharedPreferences.getInstance();
+    // 이미 초기화되어 있다면 캐시된 인스턴스 반환
+    _prefs ??= await SharedPreferences.getInstance();
+    return _prefs!;
+  }
+
+  /// 채팅 리스트에 진입하는게 처음인지 아닌지 확인하기
+  Future<bool> checkFirstInitChat() async {
+    final prefs = await _initPrefs();
+    final firstInitChatList = prefs.getBool(firstInitChatListPrefKey);
+    if (firstInitChatList == true || firstInitChatList == null) {
+      prefs.setBool(firstInitChatListPrefKey, false);
+      return true;
+    } else {
+      return false;
+    }
   }
 
   /// 채팅 리스트 양식 만들기 = 채팅 초기화
@@ -194,6 +213,8 @@ class ChatRepository {
       final targetChatRoom = chatData.chatRoom![chatId]!;
 
       for (Friend invitedFriend in invitedFriendList) {
+        // 초대된 친구는 무조건 친구로써 초대해야한다.
+        invitedFriend.me = 0;
         targetChatRoom.chatMembers.add(invitedFriend);
       }
 

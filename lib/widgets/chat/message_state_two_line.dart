@@ -1,10 +1,19 @@
 import 'package:flutter/material.dart';
+import 'package:self_talk/models/setting_color.dart';
 
 class MessageStateTwoLine extends StatelessWidget {
   final String firstLineText;
   final String? secondLineText;
+  final SettingColor? settingColor;
+  final bool isBackgroundDark;
 
-  const MessageStateTwoLine({super.key, required this.firstLineText, required this.secondLineText});
+  const MessageStateTwoLine({
+    super.key,
+    required this.firstLineText,
+    required this.secondLineText,
+    this.settingColor,
+    required this.isBackgroundDark,
+  });
 
   @override
   Widget build(BuildContext context) {
@@ -14,7 +23,7 @@ class MessageStateTwoLine extends StatelessWidget {
         child: Container(
           padding: const EdgeInsets.symmetric(horizontal: 12, vertical: 8),
           decoration: BoxDecoration(
-            color: Colors.black.withAlpha(35),
+            color: isBackgroundDark ? Colors.grey.withAlpha(85) : Colors.black.withAlpha(35),
             borderRadius: BorderRadius.circular(20.0),
           ),
           child: Column(

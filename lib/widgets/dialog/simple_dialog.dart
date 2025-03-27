@@ -7,24 +7,32 @@ import 'package:flutter/material.dart';
 void showTextDialog({
   required String title,
   required String okText,
-  required String content,
+  required String contentText,
   required BuildContext context,
-  Function? onPressed,
+  bool? needNoButton,
+  Function? contentButtonPressed,
 }) {
   Widget buildDialog(BuildContext context) {
     return AlertDialog(
       title: Text(title),
-      content: Text(content),
+      content: Text(contentText),
       actions: [
         TextButton(
           onPressed: () {
-            if (onPressed != null) {
-              onPressed();
-            }
             Navigator.pop(context);
+            if (contentButtonPressed != null) {
+              contentButtonPressed();
+            }
           },
           child: Text(okText),
-        )
+        ),
+        if (needNoButton == true)
+          TextButton(
+            onPressed: () {
+              Navigator.pop(context);
+            },
+            child: const Text("아니요"),
+          )
       ],
     );
   }

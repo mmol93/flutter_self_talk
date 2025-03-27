@@ -15,6 +15,7 @@ class MessageCallFromOthers extends StatelessWidget {
   final bool shouldUseTailBubble;
   final String friendName;
   final bool isCalling;
+  final bool isBackgroundDark;
 
   const MessageCallFromOthers({
     super.key,
@@ -24,6 +25,7 @@ class MessageCallFromOthers extends StatelessWidget {
     required this.isCalling,
     required this.showDate,
     required this.shouldUseTailBubble,
+    required this.isBackgroundDark,
   });
 
   @override
@@ -59,7 +61,13 @@ class MessageCallFromOthers extends StatelessWidget {
                     if (shouldUseTailBubble)
                       Padding(
                         padding: const EdgeInsets.fromLTRB(7, 0, 0, 0),
-                        child: Text(friendName, style: const TextStyle(fontSize: 13)),
+                        child: Text(
+                          friendName,
+                          style: TextStyle(
+                            fontSize: 13,
+                            color: isBackgroundDark ? Colors.white : Colors.black,
+                          ),
+                        ),
                       ),
                     Padding(
                       padding: const EdgeInsets.fromLTRB(2, 0, 0, 0),
@@ -68,6 +76,7 @@ class MessageCallFromOthers extends StatelessWidget {
                         children: [
                           message.imagePath == null
                               ? ChatBubble(
+                                  backGroundColor: Colors.white,
                                   clipper: ChatBubbleClipper12(type: BubbleType.receiverBubble),
                                   margin: const EdgeInsets.fromLTRB(4, 2, 0, 0),
                                   padding: const EdgeInsets.symmetric(horizontal: 12, vertical: 16),
@@ -75,7 +84,7 @@ class MessageCallFromOthers extends StatelessWidget {
                                     constraints: BoxConstraints(
                                       maxWidth: message.messageType == MessageType.callCut ||
                                               message.messageType == MessageType.calling
-                                          ? screenWidth * 0.29
+                                          ? screenWidth * 0.31
                                           : screenWidth * 0.55,
                                     ),
                                     child: Row(
@@ -133,7 +142,10 @@ class MessageCallFromOthers extends StatelessWidget {
                                           opacity: showDate ? 1.0 : 0.0,
                                           child: Text(
                                             DateFormat('HH:mm').format(message.messageTime),
-                                            style: const TextStyle(fontSize: 8),
+                                            style: TextStyle(
+                                              fontSize: 8,
+                                              color: isBackgroundDark ? Colors.white : Colors.black,
+                                            ),
                                           ),
                                         ),
                                       ),

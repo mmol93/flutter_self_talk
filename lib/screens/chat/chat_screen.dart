@@ -1,3 +1,4 @@
+import 'dart:async';
 import 'dart:io';
 
 import 'package:flutter/material.dart';
@@ -6,11 +7,14 @@ import 'package:flutter_svg/flutter_svg.dart';
 import 'package:image_picker/image_picker.dart';
 import 'package:permission_handler/permission_handler.dart';
 import 'package:self_talk/colors/default_color.dart';
+import 'package:self_talk/extensions/color_ext.dart';
 import 'package:self_talk/models/chat.dart';
 import 'package:self_talk/models/friend.dart';
 import 'package:self_talk/models/list_item_model.dart';
 import 'package:self_talk/viewModel/chat_viewModel.dart';
 import 'package:self_talk/viewModel/friend_viewModel.dart';
+import 'package:self_talk/viewModel/setting_viewModel.dart';
+import 'package:self_talk/widgets/ads/google_adaptive_ads.dart';
 import 'package:self_talk/widgets/chat/announce_icon.dart';
 import 'package:self_talk/widgets/chat/dialog/chat_invite_friends_dialog.dart';
 import 'package:self_talk/widgets/chat/dialog/modify_message_dialog.dart';
@@ -18,6 +22,7 @@ import 'package:self_talk/widgets/chat/merged_message.dart';
 import 'package:self_talk/widgets/common/utils.dart';
 import 'package:self_talk/widgets/dialog/common_time_picker_dialog.dart';
 import 'package:self_talk/widgets/dialog/list_dialog.dart';
+import 'package:self_talk/widgets/dialog/simple_dialog.dart';
 
 import '../../widgets/dialog/number_modify_dialog.dart';
 import '../../widgets/dialog/text_modify_dialog.dart';
@@ -39,6 +44,9 @@ class _ChatScreenState extends ConsumerState<ChatScreen> {
   final _inputTextController = TextEditingController();
   final ScrollController _scrollController = ScrollController();
   bool editMode = true;
+  bool movieMode = false;
+  Chat? _movieModeChatData;
+  int _movieModeChatMessageIndex = 0;
 
   // 현재 채팅중인 사람이 직전 사람과 다름 = true
   Friend? previousSelectedFriend;
@@ -93,6 +101,31 @@ class _ChatScreenState extends ConsumerState<ChatScreen> {
       showToast("이미지 파일을 첨부하기 위해선 권한이 필요합니다.");
     }
     return null;
+  }
+
+  void _initDelayedChat(Chat chat) {
+    movieMode = true;
+    editMode = false;
+    _movieModeChatData = chat.copyChatRoom();
+    _movieModeChatData?.messageList = _movieModeChatData?.copyMessageList();
+    chat.messageList?.clear();
+  }
+
+  void _finishMovieMode(ChatViewModel viewModel) {
+    movieMode = false;
+    _movieModeChatMessageIndex = 0;
+    viewModel.getChatList();
+  }
+
+  void _addMessageToTempChatMessage(Chat targetChat, ChatViewModel viewModel) {
+    setState(() {
+      if (_movieModeChatData!.messageList!.length - 1 > _movieModeChatMessageIndex) {
+        targetChat.messageList?.add(_movieModeChatData!.messageList![_movieModeChatMessageIndex]);
+        _movieModeChatMessageIndex++;
+      } else {
+        _finishMovieMode(viewModel);
+      }
+    });
   }
 
   /// 메시지 클릭 시 나오는 옵션 및 기능을 dialog로 표시
@@ -166,7 +199,7 @@ class _ChatScreenState extends ConsumerState<ChatScreen> {
               messageIndex: index,
             );
           },
-        )
+        ),
       ],
     );
   }
@@ -305,12 +338,42 @@ class _ChatScreenState extends ConsumerState<ChatScreen> {
               }
             }),
         ListItemModel(
-            itemTitle: editMode ? "갭쳐 모드로 전환하기" : "수정 모드로 전환하기",
-            clickEvent: () {
-              setState(() {
-                editMode = !editMode;
-              });
-            }),
+          itemTitle: editMode ? "캡쳐 모드로 전환하기" : "수정 모드로 전환하기",
+          clickEvent: () {
+            setState(() {
+              editMode = !editMode;
+            });
+          },
+        ),
+        ListItemModel(
+          itemTitle: movieMode ? "영상 모드 끄기" : "영상 모드 시작",
+          clickEvent: () {
+            showTextDialog(
+              title: "영상 모드",
+              okText: movieMode ? "영상 모드 끄기" : "영상 모드 시작",
+              contentText: movieMode
+                  ? "영상 모드를 정말 종료하시겠습니까?"
+                  : "영상 모드를 사용하면 모든 대화가 하나씩 출력되게 할 수 있습니다. \n\n위에 있는 돋보기 아이콘을 클릭하면 메시지가 하나씩 출력됩니다.  \n\n<응용방법>\n1. 휴대폰 화면 녹화 시작\n2. 영상모드를 시작\n3. 화면녹화를 끝낸 후 적절히 편집해서 사용",
+              context: context,
+              contentButtonPressed: () {
+                if (movieMode) {
+                  setState(() {
+                    editMode = true;
+                    _finishMovieMode(viewModel);
+                  });
+                } else {
+                  if (targetChatData.messageList?.isNotEmpty == true) {
+                    setState(() {
+                      _initDelayedChat(targetChatData);
+                    });
+                  } else {
+                    showToast("영상 모드는 하나 이상의 메시지가 필요합니다.");
+                  }
+                }
+              },
+            );
+          },
+        )
       ],
     );
   }
@@ -528,18 +591,22 @@ class _ChatScreenState extends ConsumerState<ChatScreen> {
 
   @override
   Widget build(BuildContext context) {
-    final viewModel = ref.watch(chatViewModelProvider.notifier);
+    final chatViewModel = ref.watch(chatViewModelProvider.notifier);
     final friendViewModel = ref.watch(friendViewModelProvider.notifier);
     final wholeFriendList = ref.watch(friendViewModelProvider);
     final wholeChatList = ref.watch(chatViewModelProvider);
+    final settingColor = ref.watch(settingViewModelProvider);
     final Chat targetChatData = wholeChatList!.chatRoom![currentChatRoomId]!;
     final double screenWidth = MediaQuery.of(context).size.width;
     me = targetChatData.chatMembers.firstWhere((friend) => friend.me == 1);
 
     return Scaffold(
-      backgroundColor: defaultBackground,
+      backgroundColor: settingColor.value?.backgroundColor ?? defaultBackgroundColor,
       appBar: AppBar(
-        backgroundColor: defaultBackground,
+        iconTheme: IconThemeData(
+          color: settingColor.value?.backgroundColor.isDark() == true ? Colors.white : Colors.black,
+        ),
+        backgroundColor: settingColor.value?.backgroundColor ?? defaultBackgroundColor,
         title: Row(
           children: [
             ConstrainedBox(
@@ -548,22 +615,40 @@ class _ChatScreenState extends ConsumerState<ChatScreen> {
                 targetChatData.chatRoomName ?? "",
                 overflow: TextOverflow.ellipsis,
                 maxLines: 1,
-                style: const TextStyle(fontWeight: FontWeight.bold),
+                style: TextStyle(
+                  fontWeight: FontWeight.w500,
+                  color: settingColor.value?.backgroundColor.isDark() == true
+                      ? Colors.white
+                      : Colors.black,
+                ),
               ),
             ),
             const SizedBox(width: 5),
-            Text(
-              targetChatData.chatMembers.length.toString(),
-              style: const TextStyle(color: Colors.grey, fontWeight: FontWeight.w600),
-            )
+            if (targetChatData.chatMembers.length > 2)
+              Text(
+                targetChatData.chatMembers.length.toString(),
+                style: const TextStyle(color: Colors.grey, fontWeight: FontWeight.w500),
+              )
           ],
         ),
         actions: [
-          IconButton(onPressed: () {}, icon: const Icon(Icons.search_outlined)),
+          IconButton(
+              // 클릭 이펙트를 제거
+              highlightColor: Colors.transparent,
+              splashColor: Colors.transparent,
+              onPressed: () {
+                if (movieMode) {
+                  _addMessageToTempChatMessage(targetChatData, chatViewModel);
+                } else {
+                  editMode = true;
+                  chatViewModel.getChatList();
+                }
+              },
+              icon: const Icon(Icons.search_outlined)),
           IconButton(
             onPressed: () {
               _showChatRoomOptionDialog(
-                viewModel: viewModel,
+                viewModel: chatViewModel,
                 targetChatData: targetChatData,
                 friendViewModel: friendViewModel,
                 wholeFriendList: wholeFriendList,
@@ -583,34 +668,36 @@ class _ChatScreenState extends ConsumerState<ChatScreen> {
             children: [
               Flexible(
                 child: ListView.builder(
-                    reverse: true,
-                    shrinkWrap: true,
-                    padding: const EdgeInsets.symmetric(vertical: 8, horizontal: 0),
-                    controller: _scrollController,
-                    itemBuilder: (context, index) {
-                      // ListView에서 reverse를 true로 했기 때문에 사용하는 데이터도 reverse 처리를 해서 사용한다.
-                      final reversedChatIndex =
-                          (targetChatData.messageList?.length ?? 0) - index - 1;
-                      return GestureDetector(
-                          onTap: () {
-                            _showMessageOptions(viewModel, targetChatData, reversedChatIndex);
-                          },
-                          child: getMergedMessage(
-                              showDate: targetChatData.shouldShowDate(reversedChatIndex),
-                              isMe: targetChatData.messageList![reversedChatIndex].isMe,
-                              shouldUseTailBubble:
-                                  targetChatData.shouldUseTailBubble(reversedChatIndex),
-                              message: targetChatData.messageList![reversedChatIndex],
-                              friendName: targetChatData.getFriendName(
-                                      targetChatData.messageList![reversedChatIndex].friendId) ??
-                                  "(알 수 없음)",
-                              profilePicturePath: targetChatData.getaFriendProfilePath(),
-                              messageType:
-                                  targetChatData.messageList![reversedChatIndex].messageType,
-                              pickedDate:
-                                  targetChatData.messageList![reversedChatIndex].messageTime));
-                    },
-                    itemCount: targetChatData.messageList?.length ?? 0),
+                  reverse: true,
+                  shrinkWrap: true,
+                  padding: const EdgeInsets.symmetric(vertical: 8, horizontal: 0),
+                  controller: _scrollController,
+                  itemBuilder: (context, index) {
+                    // ListView에서 reverse를 true로 했기 때문에 사용하는 데이터도 reverse 처리를 해서 사용한다.
+                    final reversedChatIndex = (targetChatData.messageList?.length ?? 0) - index - 1;
+                    return GestureDetector(
+                      onTap: () {
+                        _showMessageOptions(chatViewModel, targetChatData, reversedChatIndex);
+                      },
+                      child: getMergedMessage(
+                        showDate: targetChatData.shouldShowDate(reversedChatIndex),
+                        isMe: targetChatData.messageList![reversedChatIndex].isMe,
+                        shouldUseTailBubble: targetChatData.shouldUseTailBubble(reversedChatIndex),
+                        message: targetChatData.messageList![reversedChatIndex],
+                        friendName: targetChatData.getFriendName(
+                                targetChatData.messageList![reversedChatIndex].friendId) ??
+                            "(알 수 없음)",
+                        profilePicturePath: targetChatData.getaFriendProfilePath(
+                          friendId: targetChatData.messageList![reversedChatIndex].friendId,
+                        ),
+                        messageType: targetChatData.messageList![reversedChatIndex].messageType,
+                        pickedDate: targetChatData.messageList![reversedChatIndex].messageTime,
+                        settingColor: settingColor.value,
+                      ),
+                    );
+                  },
+                  itemCount: targetChatData.messageList?.length ?? 0,
+                ),
               ),
               Column(
                 children: [
@@ -619,7 +706,13 @@ class _ChatScreenState extends ConsumerState<ChatScreen> {
                     child: Row(
                       mainAxisAlignment: MainAxisAlignment.center,
                       children: [
-                        const Text("현재 채팅 유저: "),
+                        Text(
+                          "현재 채팅 유저: ",
+                          style: TextStyle(
+                              color: settingColor.value?.backgroundColor.isDark() == true
+                                  ? Colors.white
+                                  : Colors.black),
+                        ),
                         TextButton(
                           onPressed: () {
                             _showFriendSelectionDialog(me!, targetChatData);
@@ -630,11 +723,19 @@ class _ChatScreenState extends ConsumerState<ChatScreen> {
                                     ? "(자신)${currentSelectedFriend!.name}"
                                     : currentSelectedFriend!.name
                                 : "선택된 친구 없음",
-                            style: const TextStyle(fontWeight: FontWeight.bold),
+                            style: TextStyle(
+                                fontWeight: FontWeight.bold,
+                                color: settingColor.value?.backgroundColor.isDark() == true
+                                    ? Colors.yellow.shade900
+                                    : Colors.purple),
                           ),
                         )
                       ],
                     ),
+                  ),
+                  Visibility(
+                    visible: editMode && chatViewModel.isShowAds,
+                    child: const AnchoredAdaptiveAdsWidget(),
                   ),
                   ConstrainedBox(
                     constraints: const BoxConstraints(maxHeight: 120),
@@ -652,7 +753,7 @@ class _ChatScreenState extends ConsumerState<ChatScreen> {
                                   showToast("\"현재 채팅 유저\"를 먼저 선택해야 합니다.");
                                 } else {
                                   _showAttachmentOptions(
-                                      viewModel: viewModel,
+                                      viewModel: chatViewModel,
                                       me: me!,
                                       currentTargetChatData: targetChatData);
                                 }
@@ -697,7 +798,7 @@ class _ChatScreenState extends ConsumerState<ChatScreen> {
                                 return GestureDetector(
                                   onTap: () {
                                     _sendMessage(
-                                        viewModel: viewModel,
+                                        viewModel: chatViewModel,
                                         message: messageText,
                                         me: me!,
                                         currentMemberNumber: targetChatData.chatMembers.length);
@@ -726,19 +827,18 @@ class _ChatScreenState extends ConsumerState<ChatScreen> {
 
           /// 공지 부분
           if (targetChatData.notification?.isMinimize == true)
-
             /// Announce를 완전히 접었을 때
             Align(
               alignment: Alignment.topRight,
               child: GestureDetector(
                 onTap: () {
-                  viewModel.updateChatNoti(
+                  chatViewModel.updateChatNoti(
                     chatId: currentChatRoomId!,
                     chatNoti: targetChatData.changeNotiMinimizeStatus(),
                   );
                 },
                 child: Container(
-                  margin: const EdgeInsets.symmetric(horizontal: 8),
+                  margin: const EdgeInsets.symmetric(horizontal: 8, vertical: 12),
                   width: 40,
                   height: 40,
                   padding: const EdgeInsets.all(8),
@@ -754,7 +854,7 @@ class _ChatScreenState extends ConsumerState<ChatScreen> {
             Align(
               alignment: Alignment.topCenter,
               child: Padding(
-                padding: const EdgeInsets.all(4),
+                padding: const EdgeInsets.symmetric(horizontal: 4),
                 child: Container(
                   padding: const EdgeInsets.symmetric(vertical: 6, horizontal: 8),
                   decoration:
@@ -799,7 +899,7 @@ class _ChatScreenState extends ConsumerState<ChatScreen> {
                           ),
                           GestureDetector(
                             onTap: () {
-                              viewModel.updateChatNoti(
+                              chatViewModel.updateChatNoti(
                                 chatId: currentChatRoomId!,
                                 chatNoti: targetChatData.changeNotiFoldStatus(),
                               );
@@ -826,7 +926,7 @@ class _ChatScreenState extends ConsumerState<ChatScreen> {
                                 margin: const EdgeInsets.symmetric(horizontal: 4, vertical: 4),
                                 child: ElevatedButton(
                                   onPressed: () {
-                                    viewModel.updateChatNoti(
+                                    chatViewModel.updateChatNoti(
                                       chatId: currentChatRoomId!,
                                       chatNoti: null,
                                     );
@@ -848,7 +948,7 @@ class _ChatScreenState extends ConsumerState<ChatScreen> {
                                 margin: const EdgeInsets.symmetric(horizontal: 4),
                                 child: ElevatedButton(
                                   onPressed: () {
-                                    viewModel.updateChatNoti(
+                                    chatViewModel.updateChatNoti(
                                       chatId: currentChatRoomId!,
                                       chatNoti: targetChatData.changeNotiMinimizeStatus(),
                                     );
